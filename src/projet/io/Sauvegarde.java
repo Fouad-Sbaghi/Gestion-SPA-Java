@@ -1,4 +1,4 @@
-package io;
+package projet.io;
 
 public class Sauvegarde {
 

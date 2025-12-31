@@ -1,4 +1,4 @@
-package tables;
+package projet.tables;
 
 public class Animal {
 

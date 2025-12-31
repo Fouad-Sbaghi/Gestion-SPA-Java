@@ -1,4 +1,4 @@
-package exceptions;
+package projet.exceptions;
 
 public class InvalidFormatException {
 
