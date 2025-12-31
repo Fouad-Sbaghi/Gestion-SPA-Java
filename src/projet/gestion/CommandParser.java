@@ -1,4 +1,4 @@
-package projet.query;
+package projet.gestion;
 
 public class CommandParser {
 

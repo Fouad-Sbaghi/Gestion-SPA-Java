@@ -1,4 +1,4 @@
-package projet.query;
+package projet.gestion;
 
 import java.sql.*;
 import java.util.HashMap;

@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 
-import projet.query.Gestion;
 import projet.connexion.Connexion;
+import projet.gestion.Gestion;
 
 
 public class Main {
