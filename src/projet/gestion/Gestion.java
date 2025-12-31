@@ -1,135 +1,99 @@
 package projet.gestion;
 
-import java.sql.*;
-import java.util.HashMap;
-import projet.tables.*;
-import projet.connexion.*;
-import projet.main.Produit;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import projet.connexion.Connexion;
+import projet.tables.ITable;
 
 public class Gestion {
 
-    public HashMap<String, fieldType> structTable(String table, boolean display) throws SQLException 
-    {
-    	Connection conn = Connexion.connectR();
-    	DatabaseMetaData meta = conn.getMetaData();
-    	ResultSet rs = meta.getColumns(null, "uapv2502163", table.toLowerCase(), null);
-    	HashMap<String, fieldType> structure = new HashMap<>();
-    	
-    	while(rs.next())
-    	{
-    		String colName = rs.getString("COLUMN_NAME");
-            String colType = rs.getString("TYPE_NAME");
+    /**
+     * Exécute une requête SQL de mise à jour (INSERT, UPDATE, DELETE, CREATE, DROP).
+     */
+    public void execute(String sql) throws SQLException {
+        try (Connection conn = Connexion.connectR();
+             Statement stmt = conn.createStatement()) {
             
-            fieldType typeEnum = null;
-            try 
-            {
-                typeEnum = fieldType.valueOf(colType.toUpperCase());
-            } 
-            catch (IllegalArgumentException e) 
-            {
-                if(colType.equalsIgnoreCase("serial")) typeEnum = fieldType.INT4; // on traite le cas particulier du serial (nottement utilisé pour les id auto increment en sql)
-            }
+            stmt.executeUpdate(sql);
+            // Pas d'affichage ici pour laisser le choix à l'appelant
+        }
+    }
 
-            if (typeEnum != null) {
-                structure.put(colName, typeEnum);
-                
-                if(display) {
-                    System.out.println("Colonne: " + colName + " | Type: " + typeEnum);
+    /**
+     * Insère un objet implémentant ITable dans la base de données.
+     * Utilise la méthode getValues() de l'objet.
+     */
+    public void insert(ITable obj, String nomTable) {
+        String values = obj.getValues();
+        String sql = "INSERT INTO " + nomTable + " VALUES (" + values + ")";
+        
+        try {
+            execute(sql);
+            System.out.println("Insertion réussie dans " + nomTable);
+        } catch (SQLException e) {
+            System.err.println("Erreur d'insertion : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Affiche tout le contenu d'une table dans la console (SELECT *).
+     */
+    public void displayTable(String nomTable) {
+        String sql = "SELECT * FROM " + nomTable;
+
+        try (Connection conn = Connexion.connectR();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int nbCols = rsmd.getColumnCount();
+
+            System.out.println("--- Contenu de la table " + nomTable + " ---");
+
+            // Affichage des en-têtes
+            for (int i = 1; i <= nbCols; i++) {
+                System.out.print(rsmd.getColumnName(i) + "\t | ");
+            }
+            System.out.println("\n-------------------------------------------------");
+
+            // Affichage des données
+            while (rs.next()) {
+                for (int i = 1; i <= nbCols; i++) {
+                    System.out.print(rs.getString(i) + "\t | ");
                 }
+                System.out.println();
             }
-    	}
-    	return structure;
-    }
+            System.out.println("-------------------------------------------------");
 
-    public void displayTable(String table) throws SQLException 
-    {
-    	Connection conn = Connexion.connectR();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM " + table);
-        ResultSetMetaData rsMeta = rs.getMetaData(); // Pour savoir combien il y a de colonnes
-
-        System.out.println("--- Contenu de la table " + table + " ---");
-
-        while (rs.next()) {
-            // On parcourt toutes les colonnes de la ligne actuelle
-            for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
-                System.out.print(rs.getObject(i) + "\t | \t"); // Affichage avec tab
-            }
-            System.out.println();
-        }
-        System.out.println("----------------------------------------");
-    }
-
-    public void execute(String query) throws SQLException 
-    {
-    	Connection conn = Connexion.connectR();
-        if (conn != null) {
-            Statement stmt = conn.createStatement();
-            stmt.execute(query);
-            stmt.close(); 
-        }
-        else
-        {
-            throw new SQLException("Pas de connexion active.");   
+        } catch (SQLException e) {
+            System.err.println("Erreur lecture table : " + e.getMessage());
         }
     }
+    
+    /**
+     * Affiche la structure (colonnes et types) d'une table.
+     */
+    public void structTable(String nomTable) {
+        String sql = "SELECT * FROM " + nomTable + " LIMIT 1"; // On ne veut que les métadonnées
 
-    public void insert(ITable data, String table) 
-    {
-        try 
-        {
-            HashMap<String, fieldType> tableStruct = structTable(table, false);
-            
-            if (!data.check(tableStruct)) {
-                System.out.println("Erreur : La structure de l'objet ne correspond pas à la table " + table);
-                return;
+        try (Connection conn = Connexion.connectR();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int nbCols = rsmd.getColumnCount();
+
+            System.out.println("--- Structure de " + nomTable + " ---");
+            for (int i = 1; i <= nbCols; i++) {
+                System.out.println("- " + rsmd.getColumnName(i) + " : " + rsmd.getColumnTypeName(i));
             }
 
-            String query = "INSERT INTO " + table + " VALUES (" + data.getValues() + ")";
-            
-            try 
-            {
-                execute(query);
-                System.out.println("Insertion réussie.");
-                
-            }
-            catch (SQLException e) 
-            {
-                System.out.println("Doublon détecté (ID existant)");
-                
-                if (data instanceof Produit) 
-                {
-                    Produit p = (Produit) data;
-                    
-                    String updateQuery = "UPDATE " + table + " SET " +
-                                         "prix = prix + " + p.getPrix() + ", " +
-                                         "description = description || ' ' || '" + p.getDescription() + "' " +
-                                         "WHERE id = " + p.getId();
-                    
-                    execute(updateQuery);
-                }
-            }
-
-        } 
-        catch (SQLException e)
-        {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.err.println("Erreur structure : " + e.getMessage());
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
