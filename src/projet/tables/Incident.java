@@ -57,5 +57,4 @@ public class Incident implements ITable {
         return true;
     }
     
-    // Getters/Setters standard (à générer via Eclipse si besoin)
 }

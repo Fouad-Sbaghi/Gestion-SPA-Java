@@ -24,7 +24,6 @@ public class Main {
         }
 
         // 2. Lancement du gestionnaire de commandes
-        // C'est ici que la boucle while(true) démarre (dans CommandParser.run())
         CommandParser app = new CommandParser();
         app.run();
 

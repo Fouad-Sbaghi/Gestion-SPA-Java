@@ -87,4 +87,26 @@ public class SejourBoxRequest {
         }
         return -1; // Pas trouvé
     }
+
+    /**
+     * Termine tous les séjours actifs d'un box (DATE_F_BOX = aujourd'hui).
+     * @param idBox Le box à vider.
+     * @return Le nombre de séjours clôturés.
+     */
+    public int viderBox(int idBox) {
+        String sql = "UPDATE Sejour_Box SET DATE_F_BOX = ? WHERE id_box = ? AND DATE_F_BOX IS NULL";
+
+        try (Connection conn = Connexion.connectR();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setDate(1, new Date(System.currentTimeMillis()));
+            pstmt.setInt(2, idBox);
+
+            return pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Erreur vidage box : " + e.getMessage());
+            return 0;
+        }
+    }
 }
