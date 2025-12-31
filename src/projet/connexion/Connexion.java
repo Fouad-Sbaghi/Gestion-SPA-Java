@@ -5,13 +5,12 @@ import java.sql.SQLException;
 
 public class Connexion {
 
-	public static java.sql.Connection connection;
-	
-	
+    public static java.sql.Connection connection;
+    
     public static java.sql.Connection connectR() {
         try {
-        	Class.forName("org.postgresql.Driver");
-        	
+            Class.forName("org.postgresql.Driver");
+            
             String dataBase = "etd";
             String port = "5432";
             String user = "uapv2502163";
@@ -20,35 +19,28 @@ public class Connexion {
             String url = "jdbc:postgresql://pedago.univ-avignon.fr:" + port + "/" + dataBase;
 
             connection = DriverManager.getConnection(url, user, pswd);
-            System.out.println("Connexion réussie");
+            
+            // --- ON COMMENTE CETTE LIGNE ---
+            // System.out.println("Connexion réussie"); 
             
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace(); 
-            System.out.println("Connexion échouée");
+            // On laisse celle-ci pour savoir si ça plante
+            System.err.println("Connexion échouée"); 
         }
         
-		return connection;   
+        return connection;   
     }
     
-    public static void close() throws SQLException
-    {
-    	try
-    	{
-        	if(connection != null && !connection.isClosed())
-        	{
-        		connection.close();
-        		System.out.println("Déconnexion réussie");
-        	}
-    	}
-    	catch(SQLException e)
-    	{
-    		System.out.println("Déconnexion écouhée");
-    		e.printStackTrace();
-    	}
+    public static void close() throws SQLException {
+        try {
+            if(connection != null && !connection.isClosed()) {
+                connection.close();
+                // --- ON COMMENTE CETTE LIGNE ---
+                // System.out.println("Déconnexion réussie");
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
     }
-    
-    public static void main(String[] args) { 
-    	Connexion.connectR();
-    }
-
 }

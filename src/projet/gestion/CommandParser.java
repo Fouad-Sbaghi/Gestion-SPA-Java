@@ -18,7 +18,9 @@ public class CommandParser {
     }
 
     public void run() {
-        System.out.println("=== APPLICATION GESTION SPA ===");
+        System.out.println("-------------------------------------");
+        System.out.println("|===== APPLICATION GESTION SPA =====|");
+        System.out.println("-------------------------------------\n");
 
         // 1. Phase de Login obligatoire
         if (!loginPhase()) {
@@ -26,7 +28,7 @@ public class CommandParser {
         }
 
         // 2. Boucle principale
-        System.out.println("Tapez 'help' pour voir les commandes disponibles.");
+        System.out.println("Tapez 'help' pour voir les commandes disponibles.\n");
         while (running) {
             System.out.print(currentUser.getUser() + "@spa> "); // Prompt style "admin@spa>"
             String input = scanner.nextLine().trim();
@@ -42,7 +44,7 @@ public class CommandParser {
 
     private boolean loginPhase() {
         Login loginAuth = new Login();
-        System.out.println("Veuillez vous identifier.");
+        System.out.println("Veuillez vous identifier.\n");
 
         while (true) {
             System.out.print("Utilisateur : ");
@@ -53,7 +55,7 @@ public class CommandParser {
             this.currentUser = loginAuth.authentifier(user, pwd);
 
             if (this.currentUser != null) {
-                System.out.println("Bienvenue " + currentUser.getPrenom() + " !");
+                System.out.println("\nBienvenue " + currentUser.getPrenom() + " !");
                 // On transmet l'utilisateur au Controller pour gérer les droits si besoin
                 controller.setCurrentUser(currentUser); 
                 return true;
@@ -112,11 +114,13 @@ public class CommandParser {
     }
 
     private void afficherAide() {
-        System.out.println("--- Commandes Disponibles ---");
-        System.out.println(" animal list / add / delete [id]");
-        System.out.println(" box list");
-        System.out.println(" planning");
-        System.out.println(" alert (voir créneaux en manque de personnel)");
-        System.out.println(" exit");
+        System.out.println("\n--------- Commandes Disponibles ---------");
+        System.out.println("  animal list / add / delete [id]");
+        System.out.println("  box list");
+        System.out.println("  planning");
+        System.out.println("  alert (voir créneaux en manque de personnel)");
+        System.out.println("  exit");
+        System.out.println("-----------------------------------------\n");
+
     }
 }

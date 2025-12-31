@@ -7,7 +7,7 @@ import projet.gestion.CommandParser;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Chargement de l'application SPA...");
+        System.out.println("Chargement de l'application SPA...\n");
 
         // 1. Petit test de connexion au démarrage
         if (Connexion.connectR() == null) {
