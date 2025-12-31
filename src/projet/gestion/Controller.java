@@ -32,19 +32,39 @@ public class Controller {
     // --- GESTION ANIMAUX ---
 
     public void listerAnimaux() {
-        System.out.println("--- Liste des Animaux ---");
-        // Suppose que tu as codé une méthode getAll() dans AnimalRequest
+        System.out.println("--- Liste complète des Animaux ---");
         List<Animal> liste = animalReq.getAll(); 
         
         if (liste.isEmpty()) {
             System.out.println("Aucun animal trouvé.");
         } else {
-            // Affichage formaté (ID | Nom | Espèce | Statut)
-            System.out.printf("%-5s | %-15s | %-10s | %s%n", "ID", "Nom", "Espèce", "Statut");
-            System.out.println("----------------------------------------------------");
+            // En-tête large
+            System.out.printf("%-4s | %-12s | %-10s | %-8s | %-11s | %-11s | %-10s | %s%n", 
+                "ID", "Puce", "Nom", "Espèce", "Naissance", "Arrivée", "Statut", "Tests (H/B/Ch/Ct)");
+            System.out.println("----------------------------------------------------------------------------------------------------");
+            
             for (Animal a : liste) {
-                System.out.printf("%-5d | %-15s | %-10s | %s%n", 
-                    a.getId_animal(), a.getNom(), a.getEspece(), a.getStatut());
+                // On formate les tests pour que ce soit lisible (ex: V/X/V/X)
+                String tests = String.format("%s/%s/%s/%s", 
+                    a.isTests_humain() ? "V" : "X",
+                    a.isTests_bebe()   ? "V" : "X",
+                    a.isTests_chien()  ? "V" : "X",
+                    a.isTests_chat()   ? "V" : "X"
+                );
+
+                // Gestion des null pour éviter d'afficher "null"
+                String puce = (a.getPuce() == null) ? "-" : a.getPuce();
+                String naiss = (a.getDate_naissance() == null) ? "?" : a.getDate_naissance().toString();
+
+                System.out.printf("%-4d | %-12s | %-10s | %-8s | %-11s | %-11s | %-10s | %s%n", 
+                    a.getId_animal(), 
+                    puce, 
+                    a.getNom(), 
+                    a.getEspece(), 
+                    naiss, 
+                    a.getDate_arrivee(), 
+                    a.getStatut(),
+                    tests);
             }
         }
     }

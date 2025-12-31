@@ -9,7 +9,7 @@ import java.util.List;
 
 import projet.connexion.Connexion;
 
-public class RapportPlanningRequest {
+public class RapportPlanningRequest extends RapportRequest {
 
     /**
      * Identifie les créneaux qui n'ont pas assez de bénévoles.
