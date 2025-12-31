@@ -44,4 +44,62 @@ public class Soin implements ITable {
     public HashMap<String, fieldType> getMap() { return this.map; }
     @Override
     public boolean check(HashMap<String, fieldType> ts) { return true; } // Simplifié ici
+
+	public int getId_soin() {
+		return id_soin;
+	}
+
+	public void setId_soin(int id_soin) {
+		this.id_soin = id_soin;
+	}
+
+	public int getId_animal() {
+		return id_animal;
+	}
+
+	public void setId_animal(int id_animal) {
+		this.id_animal = id_animal;
+	}
+
+	public String getType_soin() {
+		return type_soin;
+	}
+
+	public void setType_soin(String type_soin) {
+		this.type_soin = type_soin;
+	}
+
+	public String getLibelle() {
+		return libelle;
+	}
+
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
+	}
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
+	}
+
+	public Timestamp getDate_soin() {
+		return date_soin;
+	}
+
+	public void setDate_soin(Timestamp date_soin) {
+		this.date_soin = date_soin;
+	}
+
+	public void setValues(String values) {
+		this.values = values;
+	}
+
+	public void setMap(HashMap<String, fieldType> map) {
+		this.map = map;
+	}
+    
+    
 }
