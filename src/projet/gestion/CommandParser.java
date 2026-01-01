@@ -190,7 +190,7 @@ public class CommandParser {
         System.out.println("\n--- [2] BOX ---");
         System.out.println("Commandes:");
         System.out.println("  box list");
-        System.out.println("  box info            (alias de list)");
+        System.out.println("  box info <idBox>     (détails + animaux présents)");
         System.out.println("  box add-animal <idBox> <idAnimal>");
         System.out.println("  box clear <idBox>");
         System.out.println("(Tapez 'help' pour ré-afficher les commandes, 'exit' pour revenir.)");
@@ -207,7 +207,7 @@ public class CommandParser {
             if (cmd.equalsIgnoreCase("help")) {
                 System.out.println("Commandes:");
                 System.out.println("  box list");
-                System.out.println("  box info            (alias de list)");
+                System.out.println("  box info <idBox>     (détails + animaux présents)");
                 System.out.println("  box add-animal <idBox> <idAnimal>");
                 System.out.println("  box clear <idBox>");
                 continue;
@@ -225,7 +225,19 @@ public class CommandParser {
             }
 
             switch (parts[1].toLowerCase()) {
-                case "list", "info" -> controller.listerBox();
+                case "list" -> controller.listerBox();
+                case "info" -> {
+                    // box info [<idBox>]
+                    Integer idBox;
+                    if (parts.length >= 3) {
+                        idBox = parseIntOrNull(parts[2], "idBox");
+                    } else {
+                        System.out.print("ID du box : ");
+                        String idStr = scanner.nextLine().trim();
+                        idBox = parseIntOrNull(idStr, "idBox");
+                    }
+                    if (idBox != null) controller.infoBox(idBox);
+                }
                 case "add-animal" -> {
                     if (parts.length < 4) { printUsage("box add-animal <idBox> <idAnimal>"); break; }
                     Integer idBox = parseIntOrNull(parts[2], "idBox");
