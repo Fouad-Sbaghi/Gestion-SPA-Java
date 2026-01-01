@@ -3,6 +3,9 @@ package projet.gestion;
 import projet.requests.BoxRequest;
 import projet.requests.SejourBoxRequest;
 import projet.requests.rapports.RapportBoxRequest;
+import projet.exceptions.BoxPleinException;
+import projet.exceptions.IncompatibiliteTypeException;
+import projet.exceptions.MissingEntityException;
 
 public class ControllerBox {
 
@@ -31,7 +34,15 @@ public class ControllerBox {
     }
 
     public void placerAnimalBox(int idBox, int idAnimal) {
-        sejourBoxReq.placerAnimal(idAnimal, idBox);
+        try {
+            sejourBoxReq.placerAnimal(idAnimal, idBox);
+        } catch (BoxPleinException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        } catch (IncompatibiliteTypeException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        } catch (MissingEntityException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
     }
 
     public void viderBox(int idBox) {

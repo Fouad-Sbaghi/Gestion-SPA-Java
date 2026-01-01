@@ -8,6 +8,7 @@ import projet.requests.AnimalRequest;
 import projet.requests.rapports.RapportHistoriqueAnimal;
 import projet.tables.Animal;
 import projet.tables.Personnel;
+import projet.exceptions.InvalidFormatException;
 
 public class ControllerAnimal {
 
@@ -51,13 +52,24 @@ public class ControllerAnimal {
         }
     }
 
+    /**
+     * Valide qu'un nom ne contient pas de chiffres.
+     */
+    private void validerNom(String nom) throws InvalidFormatException {
+        if (nom != null && nom.matches(".*\\d.*")) {
+            throw new InvalidFormatException("Nom", nom);
+        }
+    }
+
     public void ajouterAnimal(Scanner scanner) {
         try {
             System.out.println(">> Ajout d'un nouvel animal");
             Animal a = new Animal();
 
             System.out.print("Nom : ");
-            a.setNom(scanner.nextLine().trim());
+            String nom = scanner.nextLine().trim();
+            validerNom(nom);
+            a.setNom(nom);
 
             System.out.print("Espece (Chat/Chien/Autre) : ");
             a.setEspece(scanner.nextLine().trim());
@@ -102,6 +114,8 @@ public class ControllerAnimal {
 
             animalReq.add(a);
             System.out.println("Succes : Animal ajoute !");
+        } catch (InvalidFormatException e) {
+            System.out.println("Erreur : " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Erreur ajout animal : " + e.getMessage());
         }
