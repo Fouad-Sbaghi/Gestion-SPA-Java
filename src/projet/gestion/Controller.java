@@ -165,6 +165,114 @@ public class Controller {
         }
     }
 
+
+    public void chercherFamille(String input) {
+        String q = (input == null) ? "" : input.trim();
+        if (q.isEmpty()) {
+            System.out.println("Erreur : précisez un id ou un nom de famille.");
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(q);
+            Famille f = familyReq.getById(id);
+            if (f == null) {
+                System.out.println("Famille introuvable : #" + id);
+                return;
+            }
+            System.out.println("=== FAMILLE #" + id + " ===");
+            System.out.println("Nom      : " + f.getNom());
+            System.out.println("Type     : " + f.getType_famille());
+            System.out.println("Adresse  : " + f.getAdresse());
+            System.out.println("Contact  : " + f.getContact());
+            return;
+        } catch (NumberFormatException ignore) {
+            // recherche par nom
+        }
+
+        List<Famille> res = familyReq.getByName(q);
+        System.out.println("--- Recherche famille : '" + q + "' ---");
+        if (res.isEmpty()) {
+            System.out.println("Aucune famille trouvée.");
+            return;
+        }
+
+        System.out.printf("%-5s | %-20s | %-10s | %-25s | %s%n", "ID", "Nom", "Type", "Adresse", "Contact");
+        System.out.println("------------------------------------------------------------------------------------------");
+        for (Famille f : res) {
+            System.out.printf("%-5d | %-20s | %-10s | %-25s | %s%n",
+                f.getId_famille(), safe(f.getNom()), safe(f.getType_famille()), truncate(safe(f.getAdresse()), 25), safe(f.getContact()));
+        }
+    }
+
+    public void chercherBenevole(String input) {
+        String q = (input == null) ? "" : input.trim();
+        if (q.isEmpty()) {
+            System.out.println("Erreur : précisez un id, un prénom, un nom ou un identifiant.");
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(q);
+            Personnel p = personnelReq.getById(id);
+            if (p == null) {
+                System.out.println("Bénévole introuvable : #" + id);
+                return;
+            }
+            if (p.getType_pers() == null || !p.getType_pers().equalsIgnoreCase("Benevole")) {
+                System.out.println("Info : la personne #" + id + " n'est pas un bénévole (type=" + p.getType_pers() + ").");
+                return;
+            }
+            System.out.println("=== BÉNÉVOLE #" + id + " ===");
+            System.out.println("Nom      : " + p.getNom());
+            System.out.println("Prénom   : " + p.getPrenom());
+            System.out.println("Tel      : " + p.getTel());
+            System.out.println("User     : " + p.getUser());
+            return;
+        } catch (NumberFormatException ignore) {
+            // recherche texte
+        }
+
+        List<Personnel> res = personnelReq.searchBenevoles(q);
+        System.out.println("--- Recherche bénévole : '" + q + "' ---");
+        if (res.isEmpty()) {
+            System.out.println("Aucun bénévole trouvé.");
+            return;
+        }
+
+        System.out.printf("%-5s | %-15s | %-15s | %-15s | %s%n", "ID", "Nom", "Prénom", "Tel", "User");
+        System.out.println("--------------------------------------------------------------------------");
+        for (Personnel p : res) {
+            System.out.printf("%-5d | %-15s | %-15s | %-15s | %s%n",
+                p.getId_pers(), safe(p.getNom()), safe(p.getPrenom()), safe(p.getTel()), safe(p.getUser()));
+        }
+    }
+
+    public void chercherIncident(String input) {
+        String q = (input == null) ? "" : input.trim();
+        if (q.isEmpty()) {
+            System.out.println("Erreur : précisez un id ou un intitulé.");
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(q);
+            incidentReq.afficherInfo(id);
+        } catch (NumberFormatException e) {
+            incidentReq.afficherRecherche(q);
+        }
+    }
+
+    private String safe(String s) {
+        return (s == null) ? "-" : s;
+    }
+
+    private String truncate(String s, int max) {
+        if (s == null) return "-";
+        if (s.length() <= max) return s;
+        return s.substring(0, Math.max(0, max - 1)) + "…";
+    }
+
     public void updateAnimal(int id, Scanner scanner) {
         Animal a = animalReq.getById(id);
         if (a == null) { System.out.println("Animal introuvable."); return; }

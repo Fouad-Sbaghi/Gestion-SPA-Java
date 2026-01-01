@@ -529,7 +529,7 @@ public class CommandParser {
 
     private void menuRecherche() {
         System.out.println("\n--- [7] RECHERCHE ---");
-        System.out.println("Commandes: animal [nom], famille [nom], benevole [prenom], incident [intitule]");
+        System.out.println("Commandes: animal <id|nom>, famille <id|nom>, benevole <id|nom|prenom|user>, incident <id|intitule>");
 
         boolean back = false;
         while (!back) {
@@ -543,23 +543,37 @@ public class CommandParser {
             if (cmd.equalsIgnoreCase("help")) {
                 System.out.println("Commandes:");
                 System.out.println("  animal <id|nom>");
-                System.out.println("  famille <nom>        (non implémenté)");
-                System.out.println("  benevole <prenom>    (non implémenté)");
-                System.out.println("  incident <intitule>  (non implémenté)");
+                System.out.println("  famille <id|nom>");
+                System.out.println("  benevole <id|nom|prenom|user>");
+                System.out.println("  incident <id|intitule>");
                 continue;
             }
 
             String[] parts = cmd.split("\\s+");
             if (parts.length < 2) {
-                System.out.println("Commande inconnue. Tapez 'help'.");
+                System.out.println("Commande invalide. Tapez 'help'.");
                 continue;
             }
 
-            if (parts[0].equalsIgnoreCase("animal")) {
-                controller.chercherAnimal(joinFrom(parts, 1));
-            } else {
-                System.out.println("Recherche non implémentée pour : '" + parts[0] + "'. (Disponible: animal)");
+            String entity = parts[0].toLowerCase();
+            String query = joinFrom(parts, 1);
+
+            switch (entity) {
+                case "animal" -> controller.chercherAnimal(query);
+                case "famille" -> controller.chercherFamille(query);
+                case "benevole" -> controller.chercherBenevole(query);
+                case "incident" -> controller.chercherIncident(query);
+                default -> System.out.println("Recherche inconnue : '" + parts[0] + "'. (Disponible: animal, famille, benevole, incident)");
             }
         }
     }
+
+
+
+
+
+
+
+
+
 }

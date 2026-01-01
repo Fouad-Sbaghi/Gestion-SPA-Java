@@ -92,4 +92,141 @@ public class IncidentRequest {
             return false;
         }
     }
+
+
+    /**
+     * Recherche des incidents par intitulé/type/commentaire et affiche les résultats.
+     * Recherche insensible à la casse (ILIKE).
+     */
+    public void afficherRecherche(String query) {
+        String sql = """
+            SELECT i.id_incident,
+                   i.date_incident,
+                   i.type_incident,
+                   i.intitule,
+                   COALESCE(i.commentaire, '') AS commentaire,
+                   CASE
+                       WHEN i.type_incident ILIKE ? THEN 'Type'
+                       WHEN i.intitule ILIKE ? THEN 'Intitulé'
+                       WHEN i.commentaire ILIKE ? THEN 'Commentaire'
+                       ELSE '-'
+                   END AS match_field,
+                   COALESCE(string_agg(a.nom || ' (#' || a.id_animal || ')', ', ' ORDER BY a.id_animal), '-') AS animaux
+            FROM Incident i
+            LEFT JOIN Animal_Incident ai ON ai.id_incident = i.id_incident
+            LEFT JOIN Animal a ON a.id_animal = ai.id_animal
+            WHERE i.intitule ILIKE ?
+               OR i.commentaire ILIKE ?
+               OR i.type_incident ILIKE ?
+            GROUP BY i.id_incident, i.date_incident, i.type_incident, i.intitule, i.commentaire
+            ORDER BY i.date_incident DESC, i.id_incident DESC
+        """;
+
+        System.out.println("--- Recherche incident : '" + query + "' ---");
+        System.out.printf("%-5s | %-10s | %-12s | %-35s | %-11s | %-22s | %s%n",
+                "ID", "Date", "Type", "Intitulé", "Match", "Commentaire", "Animaux");
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------------");
+
+        try (Connection conn = Connexion.connectR();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            String like = "%" + query + "%";
+
+            // match_field
+            pstmt.setString(1, like);
+            pstmt.setString(2, like);
+            pstmt.setString(3, like);
+
+            // WHERE
+            pstmt.setString(4, like);
+            pstmt.setString(5, like);
+            pstmt.setString(6, like);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                boolean found = false;
+                while (rs.next()) {
+                    found = true;
+                    int id = rs.getInt("id_incident");
+                    String dateStr = rs.getString("date_incident");
+                    if (dateStr != null && dateStr.length() > 10) dateStr = dateStr.substring(0, 10);
+
+                    String type = rs.getString("type_incident");
+                    String intitule = rs.getString("intitule");
+                    String matchField = rs.getString("match_field");
+                    String commentaire = rs.getString("commentaire");
+                    String animaux = rs.getString("animaux");
+
+                    System.out.printf("%-5d | %-10s | %-12s | %-35s | %-11s | %-22s | %s%n",
+                            id,
+                            dateStr,
+                            truncate(type, 12),
+                            truncate(intitule, 35),
+                            matchField,
+                            truncate(commentaire, 22),
+                            animaux);
+                }
+                if (!found) {
+                    System.out.println("Aucun incident trouvé.");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur recherche incident : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Affiche le détail d'un incident par ID (avec les animaux liés).
+     */
+    public void afficherInfo(int idIncident) {
+        String sql = """
+            SELECT i.id_incident,
+                   i.date_incident,
+                   i.type_incident,
+                   i.intitule,
+                   COALESCE(i.commentaire, '') AS commentaire,
+                   COALESCE(string_agg(a.nom || ' (#' || a.id_animal || ')', ', ' ORDER BY a.id_animal), '-') AS animaux
+            FROM Incident i
+            LEFT JOIN Animal_Incident ai ON ai.id_incident = i.id_incident
+            LEFT JOIN Animal a ON a.id_animal = ai.id_animal
+            WHERE i.id_incident = ?
+            GROUP BY i.id_incident, i.date_incident, i.type_incident, i.intitule, i.commentaire
+        """;
+
+        try (Connection conn = Connexion.connectR();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idIncident);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (!rs.next()) {
+                    System.out.println("Incident introuvable : #" + idIncident);
+                    return;
+                }
+
+                String dateStr = rs.getString("date_incident");
+                String type = rs.getString("type_incident");
+                String intitule = rs.getString("intitule");
+                String commentaire = rs.getString("commentaire");
+                String animaux = rs.getString("animaux");
+
+                System.out.println("=== INCIDENT #" + idIncident + " ===");
+                System.out.println("Date      : " + dateStr);
+                System.out.println("Type      : " + type);
+                System.out.println("Intitulé  : " + intitule);
+                System.out.println("Animaux   : " + animaux);
+                System.out.println("Comment.  : " + (commentaire == null || commentaire.isBlank() ? "-" : commentaire));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lecture incident : " + e.getMessage());
+        }
+    }
+
+    private String truncate(String s, int max) {
+        if (s == null) return "";
+        if (s.length() <= max) return s;
+        return s.substring(0, Math.max(0, max - 1)) + "…";
+    }
+
 }

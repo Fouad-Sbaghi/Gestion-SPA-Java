@@ -139,4 +139,36 @@ public class FamilleRequest {
             System.err.println("Erreur fin de séjour : " + e.getMessage());
         }
     }
+
+
+    /**
+     * Recherche des familles par nom (ou partie du nom).
+     * @param nom Nom ou fragment de nom.
+     */
+    public List<Famille> getByName(String nom) {
+        List<Famille> liste = new ArrayList<>();
+        String sql = "SELECT * FROM Famille WHERE nom ILIKE ? ORDER BY nom ASC";
+
+        try (Connection conn = Connexion.connectR();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + nom + "%");
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Famille f = new Famille();
+                    f.setId_famille(rs.getInt("id_famille"));
+                    f.setType_famille(rs.getString("type_famille"));
+                    f.setNom(rs.getString("nom"));
+                    f.setAdresse(rs.getString("adresse"));
+                    f.setContact(rs.getString("contact"));
+                    liste.add(f);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur recherche famille : " + e.getMessage());
+        }
+        return liste;
+    }
 }

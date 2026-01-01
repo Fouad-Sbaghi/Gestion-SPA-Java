@@ -1,7 +1,6 @@
 package projet.tables;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Représente une famille externe (Accueil ou Adoptante).
