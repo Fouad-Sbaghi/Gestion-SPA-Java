@@ -2,6 +2,10 @@ package projet.exceptions;
 
 /**
  * Levée lorsqu'on tente d'ajouter un animal dans un Box dont la capacité maximale est atteinte.
+ *
+ *
+ *
+ *
  */
 public class BoxPleinException extends MetierException {
     
