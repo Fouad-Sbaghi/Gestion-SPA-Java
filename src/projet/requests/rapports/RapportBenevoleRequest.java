@@ -19,7 +19,7 @@ public class RapportBenevoleRequest extends RapportRequest {
                     SELECT p.id_pers, p.nom, p.prenom, p.tel, COUNT(a.id_creneau) as missions
                     FROM Personnel p
                     LEFT JOIN Affectation_Creneau_Activite a ON p.id_pers = a.id_personne
-                    WHERE (p.type_pers ILIKE 'Benevole' OR p.type_pers ILIKE 'B�n�vole')
+                    WHERE (p.type_pers ILIKE 'Benevole' OR p.type_pers ILIKE 'Bénévole')
                     GROUP BY p.id_pers, p.nom, p.prenom, p.tel
                     ORDER BY missions DESC, p.nom ASC
                 """;

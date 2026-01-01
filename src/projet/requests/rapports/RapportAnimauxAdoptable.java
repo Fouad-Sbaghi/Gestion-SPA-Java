@@ -14,19 +14,19 @@ public class RapportAnimauxAdoptable extends RapportRequest {
      */
     public void genererListe() {
         String sql = """
-            SELECT id_animal, nom, espece, date_naissance, puce 
-            FROM Animal 
-            WHERE statut = 'Adoptable' 
-            ORDER BY date_arrivee ASC
-        """;
+                    SELECT id_animal, nom, espece, date_naissance, puce
+                    FROM Animal
+                    WHERE statut ILIKE 'Adoptable'
+                    ORDER BY date_arrivee ASC
+                """;
 
         printHeader("=== RAPPORT : ANIMAUX PRÊTS À L'ADOPTION ===");
         System.out.printf("%-5s | %-15s | %-10s | %-12s | %-15s%n", "ID", "Nom", "Espèce", "Né(e) le", "Puce");
         System.out.println("-------------------------------------------------------------------");
 
         try (Connection conn = Connexion.connectR();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             boolean empty = true;
             while (rs.next()) {
