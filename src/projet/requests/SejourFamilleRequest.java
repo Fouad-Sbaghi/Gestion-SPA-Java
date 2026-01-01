@@ -11,55 +11,124 @@ import projet.connexion.Connexion;
 public class SejourFamilleRequest {
 
     /**
-     * Débute un séjour en famille (Accueil ou Adoption).
+     * Debute un sejour en famille (Accueil ou Adoption).
      */
     public boolean commencerSejour(int idAnimal, int idFamille) {
-        // On clôture d'abord tout séjour précédent potentiellement ouvert
-        terminerSejour(idAnimal);
+        Date today = new Date(System.currentTimeMillis());
+
+        // Verifier si un sejour existe deja pour aujourd'hui (meme clos)
+        if (sejourExistePourAujourdhui(idAnimal, today)) {
+            // Rouvrir le sejour existant en mettant DATE_F_FAMILLE a NULL et en changeant
+            // la famille
+            return rouvrirSejour(idAnimal, idFamille, today);
+        }
+
+        // Sinon, cloturer tout sejour precedent et en creer un nouveau
+        terminerSejourSilent(idAnimal);
 
         String sql = "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D) VALUES (?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idAnimal);
             pstmt.setInt(2, idFamille);
-            pstmt.setDate(3, new Date(System.currentTimeMillis())); // Date du jour
+            pstmt.setDate(3, today);
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
-                System.out.println("Succès : Animal #" + idAnimal + " confié à la famille #" + idFamille);
+                System.out.println("Succes : Animal #" + idAnimal + " confie a la famille #" + idFamille);
                 return true;
             }
 
         } catch (SQLException e) {
-            System.err.println("Erreur début séjour famille : " + e.getMessage());
+            System.err.println("Erreur debut sejour famille : " + e.getMessage());
         }
         return false;
     }
 
     /**
-     * Termine le séjour actuel d'un animal en famille.
+     * Verifie si un sejour existe pour cet animal a cette date.
+     */
+    private boolean sejourExistePourAujourdhui(int idAnimal, Date date) {
+        String sql = "SELECT COUNT(*) FROM Sejour_Famille WHERE id_animal = ? AND DATE_D = ?";
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idAnimal);
+            pstmt.setDate(2, date);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            // Ignorer
+        }
+        return false;
+    }
+
+    /**
+     * Rouvre un sejour existant en remettant DATE_F_FAMILLE a NULL.
+     */
+    private boolean rouvrirSejour(int idAnimal, int idFamille, Date date) {
+        String sql = "UPDATE Sejour_Famille SET DATE_F_FAMILLE = NULL, id_famille = ? WHERE id_animal = ? AND DATE_D = ?";
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idFamille);
+            pstmt.setInt(2, idAnimal);
+            pstmt.setDate(3, date);
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Succes : Sejour rouvert pour Animal #" + idAnimal + " chez famille #" + idFamille);
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur reouverture sejour : " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Termine le sejour actuel d'un animal en famille (version silencieuse pour
+     * appel interne).
+     */
+    private void terminerSejourSilent(int idAnimal) {
+        String sql = "UPDATE Sejour_Famille SET DATE_F_FAMILLE = ? WHERE id_animal = ? AND DATE_F_FAMILLE IS NULL";
+
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setDate(1, new Date(System.currentTimeMillis()));
+            pstmt.setInt(2, idAnimal);
+            pstmt.executeUpdate(); // Pas de message
+
+        } catch (SQLException e) {
+            // Silencieux
+        }
+    }
+
+    /**
+     * Termine le sejour actuel d'un animal en famille.
      */
     public boolean terminerSejour(int idAnimal) {
         String sql = "UPDATE Sejour_Famille SET DATE_F_FAMILLE = ? WHERE id_animal = ? AND DATE_F_FAMILLE IS NULL";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDate(1, new Date(System.currentTimeMillis()));
             pstmt.setInt(2, idAnimal);
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
-                System.out.println("Séjour terminé pour l'animal #" + idAnimal);
-                return true; // Ajout du return true pour le controller
+                System.out.println("Sejour termine pour l'animal #" + idAnimal);
+                return true;
             } else {
-                System.out.println("Erreur : Aucun séjour en cours trouvé pour ce couple Animal/Famille.");
+                System.out.println("Info : Aucun sejour en cours trouve pour cet animal.");
             }
 
         } catch (SQLException e) {
-            System.err.println("Erreur fin séjour famille : " + e.getMessage());
+            System.err.println("Erreur fin sejour famille : " + e.getMessage());
         }
         return false;
     }
@@ -71,7 +140,7 @@ public class SejourFamilleRequest {
         String sql = "SELECT id_famille FROM Sejour_Famille WHERE id_animal = ? AND DATE_F_FAMILLE IS NULL";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idAnimal);
 
@@ -92,18 +161,18 @@ public class SejourFamilleRequest {
      */
     public void afficherHistoriqueParFamille(int idFamille) {
         String sql = """
-            SELECT a.nom, a.espece, s.DATE_D, s.DATE_F_FAMILLE
-            FROM Sejour_Famille s
-            JOIN Animal a ON s.id_animal = a.id_animal
-            WHERE s.id_famille = ?
-            ORDER BY s.DATE_D DESC
-        """;
+                    SELECT a.nom, a.espece, s.DATE_D, s.DATE_F_FAMILLE
+                    FROM Sejour_Famille s
+                    JOIN Animal a ON s.id_animal = a.id_animal
+                    WHERE s.id_famille = ?
+                    ORDER BY s.DATE_D DESC
+                """;
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idFamille);
-            
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 System.out.println("--- Animaux accueillis ---");
                 boolean found = false;
@@ -117,7 +186,8 @@ public class SejourFamilleRequest {
 
                     System.out.printf("- %s (%s) : du %s au %s%n", nom, espece, debut, finStr);
                 }
-                if (!found) System.out.println("Aucun historique pour cette famille.");
+                if (!found)
+                    System.out.println("Aucun historique pour cette famille.");
             }
 
         } catch (SQLException e) {

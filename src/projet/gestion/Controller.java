@@ -428,22 +428,18 @@ public class Controller {
         }
     }
 
-    // MODIF : Met à jour le statut et ajoute un LOG d'activité
+    // Met a jour le statut lors du retour de famille
     public void retourDeFamille(int idAnimal) {
         if (sejourFamilleReq.terminerSejour(idAnimal)) {
             try {
                 Animal a = animalReq.getById(idAnimal);
                 if (a != null) {
-                    a.setStatut("Au refuge");
+                    a.setStatut("Adoptable");
                     animalReq.update(a);
-                    System.out.println("✅ Statut animal repassé à : Au refuge.");
-
-                    // ADD LOG
-                    activityReq.add(idAnimal, "Retour Famille", "Fin de séjour externe");
-                    System.out.println("📝 Activité enregistrée.");
+                    System.out.println("Statut animal repasse a : Adoptable");
                 }
             } catch (Exception e) {
-                System.out.println("⚠ Erreur maj statut/log.");
+                System.out.println("Erreur maj statut.");
             }
         }
     }
