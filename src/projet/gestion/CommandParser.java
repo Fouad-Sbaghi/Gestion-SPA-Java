@@ -9,13 +9,29 @@ import projet.tables.Personnel;
 public class CommandParser {
 
     private Scanner scanner;
-    private Controller controller;
+
+    // 6 Controllers separes
+    private ControllerAnimal controllerAnimal;
+    private ControllerFamille controllerFamille;
+    private ControllerBox controllerBox;
+    private ControllerPlanning controllerPlanning;
+    private ControllerActivite controllerActivite;
+    private ControllerRapport controllerRapport;
+
     private Personnel currentUser;
     private boolean running;
 
     public CommandParser() {
         this.scanner = new Scanner(System.in);
-        this.controller = new Controller();
+
+        // Initialisation des 6 controllers
+        this.controllerAnimal = new ControllerAnimal();
+        this.controllerFamille = new ControllerFamille();
+        this.controllerBox = new ControllerBox();
+        this.controllerPlanning = new ControllerPlanning();
+        this.controllerActivite = new ControllerActivite();
+        this.controllerRapport = new ControllerRapport();
+
         this.running = true;
     }
 
@@ -47,7 +63,7 @@ public class CommandParser {
         try {
             return Integer.parseInt(raw);
         } catch (NumberFormatException e) {
-            System.out.println("Erreur : " + label + " doit être un entier. Reçu : '" + raw + "'.");
+            System.out.println("Erreur : " + label + " doit etre un entier. Recu : '" + raw + "'.");
             return null;
         }
     }
@@ -76,7 +92,7 @@ public class CommandParser {
 
             if (this.currentUser != null) {
                 System.out.println("\nBienvenue " + currentUser.getPrenom() + " !");
-                controller.setCurrentUser(currentUser);
+                controllerAnimal.setCurrentUser(currentUser);
                 return true;
             }
             System.out.println("Erreur : Identifiants incorrects. Réessayez.");
@@ -158,8 +174,8 @@ public class CommandParser {
             }
 
             switch (parts[1].toLowerCase()) {
-                case "list" -> controller.listerAnimaux();
-                case "add" -> controller.ajouterAnimal(scanner);
+                case "list" -> controllerAnimal.listerAnimaux();
+                case "add" -> controllerAnimal.ajouterAnimal(scanner);
                 case "delete" -> {
                     if (parts.length < 3) {
                         printUsage("animal delete <idAnimal>");
@@ -167,7 +183,7 @@ public class CommandParser {
                     }
                     Integer id = parseIntOrNull(parts[2], "idAnimal");
                     if (id != null)
-                        controller.supprimerAnimal(id);
+                        controllerAnimal.supprimerAnimal(id);
                 }
                 case "update" -> {
                     if (parts.length < 3) {
@@ -176,23 +192,23 @@ public class CommandParser {
                     }
                     Integer id = parseIntOrNull(parts[2], "idAnimal");
                     if (id != null)
-                        controller.updateAnimal(id, scanner);
+                        controllerAnimal.updateAnimal(id, scanner);
                 }
                 case "history" -> {
                     if (parts.length < 3) {
                         printUsage("animal history <idAnimal|nom>");
                         break;
                     }
-                    controller.chercherAnimal(joinFrom(parts, 2));
+                    controllerAnimal.chercherAnimal(joinFrom(parts, 2));
                 }
                 case "filter" -> {
                     if (parts.length < 3) {
                         printUsage("animal filter <statut>");
                         break;
                     }
-                    controller.filtrerAnimaux(joinFrom(parts, 2));
+                    controllerAnimal.filtrerAnimaux(joinFrom(parts, 2));
                 }
-                default -> controller.chercherAnimal(joinFrom(parts, 1));
+                default -> controllerAnimal.chercherAnimal(joinFrom(parts, 1));
             }
         }
     }
@@ -236,7 +252,7 @@ public class CommandParser {
             }
 
             switch (parts[1].toLowerCase()) {
-                case "list" -> controller.listerBox();
+                case "list" -> controllerBox.listerBox();
                 case "info" -> {
                     Integer idBox;
                     if (parts.length >= 3) {
@@ -247,7 +263,7 @@ public class CommandParser {
                         idBox = parseIntOrNull(idStr, "idBox");
                     }
                     if (idBox != null)
-                        controller.infoBox(idBox);
+                        controllerBox.infoBox(idBox);
                 }
                 case "add-animal" -> {
                     if (parts.length < 4) {
@@ -257,7 +273,7 @@ public class CommandParser {
                     Integer idBox = parseIntOrNull(parts[2], "idBox");
                     Integer idAnimal = parseIntOrNull(parts[3], "idAnimal");
                     if (idBox != null && idAnimal != null)
-                        controller.placerAnimalBox(idBox, idAnimal);
+                        controllerBox.placerAnimalBox(idBox, idAnimal);
                 }
                 case "clear" -> {
                     if (parts.length < 3) {
@@ -266,7 +282,7 @@ public class CommandParser {
                     }
                     Integer idBox = parseIntOrNull(parts[2], "idBox");
                     if (idBox != null)
-                        controller.viderBox(idBox);
+                        controllerBox.viderBox(idBox);
                 }
                 default -> System.out.println("Commande box inconnue. Tapez 'help'.");
             }
@@ -315,8 +331,8 @@ public class CommandParser {
             }
 
             switch (parts[1].toLowerCase()) {
-                case "add" -> controller.ajouterFamille(scanner);
-                case "list" -> controller.listerFamilles();
+                case "add" -> controllerFamille.ajouterFamille(scanner);
+                case "list" -> controllerFamille.listerFamilles();
                 case "link" -> {
                     if (parts.length < 5) {
                         printUsage("family link <idAnimal> <idFamille> <Accueil|Adoption>");
@@ -326,7 +342,7 @@ public class CommandParser {
                     Integer idFamille = parseIntOrNull(parts[3], "idFamille");
                     String type = joinFrom(parts, 4);
                     if (idAnimal != null && idFamille != null)
-                        controller.lierFamille(idAnimal, idFamille, type);
+                        controllerFamille.lierFamille(idAnimal, idFamille, type);
                 }
                 case "return" -> {
                     if (parts.length < 3) {
@@ -335,7 +351,7 @@ public class CommandParser {
                     }
                     Integer idAnimal = parseIntOrNull(parts[2], "idAnimal");
                     if (idAnimal != null)
-                        controller.retourDeFamille(idAnimal);
+                        controllerFamille.retourDeFamille(idAnimal);
                 }
                 case "history" -> {
                     if (parts.length < 3) {
@@ -344,7 +360,7 @@ public class CommandParser {
                     }
                     Integer idFamille = parseIntOrNull(parts[2], "idFamille");
                     if (idFamille != null)
-                        controller.historiqueFamille(idFamille);
+                        controllerFamille.historiqueFamille(idFamille);
                 }
                 default -> System.out.println("Commande famille inconnue. Tapez 'help'.");
             }
@@ -382,14 +398,14 @@ public class CommandParser {
             // benevole ...
             if (parts[0].equalsIgnoreCase("benevole")) {
                 if (parts.length >= 2 && parts[1].equalsIgnoreCase("add")) {
-                    controller.ajouterBenevole(scanner);
-                } 
+                    controllerPlanning.ajouterBenevole(scanner);
+                }
                 // CAS AJOUTE : Planning par bénévole
                 else if (parts.length >= 3 && parts[1].equalsIgnoreCase("planning")) {
                     Integer id = parseIntOrNull(parts[2], "idBenevole");
-                    if (id != null) controller.planningDuBenevole(id);
-                }
-                else {
+                    if (id != null)
+                        controllerPlanning.planningDuBenevole(id);
+                } else {
                     printUsage("benevole [add | planning <id>]");
                 }
                 continue;
@@ -403,8 +419,8 @@ public class CommandParser {
                 }
 
                 switch (parts[1].toLowerCase()) {
-                    case "list" -> controller.afficherPlanning();
-                    case "alert" -> controller.checkSousEffectif();
+                    case "list" -> controllerPlanning.afficherPlanning();
+                    case "alert" -> controllerPlanning.checkSousEffectif();
                     case "assign" -> {
                         if (parts.length < 4) {
                             printUsage("creneau assign <idCreneau> <idBenevole>");
@@ -413,7 +429,7 @@ public class CommandParser {
                         Integer idCreneau = parseIntOrNull(parts[2], "idCreneau");
                         Integer idBenevole = parseIntOrNull(parts[3], "idBenevole");
                         if (idCreneau != null && idBenevole != null)
-                            controller.assignerBenevole(idCreneau, idBenevole);
+                            controllerPlanning.assignerBenevole(idCreneau, idBenevole);
                     }
                     default -> System.out.println("Commande creneau inconnue. Tapez 'help'.");
                 }
@@ -435,7 +451,7 @@ public class CommandParser {
 
                     try {
                         Date date = Date.valueOf(parts[6]);
-                        controller.ajouterRdvAnimal(idAnimal, idCreneau, idPers, date);
+                        controllerPlanning.ajouterRdvAnimal(idAnimal, idCreneau, idPers, date);
                     } catch (IllegalArgumentException e) {
                         System.out.println("Erreur : date invalide. Format attendu : YYYY-MM-DD.");
                     }
@@ -487,7 +503,7 @@ public class CommandParser {
                 }
 
                 switch (parts[1].toLowerCase()) {
-                    case "list" -> controller.listerActivites();
+                    case "list" -> controllerActivite.listerActivites();
                     case "add" -> {
                         if (parts.length < 3) {
                             printUsage("activity add <TypeActivite>");
@@ -495,7 +511,7 @@ public class CommandParser {
                         }
                         String type = joinFrom(parts, 2);
                         if (!type.isEmpty())
-                            controller.ajouterTypeActivite(type);
+                            controllerActivite.ajouterTypeActivite(type);
                     }
                     case "delete" -> {
                         if (parts.length < 3) {
@@ -504,7 +520,7 @@ public class CommandParser {
                         }
                         Integer idAct = parseIntOrNull(parts[2], "idActivite");
                         if (idAct != null)
-                            controller.supprimerActivite(idAct);
+                            controllerActivite.supprimerActivite(idAct);
                     }
                     default -> System.out.println("Commande activity inconnue. Tapez 'help'.");
                 }
@@ -524,7 +540,7 @@ public class CommandParser {
                         }
                         Integer idAnimal = parseIntOrNull(parts[2], "idAnimal");
                         if (idAnimal != null)
-                            controller.declarerIncident(idAnimal, scanner);
+                            controllerActivite.declarerIncident(idAnimal, scanner);
                     }
                     case "list" -> {
                         if (parts.length < 3) {
@@ -533,7 +549,7 @@ public class CommandParser {
                         }
                         Integer idAnimal = parseIntOrNull(parts[2], "idAnimal");
                         if (idAnimal != null)
-                            controller.listerIncidents(idAnimal);
+                            controllerActivite.listerIncidents(idAnimal);
                     }
                     default -> System.out.println("Commande incident inconnue. Tapez 'help'.");
                 }
@@ -555,9 +571,9 @@ public class CommandParser {
                         Integer idAnimal = parseIntOrNull(parts[2], "idAnimal");
                         Integer idVeto = parseIntOrNull(parts[3], "idVeto");
                         if (idAnimal != null && idVeto != null)
-                            controller.ajouterSoinComplet(idAnimal, idVeto, scanner);
+                            controllerActivite.ajouterSoinComplet(idAnimal, idVeto, scanner);
                     }
-                    case "list" -> controller.listerTousLesSoins();
+                    case "list" -> controllerActivite.listerTousLesSoins();
                     case "delete" -> {
                         if (parts.length < 3) {
                             printUsage("soin delete <idSoin>");
@@ -565,7 +581,7 @@ public class CommandParser {
                         }
                         Integer idSoin = parseIntOrNull(parts[2], "idSoin");
                         if (idSoin != null)
-                            controller.supprimerSoin(idSoin);
+                            controllerActivite.supprimerSoin(idSoin);
                     }
                     default -> System.out.println("Commande soin inconnue. Tapez 'help'.");
                 }
@@ -604,9 +620,9 @@ public class CommandParser {
             }
 
             switch (parts[1].toLowerCase()) {
-                case "benevoles" -> controller.statsBenevoles();
-                case "adoptables" -> controller.statsAdoptables();
-                case "box" -> controller.rapportAvanceBox();
+                case "benevoles" -> controllerRapport.statsBenevoles();
+                case "adoptables" -> controllerRapport.statsAdoptables();
+                case "box" -> controllerBox.rapportAvanceBox();
                 default -> System.out.println("Rapport inconnu. Tapez 'help'.");
             }
         }
@@ -645,10 +661,10 @@ public class CommandParser {
             String query = joinFrom(parts, 1);
 
             switch (entity) {
-                case "animal" -> controller.chercherAnimal(query);
-                case "famille" -> controller.chercherFamille(query);
-                case "benevole" -> controller.chercherBenevole(query);
-                case "incident" -> controller.chercherIncident(query);
+                case "animal" -> controllerAnimal.chercherAnimal(query);
+                case "famille" -> controllerFamille.chercherFamille(query);
+                case "benevole" -> controllerPlanning.chercherBenevole(query);
+                case "incident" -> controllerActivite.chercherIncident(query);
                 default -> System.out.println(
                         "Recherche inconnue : '" + parts[0] + "'. (Disponible: animal, famille, benevole, incident)");
             }
