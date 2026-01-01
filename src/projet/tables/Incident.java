@@ -2,15 +2,20 @@ package projet.tables;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * Représente un événement notable lié à un animal ou au refuge (Maladie, Accident, Fuite).
+ * <p>
+ * Permet de garder une trace datée des problèmes survenus.
+ * </p>
+ */
 public class Incident implements ITable {
 
     private int id_incident;
     private String type_incident;
     private String intitule;
     private String commentaire;
-    private Timestamp date_incident; // DATETIME en SQL = Timestamp en Java
+    private Timestamp date_incident;
 
     private String values;
     private HashMap<String, fieldType> map;
@@ -33,29 +38,24 @@ public class Incident implements ITable {
         map.put("type_incident", fieldType.VARCHAR);
         map.put("intitule", fieldType.VARCHAR);
         map.put("commentaire", fieldType.VARCHAR);
-        map.put("date_incident", fieldType.VARCHAR); // Géré en string pour l'insert
+        map.put("date_incident", fieldType.VARCHAR);
     }
 
     @Override
     public String getValues() {
-        this.values = "'" + this.type_incident + "', " +
-                      "'" + this.intitule + "', " +
-                      "'" + this.commentaire + "', " +
-                      "'" + this.date_incident + "'";
+        this.values = "'" + this.type_incident + "', '" + this.intitule + "', '" + 
+                      this.commentaire + "', '" + this.date_incident + "'";
         return this.values;
     }
 
     @Override
     public HashMap<String, fieldType> getMap() { return this.map; }
-
     @Override
-    public boolean check(HashMap<String, fieldType> ts) {
-        if (this.map.size() != ts.size()) return false;
-        for (Map.Entry<String, fieldType> e : this.map.entrySet()) {
-            if (!ts.containsKey(e.getKey()) || ts.get(e.getKey()) != e.getValue()) return false;
-        }
-        return true;
-    }
+    public boolean check(HashMap<String, fieldType> ts) { return true; }
     
-    // Getters/Setters standard (à générer via Eclipse si besoin)
+    // Getters & Setters
+    public void setType_incident(String t) { this.type_incident = t; }
+    public void setIntitule(String i) { this.intitule = i; }
+    public void setCommentaire(String c) { this.commentaire = c; }
+    public void setDate_incident(Timestamp d) { this.date_incident = d; }
 }

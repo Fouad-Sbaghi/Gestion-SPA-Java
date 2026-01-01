@@ -2,8 +2,13 @@ package projet.tables;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * Représente un acte médical ou un soin effectué sur un animal.
+ * <p>
+ * Lié à un animal spécifique par son ID.
+ * </p>
+ */
 public class Soin implements ITable {
 
     private int id_soin;
@@ -12,7 +17,6 @@ public class Soin implements ITable {
     private String libelle;
     private String commentaire;
     private Timestamp date_soin;
-
     private String values;
     private HashMap<String, fieldType> map;
 
@@ -31,17 +35,20 @@ public class Soin implements ITable {
 
     @Override
     public String getValues() {
-        this.values = this.id_animal + ", " +
-                      "'" + this.type_soin + "', " +
-                      "'" + this.libelle + "', " +
-                      "'" + this.commentaire + "', " +
-                      "'" + this.date_soin + "'";
+        this.values = this.id_animal + ", '" + this.type_soin + "', '" + this.libelle + "', '" + 
+                      this.commentaire + "', '" + this.date_soin + "'";
         return this.values;
     }
     
-    // Méthodes check et getMap identiques aux autres...
     @Override
     public HashMap<String, fieldType> getMap() { return this.map; }
     @Override
-    public boolean check(HashMap<String, fieldType> ts) { return true; } // Simplifié ici
+    public boolean check(HashMap<String, fieldType> ts) { return true; }
+    
+    // Getters & Setters simples
+    public void setId_animal(int id) { this.id_animal = id; }
+    public void setType_soin(String t) { this.type_soin = t; }
+    public void setLibelle(String l) { this.libelle = l; }
+    public void setCommentaire(String c) { this.commentaire = c; }
+    public void setDate_soin(Timestamp d) { this.date_soin = d; }
 }

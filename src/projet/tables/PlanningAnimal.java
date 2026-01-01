@@ -3,25 +3,22 @@ package projet.tables;
 import java.sql.Date;
 import java.util.HashMap;
 
+/**
+ * Gère l'emploi du temps spécifique d'un animal.
+ * <p>
+ * Permet d'associer un animal à un créneau et un bénévole (Ex: Rex est promené par Jean Mardi matin).
+ * </p>
+ */
 public class PlanningAnimal implements ITable {
 
     private int id_animal;
     private int id_creneau;
     private int id_pers;
     private Date date_d;
-
     private String values;
     private HashMap<String, fieldType> map;
 
     public PlanningAnimal() { getStruct(); }
-
-    public PlanningAnimal(int id_animal, int id_creneau, int id_pers, Date date_d) {
-        this.id_animal = id_animal;
-        this.id_creneau = id_creneau;
-        this.id_pers = id_pers;
-        this.date_d = date_d;
-        getStruct();
-    }
 
     @Override
     public void getStruct() {
@@ -34,10 +31,7 @@ public class PlanningAnimal implements ITable {
 
     @Override
     public String getValues() {
-        this.values = this.id_animal + ", " +
-                      this.id_creneau + ", " +
-                      this.id_pers + ", " +
-                      "'" + this.date_d + "'";
+        this.values = this.id_animal + ", " + this.id_creneau + ", " + this.id_pers + ", '" + this.date_d + "'";
         return this.values;
     }
 

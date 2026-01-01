@@ -2,19 +2,21 @@ package projet.tables;
 
 import java.util.HashMap;
 
+/**
+ * Table de liaison associant un membre du personnel (Vétérinaire) à un acte de soin réalisé.
+ */
 public class Veterinaire implements ITable {
 
     private int id_personne;
     private int id_soin;
-
     private String values;
     private HashMap<String, fieldType> map;
 
     public Veterinaire() { getStruct(); }
 
-    public Veterinaire(int id_personne, int id_soin) {
-        this.id_personne = id_personne;
-        this.id_soin = id_soin;
+    public Veterinaire(int p, int s) {
+        this.id_personne = p;
+        this.id_soin = s;
         getStruct();
     }
 

@@ -2,27 +2,20 @@ package projet.tables;
 
 import java.sql.Date;
 import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * Représente l'historique d'accueil d'un animal au sein d'une famille d'accueil.
+ */
 public class SejourFamille implements ITable {
 
     private int id_animal;
     private int id_famille;
     private Date date_d;
     private Date date_f_famille;
-
     private String values;
     private HashMap<String, fieldType> map;
 
     public SejourFamille() { getStruct(); }
-
-    public SejourFamille(int id_animal, int id_famille, Date date_d, Date date_f_famille) {
-        this.id_animal = id_animal;
-        this.id_famille = id_famille;
-        this.date_d = date_d;
-        this.date_f_famille = date_f_famille;
-        getStruct();
-    }
 
     @Override
     public void getStruct() {
@@ -35,23 +28,13 @@ public class SejourFamille implements ITable {
 
     @Override
     public String getValues() {
-        String dateFin = (this.date_f_famille != null) ? "'" + this.date_f_famille + "'" : "NULL";
-        
-        this.values = this.id_animal + ", " +
-                      this.id_famille + ", " +
-                      "'" + this.date_d + "', " +
-                      dateFin;
+        String fin = (date_f_famille != null) ? "'" + date_f_famille + "'" : "NULL";
+        this.values = this.id_animal + ", " + this.id_famille + ", '" + this.date_d + "', " + fin;
         return this.values;
     }
-
-    @Override
-    public HashMap<String, fieldType> getMap() { return this.map; }
     
     @Override
-    public boolean check(HashMap<String, fieldType> ts) { return true; } // Simplifié
-
-    // Getters/Setters à générer...
-    public int getId_animal() { return id_animal; }
-    public void setId_animal(int id) { this.id_animal = id; }
-    // ... etc
+    public HashMap<String, fieldType> getMap() { return this.map; }
+    @Override
+    public boolean check(HashMap<String, fieldType> ts) { return true; }
 }

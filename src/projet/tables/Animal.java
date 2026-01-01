@@ -4,9 +4,16 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Représente un animal pris en charge par la SPA.
+ * <p>
+ * Cette classe mappe la table 'Animal' et contient les informations
+ * d'identification (puce), de santé (tests comportementaux) et de statut administratif.
+ * </p>
+ * @see projet.tables.ITable
+ */
 public class Animal implements ITable {
 
-    // Attributs correspondant aux colonnes de la BDD
     private int id_animal;
     private String puce;
     private String espece;
@@ -19,14 +26,10 @@ public class Animal implements ITable {
     private boolean tests_chat;
     private Date date_arrivee;
 
-    // Attributs pour l'interface ITable
     private String values;
     private HashMap<String, fieldType> map;
 
-    // Constructeur vide
-    public Animal() {
-        getStruct();
-    }
+    public Animal() { getStruct(); }
 
     // Constructeur complet
     public Animal(int id_animal, String puce, String espece, String nom, Date date_naissance,
@@ -45,8 +48,6 @@ public class Animal implements ITable {
         getStruct();
     }
 
-    // --- Implémentation ITable ---
-
     @Override
     public void getStruct() {
         this.map = new HashMap<>();
@@ -54,9 +55,9 @@ public class Animal implements ITable {
         map.put("puce", fieldType.VARCHAR);
         map.put("espece", fieldType.VARCHAR);
         map.put("nom", fieldType.VARCHAR);
-        map.put("date_naissance", fieldType.VARCHAR); // Dates gérées comme String/Varchar pour la structure
+        map.put("date_naissance", fieldType.VARCHAR);
         map.put("statut", fieldType.VARCHAR);
-        map.put("tests_humain", fieldType.VARCHAR); // Booleens gérés comme String pour la structure générique
+        map.put("tests_humain", fieldType.VARCHAR);
         map.put("tests_bebe", fieldType.VARCHAR);
         map.put("tests_chien", fieldType.VARCHAR);
         map.put("tests_chat", fieldType.VARCHAR);
@@ -65,77 +66,48 @@ public class Animal implements ITable {
 
     @Override
     public String getValues() {
-        // Formatage pour l'INSERT SQL : 'valeur', 'valeur'...
-        // Gestion des NULL pour les dates
         String naissanceStr = (this.date_naissance != null) ? "'" + this.date_naissance + "'" : "NULL";
         
-        this.values = "'" + this.puce + "', " +
-                      "'" + this.espece + "', " +
-                      "'" + this.nom + "', " +
-                      naissanceStr + ", " +
-                      "'" + this.statut + "', " +
-                      this.tests_humain + ", " +
-                      this.tests_bebe + ", " +
-                      this.tests_chien + ", " +
-                      this.tests_chat + ", " +
-                      "'" + this.date_arrivee + "'";
+        this.values = "'" + this.puce + "', '" + this.espece + "', '" + this.nom + "', " +
+                      naissanceStr + ", '" + this.statut + "', " +
+                      this.tests_humain + ", " + this.tests_bebe + ", " +
+                      this.tests_chien + ", " + this.tests_chat + ", '" + this.date_arrivee + "'";
         return this.values;
     }
 
     @Override
-    public HashMap<String, fieldType> getMap() {
-        return this.map;
-    }
+    public HashMap<String, fieldType> getMap() { return this.map; }
 
     @Override
     public boolean check(HashMap<String, fieldType> tableStruct) {
         if (this.map.size() != tableStruct.size()) return false;
         for (Map.Entry<String, fieldType> entry : this.map.entrySet()) {
-            if (!tableStruct.containsKey(entry.getKey()) || tableStruct.get(entry.getKey()) != entry.getValue()) {
-                return false;
-            }
+            if (!tableStruct.containsKey(entry.getKey()) || tableStruct.get(entry.getKey()) != entry.getValue()) return false;
         }
         return true;
     }
 
-    // --- Getters et Setters ---
-
+    // Getters & Setters
     public int getId_animal() { return id_animal; }
-    public void setId_animal(int id_animal) { this.id_animal = id_animal; }
-
+    public void setId_animal(int id) { this.id_animal = id; }
     public String getPuce() { return puce; }
-    public void setPuce(String puce) { this.puce = puce; }
-
+    public void setPuce(String p) { this.puce = p; }
     public String getEspece() { return espece; }
-    public void setEspece(String espece) { this.espece = espece; }
-
+    public void setEspece(String e) { this.espece = e; }
     public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; }
-
+    public void setNom(String n) { this.nom = n; }
     public Date getDate_naissance() { return date_naissance; }
-    public void setDate_naissance(Date date_naissance) { this.date_naissance = date_naissance; }
-
+    public void setDate_naissance(Date d) { this.date_naissance = d; }
     public String getStatut() { return statut; }
-    public void setStatut(String statut) { this.statut = statut; }
-
-    // Pour les booléens, la convention est souvent "is..." ou "get..."
+    public void setStatut(String s) { this.statut = s; }
     public boolean isTests_humain() { return tests_humain; }
-    public void setTests_humain(boolean tests_humain) { this.tests_humain = tests_humain; }
-
+    public void setTests_humain(boolean t) { this.tests_humain = t; }
     public boolean isTests_bebe() { return tests_bebe; }
-    public void setTests_bebe(boolean tests_bebe) { this.tests_bebe = tests_bebe; }
-
+    public void setTests_bebe(boolean t) { this.tests_bebe = t; }
     public boolean isTests_chien() { return tests_chien; }
-    public void setTests_chien(boolean tests_chien) { this.tests_chien = tests_chien; }
-
+    public void setTests_chien(boolean t) { this.tests_chien = t; }
     public boolean isTests_chat() { return tests_chat; }
-    public void setTests_chat(boolean tests_chat) { this.tests_chat = tests_chat; }
-
+    public void setTests_chat(boolean t) { this.tests_chat = t; }
     public Date getDate_arrivee() { return date_arrivee; }
-    public void setDate_arrivee(Date date_arrivee) { this.date_arrivee = date_arrivee; }
-
-    @Override
-    public String toString() {
-        return "Animal [ID=" + id_animal + ", Nom=" + nom + ", Espèce=" + espece + ", Statut=" + statut + "]";
-    }
+    public void setDate_arrivee(Date d) { this.date_arrivee = d; }
 }

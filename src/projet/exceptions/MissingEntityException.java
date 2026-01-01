@@ -1,13 +1,15 @@
 package projet.exceptions;
 
+/**
+ * Levée lorsqu'une opération est demandée sur une entité (Animal, Box, etc.)
+ * qui n'existe pas ou plus dans la base de données.
+ */
 public class MissingEntityException extends DonneeException {
 
-    // Constructeur pour dire "L'animal avec l'ID 5 n'existe pas"
     public MissingEntityException(String typeEntite, int id) {
         super("Impossible de trouver l'entité [" + typeEntite + "] avec l'identifiant " + id + ".");
     }
     
-    // Constructeur alternatif si on cherche par nom ou autre
     public MissingEntityException(String message) {
         super(message);
     }

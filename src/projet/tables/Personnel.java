@@ -1,102 +1,62 @@
 package projet.tables;
 
+import java.sql.Date;
 import java.util.HashMap;
-import java.util.Map;
 
-public class Personnel implements ITable {
+/**
+ * Représente l'association historique entre un Animal et un Box (Séjour).
+ * <p>
+ * Cette classe permet de tracer l'historique des emplacements d'un animal
+ * avec une date de début et une date de fin éventuelle.
+ * </p>
+ */
+public class SejourBox implements ITable {
 
-    private int id_pers;
-    private String nom;
-    private String prenom;
-    private String type_pers;
-    private String tel;
-    private String user;
-    private String password;
-
-    // Attributs imposés par ITable (Comme dans le tp jdbc avec IData)
+    private int id_animal;
+    private int id_box;
+    private Date date_d;
+    private Date date_f_box;
     private String values;
     private HashMap<String, fieldType> map;
 
-    public Personnel() {
-        getStruct();
-    }
+    public SejourBox() { getStruct(); }
 
-    public Personnel(int id_pers, String nom, String prenom, String type_pers, String tel, String user, String password) {
-        this.id_pers = id_pers;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.type_pers = type_pers;
-        this.tel = tel;
-        this.user = user;
-        this.password = password;
+    public SejourBox(int id_animal, int id_box, Date date_d, Date date_f_box) {
+        this.id_animal = id_animal;
+        this.id_box = id_box;
+        this.date_d = date_d;
+        this.date_f_box = date_f_box;
         getStruct();
     }
 
     @Override
     public void getStruct() {
         this.map = new HashMap<>();
-        map.put("id_pers", fieldType.INT4);
-        map.put("nom", fieldType.VARCHAR);
-        map.put("prenom", fieldType.VARCHAR);
-        map.put("type_pers", fieldType.VARCHAR);
-        map.put("tel", fieldType.VARCHAR);
-        map.put("user", fieldType.VARCHAR);
-        map.put("password", fieldType.VARCHAR);
+        map.put("id_animal", fieldType.INT4);
+        map.put("id_box", fieldType.INT4);
+        map.put("date_d", fieldType.VARCHAR);
+        map.put("date_f_box", fieldType.VARCHAR);
     }
 
     @Override
     public String getValues() {
-        this.values = "'" + this.nom + "', " +
-                      "'" + this.prenom + "', " +
-                      "'" + this.type_pers + "', " +
-                      "'" + this.tel + "', " +
-                      "'" + this.user + "', " +
-                      "'" + this.password + "'";
+        String dateFin = (this.date_f_box != null) ? "'" + this.date_f_box + "'" : "NULL";
+        this.values = this.id_animal + ", " + this.id_box + ", '" + this.date_d + "', " + dateFin;
         return this.values;
     }
 
     @Override
-    public HashMap<String, fieldType> getMap() {
-        return this.map;
-    }
-
+    public HashMap<String, fieldType> getMap() { return this.map; }
     @Override
-    public boolean check(HashMap<String, fieldType> tableStruct) {
-        if (this.map.size() != tableStruct.size()) {
-            return false;
-        }
-        for (Map.Entry<String, fieldType> entry : this.map.entrySet()) {
-            if (!tableStruct.containsKey(entry.getKey()) || tableStruct.get(entry.getKey()) != entry.getValue()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Getters & Setters
-    public int getId_pers() { return id_pers; }
-    public void setId_pers(int id_pers) { this.id_pers = id_pers; }
-
-    public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; }
-
-    public String getPrenom() { return prenom; }
-    public void setPrenom(String prenom) { this.prenom = prenom; }
-
-    public String getType_pers() { return type_pers; }
-    public void setType_pers(String type_pers) { this.type_pers = type_pers; }
-
-    public String getTel() { return tel; }
-    public void setTel(String tel) { this.tel = tel; }
-
-    public String getUser() { return user; }
-    public void setUser(String user) { this.user = user; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    @Override
-    public String toString() {
-        return "Personnel [id=" + id_pers + ", nom=" + nom + ", prenom=" + prenom + "]";
-    }
+    public boolean check(HashMap<String, fieldType> ts) { return true; }
+    
+    // Getters
+    public int getId_animal() { return id_animal; }
+    public void setId_animal(int id) { this.id_animal = id; }
+    public int getId_box() { return id_box; }
+    public void setId_box(int id) { this.id_box = id; }
+    public Date getDate_d() { return date_d; }
+    public void setDate_d(Date d) { this.date_d = d; }
+    public Date getDate_f_box() { return date_f_box; }
+    public void setDate_f_box(Date d) { this.date_f_box = d; }
 }

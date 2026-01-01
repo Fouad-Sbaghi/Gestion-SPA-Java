@@ -2,19 +2,21 @@ package projet.tables;
 
 import java.util.HashMap;
 
+/**
+ * Table de liaison simple permettant d'associer un ou plusieurs incidents à un animal.
+ */
 public class AnimalIncident implements ITable {
 
     private int id_animal;
     private int id_incident;
-    
     private String values;
     private HashMap<String, fieldType> map;
 
     public AnimalIncident() { getStruct(); }
 
-    public AnimalIncident(int id_animal, int id_incident) {
-        this.id_animal = id_animal;
-        this.id_incident = id_incident;
+    public AnimalIncident(int animal, int incident) {
+        this.id_animal = animal;
+        this.id_incident = incident;
         getStruct();
     }
 

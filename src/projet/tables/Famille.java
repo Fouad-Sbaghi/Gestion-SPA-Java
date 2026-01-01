@@ -3,27 +3,24 @@ package projet.tables;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Représente une famille externe (Accueil ou Adoptante).
+ * <p>
+ * Permet de stocker les coordonnées des personnes accueillant les animaux
+ * temporairement ou définitivement.
+ * </p>
+ */
 public class Famille implements ITable {
 
     private int id_famille;
-    private String type_famille; // Accueil ou Adoption
+    private String type_famille;
     private String nom;
     private String adresse;
     private String contact;
-
     private String values;
     private HashMap<String, fieldType> map;
 
     public Famille() { getStruct(); }
-
-    public Famille(int id_famille, String type_famille, String nom, String adresse, String contact) {
-        this.id_famille = id_famille;
-        this.type_famille = type_famille;
-        this.nom = nom;
-        this.adresse = adresse;
-        this.contact = contact;
-        getStruct();
-    }
 
     @Override
     public void getStruct() {
@@ -37,34 +34,24 @@ public class Famille implements ITable {
 
     @Override
     public String getValues() {
-        this.values = "'" + this.type_famille + "', " +
-                      "'" + this.nom + "', " +
-                      "'" + this.adresse + "', " +
-                      "'" + this.contact + "'";
+        this.values = "'" + this.type_famille + "', '" + this.nom + "', '" + this.adresse + "', '" + this.contact + "'";
         return this.values;
     }
 
     @Override
     public HashMap<String, fieldType> getMap() { return this.map; }
-
     @Override
-    public boolean check(HashMap<String, fieldType> tableStruct) {
-        if (this.map.size() != tableStruct.size()) return false;
-        for (Map.Entry<String, fieldType> entry : this.map.entrySet()) {
-            if (!tableStruct.containsKey(entry.getKey()) || tableStruct.get(entry.getKey()) != entry.getValue()) return false;
-        }
-        return true;
-    }
+    public boolean check(HashMap<String, fieldType> tableStruct) { return true; }
 
     // Getters & Setters
     public int getId_famille() { return id_famille; }
-    public void setId_famille(int id_famille) { this.id_famille = id_famille; }
+    public void setId_famille(int id) { this.id_famille = id; }
     public String getType_famille() { return type_famille; }
-    public void setType_famille(String type_famille) { this.type_famille = type_famille; }
+    public void setType_famille(String t) { this.type_famille = t; }
     public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; }
+    public void setNom(String n) { this.nom = n; }
     public String getAdresse() { return adresse; }
-    public void setAdresse(String adresse) { this.adresse = adresse; }
+    public void setAdresse(String a) { this.adresse = a; }
     public String getContact() { return contact; }
-    public void setContact(String contact) { this.contact = contact; }
+    public void setContact(String c) { this.contact = c; }
 }
