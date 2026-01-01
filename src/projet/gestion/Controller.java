@@ -306,14 +306,74 @@ public class Controller {
             return;
         }
 
-        System.out.println("Modification de " + a.getNom());
-        System.out.print("Nouveau statut (Actuel: " + a.getStatut() + ") [Entrée=Ignorer] : ");
-        String stat = scanner.nextLine();
-        if (!stat.isEmpty())
-            a.setStatut(stat);
+        System.out.println("\n=== Modification de " + a.getNom() + " (ID: " + id + ") ===");
+        System.out.println("Appuyez sur Entree pour conserver la valeur actuelle.\n");
 
-        animalReq.update(a);
-        System.out.println("Mise à jour effectuée.");
+        // Nom
+        System.out.print("Nom (Actuel: " + a.getNom() + ") : ");
+        String nom = scanner.nextLine().trim();
+        if (!nom.isEmpty())
+            a.setNom(nom);
+
+        // Espece
+        System.out.print("Espece (Actuel: " + a.getEspece() + ") : ");
+        String espece = scanner.nextLine().trim();
+        if (!espece.isEmpty())
+            a.setEspece(espece);
+
+        // Puce
+        System.out.print("Puce (Actuel: " + a.getPuce() + ") : ");
+        String puce = scanner.nextLine().trim();
+        if (!puce.isEmpty())
+            a.setPuce(puce);
+
+        // Statut
+        System.out.print("Statut (Actuel: " + a.getStatut() + ") : ");
+        String statut = scanner.nextLine().trim();
+        if (!statut.isEmpty())
+            a.setStatut(statut);
+
+        // Tests comportementaux
+        System.out.println("\n--- Tests comportementaux (repondez V/F ou Entree pour ignorer) ---");
+
+        // Test Humain
+        System.out.print("Test Humain (Actuel: " + (a.isTests_humain() ? "V" : "F") + ") : ");
+        String tHumain = scanner.nextLine().trim().toUpperCase();
+        if (tHumain.equals("V"))
+            a.setTests_humain(true);
+        else if (tHumain.equals("F"))
+            a.setTests_humain(false);
+
+        // Test Bebe
+        System.out.print("Test Bebe (Actuel: " + (a.isTests_bebe() ? "V" : "F") + ") : ");
+        String tBebe = scanner.nextLine().trim().toUpperCase();
+        if (tBebe.equals("V"))
+            a.setTests_bebe(true);
+        else if (tBebe.equals("F"))
+            a.setTests_bebe(false);
+
+        // Test Chien
+        System.out.print("Test Chien (Actuel: " + (a.isTests_chien() ? "V" : "F") + ") : ");
+        String tChien = scanner.nextLine().trim().toUpperCase();
+        if (tChien.equals("V"))
+            a.setTests_chien(true);
+        else if (tChien.equals("F"))
+            a.setTests_chien(false);
+
+        // Test Chat
+        System.out.print("Test Chat (Actuel: " + (a.isTests_chat() ? "V" : "F") + ") : ");
+        String tChat = scanner.nextLine().trim().toUpperCase();
+        if (tChat.equals("V"))
+            a.setTests_chat(true);
+        else if (tChat.equals("F"))
+            a.setTests_chat(false);
+
+        // Sauvegarde
+        if (animalReq.update(a)) {
+            System.out.println("\nMise a jour effectuee avec succes !");
+        } else {
+            System.out.println("\nErreur lors de la mise a jour.");
+        }
     }
 
     public void filtrerAnimaux(String filtre) {
