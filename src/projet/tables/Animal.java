@@ -8,8 +8,10 @@ import java.util.Map;
  * Représente un animal pris en charge par la SPA.
  * <p>
  * Cette classe mappe la table 'Animal' et contient les informations
- * d'identification (puce), de santé (tests comportementaux) et de statut administratif.
+ * d'identification (puce), de santé (tests comportementaux) et de statut
+ * administratif.
  * </p>
+ * 
  * @see projet.tables.ITable
  */
 public class Animal implements ITable {
@@ -29,11 +31,13 @@ public class Animal implements ITable {
     private String values;
     private HashMap<String, fieldType> map;
 
-    public Animal() { getStruct(); }
+    public Animal() {
+        getStruct();
+    }
 
     // Constructeur complet
     public Animal(int id_animal, String puce, String espece, String nom, Date date_naissance,
-                  String statut, boolean t_humain, boolean t_bebe, boolean t_chien, boolean t_chat, Date date_arrivee) {
+            String statut, boolean t_humain, boolean t_bebe, boolean t_chien, boolean t_chat, Date date_arrivee) {
         this.id_animal = id_animal;
         this.puce = puce;
         this.espece = espece;
@@ -67,47 +71,130 @@ public class Animal implements ITable {
     @Override
     public String getValues() {
         String naissanceStr = (this.date_naissance != null) ? "'" + this.date_naissance + "'" : "NULL";
-        
+
         this.values = "'" + this.puce + "', '" + this.espece + "', '" + this.nom + "', " +
-                      naissanceStr + ", '" + this.statut + "', " +
-                      this.tests_humain + ", " + this.tests_bebe + ", " +
-                      this.tests_chien + ", " + this.tests_chat + ", '" + this.date_arrivee + "'";
+                naissanceStr + ", '" + this.statut + "', " +
+                this.tests_humain + ", " + this.tests_bebe + ", " +
+                this.tests_chien + ", " + this.tests_chat + ", '" + this.date_arrivee + "'";
         return this.values;
     }
 
     @Override
-    public HashMap<String, fieldType> getMap() { return this.map; }
+    public HashMap<String, fieldType> getMap() {
+        return this.map;
+    }
 
     @Override
     public boolean check(HashMap<String, fieldType> tableStruct) {
-        if (this.map.size() != tableStruct.size()) return false;
+        if (this.map.size() != tableStruct.size())
+            return false;
         for (Map.Entry<String, fieldType> entry : this.map.entrySet()) {
-            if (!tableStruct.containsKey(entry.getKey()) || tableStruct.get(entry.getKey()) != entry.getValue()) return false;
+            if (!tableStruct.containsKey(entry.getKey()) || tableStruct.get(entry.getKey()) != entry.getValue())
+                return false;
         }
         return true;
     }
 
     // Getters & Setters
-    public int getId_animal() { return id_animal; }
-    public void setId_animal(int id) { this.id_animal = id; }
-    public String getPuce() { return puce; }
-    public void setPuce(String p) { this.puce = p; }
-    public String getEspece() { return espece; }
-    public void setEspece(String e) { this.espece = e; }
-    public String getNom() { return nom; }
-    public void setNom(String n) { this.nom = n; }
-    public Date getDate_naissance() { return date_naissance; }
-    public void setDate_naissance(Date d) { this.date_naissance = d; }
-    public String getStatut() { return statut; }
-    public void setStatut(String s) { this.statut = s; }
-    public boolean isTests_humain() { return tests_humain; }
-    public void setTests_humain(boolean t) { this.tests_humain = t; }
-    public boolean isTests_bebe() { return tests_bebe; }
-    public void setTests_bebe(boolean t) { this.tests_bebe = t; }
-    public boolean isTests_chien() { return tests_chien; }
-    public void setTests_chien(boolean t) { this.tests_chien = t; }
-    public boolean isTests_chat() { return tests_chat; }
-    public void setTests_chat(boolean t) { this.tests_chat = t; }
-    public Date getDate_arrivee() { return date_arrivee; }
-    public void setDate_arrivee(Date d) { this.date_arrivee = d; }
+    public int getId_animal() {
+        return id_animal;
+    }
+
+    public void setId_animal(int id) {
+        this.id_animal = id;
+    }
+
+    public String getPuce() {
+        return puce;
+    }
+
+    public void setPuce(String p) {
+        this.puce = p;
+    }
+
+    public String getEspece() {
+        return espece;
+    }
+
+    public void setEspece(String e) {
+        this.espece = e;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String n) {
+        this.nom = n;
+    }
+
+    public Date getDate_naissance() {
+        return date_naissance;
+    }
+
+    public void setDate_naissance(Date d) {
+        this.date_naissance = d;
+    }
+
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String s) {
+        this.statut = s;
+    }
+
+    public boolean isTests_humain() {
+        return tests_humain;
+    }
+
+    public void setTests_humain(boolean t) {
+        this.tests_humain = t;
+    }
+
+    public boolean isTests_bebe() {
+        return tests_bebe;
+    }
+
+    public void setTests_bebe(boolean t) {
+        this.tests_bebe = t;
+    }
+
+    public boolean isTests_chien() {
+        return tests_chien;
+    }
+
+    public void setTests_chien(boolean t) {
+        this.tests_chien = t;
+    }
+
+    public boolean isTests_chat() {
+        return tests_chat;
+    }
+
+    public void setTests_chat(boolean t) {
+        this.tests_chat = t;
+    }
+
+    public Date getDate_arrivee() {
+        return date_arrivee;
+    }
+
+    public void setDate_arrivee(Date d) {
+        this.date_arrivee = d;
+    }
+
+    @Override
+    public String toString() {
+        String naiss = (date_naissance != null) ? date_naissance.toString() : "?";
+        String puceStr = (puce != null) ? puce : "-";
+        String tests = String.format("H:%s B:%s Ch:%s Ct:%s",
+                tests_humain ? "V" : "F",
+                tests_bebe ? "V" : "F",
+                tests_chien ? "V" : "F",
+                tests_chat ? "V" : "F");
+
+        return String.format("[#%d] %s (%s) - Puce: %s | Ne(e): %s | Statut: %s | Tests: %s | Arrivee: %s",
+                id_animal, nom, espece, puceStr, naiss, statut, tests, date_arrivee);
+    }
 }
