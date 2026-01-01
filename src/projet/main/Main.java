@@ -11,7 +11,7 @@ public class Main {
 
         // 1. Petit test de connexion au démarrage
         if (Connexion.connectR() == null) {
-            System.err.println("ERREUR CRITIQUE : La base de données est inaccessible.");
+            System.err.println("ERREUR : La base de données est inaccessible.");
             System.err.println("Vérifiez vos identifiants dans Connexion.java ou votre VPN.");
             return; // On arrête le programme
         }

@@ -130,17 +130,53 @@ public class Controller {
             Animal a = new Animal();
 
             System.out.print("Nom : ");
-            a.setNom(scanner.nextLine());
-            System.out.print("Espèce (Chat/Chien) : ");
-            a.setEspece(scanner.nextLine());
-            System.out.print("Puce (Identifiant unique) : ");
-            a.setPuce(scanner.nextLine());
+            a.setNom(scanner.nextLine().trim());
 
+            System.out.print("Espece (Chat/Chien/Autre) : ");
+            a.setEspece(scanner.nextLine().trim());
+
+            System.out.print("Puce (laisser vide si inconnue) : ");
+            String puce = scanner.nextLine().trim();
+            a.setPuce(puce.isEmpty() ? null : puce);
+
+            System.out.print("Date de naissance (YYYY-MM-DD, vide si inconnue) : ");
+            String naissStr = scanner.nextLine().trim();
+            if (!naissStr.isEmpty()) {
+                try {
+                    a.setDate_naissance(Date.valueOf(naissStr));
+                } catch (Exception e) {
+                    System.out.println("Date invalide, ignoree.");
+                }
+            }
+
+            System.out.print("Statut (Adoptable/Quarantaine/Soins/Au refuge) [defaut: Au refuge] : ");
+            String statut = scanner.nextLine().trim();
+            a.setStatut(statut.isEmpty() ? "Au refuge" : statut);
+
+            // Tests comportementaux
+            System.out.println("--- Tests comportementaux (repondez V/F) ---");
+
+            System.out.print("Test Humain (V/F) [defaut: F] : ");
+            String tH = scanner.nextLine().trim().toUpperCase();
+            a.setTests_humain(tH.equals("V"));
+
+            System.out.print("Test Bebe (V/F) [defaut: F] : ");
+            String tB = scanner.nextLine().trim().toUpperCase();
+            a.setTests_bebe(tB.equals("V"));
+
+            System.out.print("Test Chien (V/F) [defaut: F] : ");
+            String tC = scanner.nextLine().trim().toUpperCase();
+            a.setTests_chien(tC.equals("V"));
+
+            System.out.print("Test Chat (V/F) [defaut: F] : ");
+            String tCh = scanner.nextLine().trim().toUpperCase();
+            a.setTests_chat(tCh.equals("V"));
+
+            // Date d'arrivee = aujourd'hui
             a.setDate_arrivee(new Date(System.currentTimeMillis()));
-            a.setStatut("En attente");
 
             animalReq.add(a);
-            System.out.println("Succès : Animal ajouté.");
+            System.out.println("Succes : Animal ajoute !");
         } catch (Exception e) {
             System.out.println("Erreur ajout animal : " + e.getMessage());
         }
@@ -539,14 +575,14 @@ public class Controller {
     public void planningDuBenevole(int idBenevole) {
         // 1. On récupère les infos du bénévole pour l'affichage
         Personnel p = personnelReq.getById(idBenevole);
-        
+
         if (p == null) {
             System.out.println("❌ Bénévole introuvable (ID " + idBenevole + ").");
             return;
         }
-        
+
         System.out.println("\n📅 Planning de : " + p.getPrenom() + " " + p.getNom() + " (ID " + idBenevole + ")");
-        
+
         // 2. On affiche ses créneaux
         affectationReq.afficherPlanningPersonne(idBenevole);
     }
