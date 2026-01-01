@@ -360,7 +360,7 @@ public class SetupDatabase {
 
             try (Statement stmt = conn.createStatement()) {
 
-                // On force PostgreSQL à travailler UNIQUEMENT dans ton dossier personnel.
+                // On force PostgreSQL à travailler UNIQUEMENT dans mon dossier personnel sinon ça cherche dans les bases de tout le monde et j'ai pas les droits.
                 stmt.execute("SET search_path TO uapv2502163"); 
 
                 // A. Suppression
