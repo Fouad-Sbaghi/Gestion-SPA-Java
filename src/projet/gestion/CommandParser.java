@@ -24,12 +24,10 @@ public class CommandParser {
         System.out.println("|===== APPLICATION GESTION SPA =====|");
         System.out.println("-------------------------------------\n");
 
-        // 1. Phase de Login obligatoire
         if (!loginPhase()) {
             return; 
         }
 
-        // 2. Boucle principale
         while (running) {
             afficherMenuPrincipal();
             System.out.print(currentUser.getUser() + "@spa> ");
@@ -178,10 +176,7 @@ public class CommandParser {
                     if (parts.length < 3) { printUsage("animal filter <statut>"); break; }
                     controller.filtrerAnimaux(joinFrom(parts, 2));
                 }
-                default -> {
-                    // Comportement utile : "animal <nom>" => recherche
-                    controller.chercherAnimal(joinFrom(parts, 1));
-                }
+                default -> controller.chercherAnimal(joinFrom(parts, 1));
             }
         }
     }
@@ -193,8 +188,7 @@ public class CommandParser {
         System.out.println("  box info <idBox>     (détails + animaux présents)");
         System.out.println("  box add-animal <idBox> <idAnimal>");
         System.out.println("  box clear <idBox>");
-        System.out.println("(Tapez 'help' pour ré-afficher les commandes, 'exit' pour revenir.)");
-
+        
         boolean back = false;
         while (!back) {
             System.out.print("[Box] > ");
@@ -227,7 +221,6 @@ public class CommandParser {
             switch (parts[1].toLowerCase()) {
                 case "list" -> controller.listerBox();
                 case "info" -> {
-                    // box info [<idBox>]
                     Integer idBox;
                     if (parts.length >= 3) {
                         idBox = parseIntOrNull(parts[2], "idBox");
@@ -262,7 +255,6 @@ public class CommandParser {
         System.out.println("  family link <idAnimal> <idFamille> <Accueil|Adoption>");
         System.out.println("  family return <idAnimal>");
         System.out.println("  family history <idFamille>");
-        System.out.println("(Tapez 'help' pour ré-afficher les commandes, 'exit' pour revenir.)");
 
         boolean back = false;
         while (!back) {
@@ -486,7 +478,6 @@ public class CommandParser {
                 }
                 continue;
             }
-
             System.out.println("Commande inconnue. Tapez 'help'.");
         }
     }
@@ -567,13 +558,4 @@ public class CommandParser {
             }
         }
     }
-
-
-
-
-
-
-
-
-
 }
