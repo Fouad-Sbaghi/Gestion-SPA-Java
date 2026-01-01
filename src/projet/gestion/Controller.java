@@ -244,6 +244,10 @@ public class Controller {
         boxReq.afficherOccupation(); 
     }
 
+    public void infoBox(int idBox) {
+        boxReq.afficherInfoBox(idBox);
+    }
+
     public void rapportAvanceBox() {
         System.out.println("--- Statistiques détaillées des Box ---");
         rapportBox.afficherStatistiques(); 
@@ -292,7 +296,7 @@ public class Controller {
         System.out.println("--- ALERTE : Créneaux en sous-effectif ---");
         List<String> alertes = rapportPlanning.getCreneauxManquants();
         if (alertes.isEmpty()) System.out.println("R.A.S. Planning complet.");
-        else for (String alerte : alertes) System.out.println(alerte);
+        else for (String alerte : alertes) System.out.println("⚠ " + alerte);
     }
 
     public void assignerBenevole(int idCreneau, int idBenevole) {

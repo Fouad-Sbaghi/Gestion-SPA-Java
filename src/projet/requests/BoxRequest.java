@@ -87,4 +87,96 @@ public class BoxRequest {
             return false;
         }
     }
+
+    /**
+     * Affiche les informations détaillées d'un box (caractéristiques + animaux actuellement présents).
+     * Un animal est considéré "présent" si son séjour a DATE_F_BOX IS NULL.
+     */
+    public void afficherInfoBox(int idBox) {
+        String sqlBox = """
+            SELECT b.id_box, b.type_box, b.capacite_max, COUNT(s.id_animal) as occupe
+            FROM Box b
+            LEFT JOIN Sejour_Box s ON b.id_box = s.id_box AND s.DATE_F_BOX IS NULL
+            WHERE b.id_box = ?
+            GROUP BY b.id_box, b.type_box, b.capacite_max
+        """;
+
+        String sqlAnimaux = """
+            SELECT a.id_animal, a.nom, a.espece, a.statut, a.puce, s.DATE_D
+            FROM Sejour_Box s
+            JOIN Animal a ON a.id_animal = s.id_animal
+            WHERE s.id_box = ? AND s.DATE_F_BOX IS NULL
+            ORDER BY s.DATE_D ASC, a.id_animal ASC
+        """;
+
+        try (Connection conn = Connexion.connectR()) {
+
+            // 1) Infos box + occupation
+            Integer cap = null;
+            Integer occ = null;
+            String type = null;
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlBox)) {
+                pstmt.setInt(1, idBox);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        type = rs.getString("type_box");
+                        cap = rs.getInt("capacite_max");
+                        occ = rs.getInt("occupe");
+                    }
+                }
+            }
+
+            if (cap == null || occ == null || type == null) {
+                System.out.println("Box #" + idBox + " introuvable.");
+                return;
+            }
+
+            int libres = Math.max(0, cap - occ);
+            String alerte = (occ >= cap) ? " (PLEIN)" : "";
+
+            System.out.println("=== INFO BOX #" + idBox + " ===");
+            System.out.println("Type      : " + type);
+            System.out.println("Capacité  : " + cap);
+            System.out.println("Occupé    : " + occ + alerte);
+            System.out.println("Places    : " + libres + " libre(s)");
+
+            // 2) Animaux présents
+            System.out.println("\n--- Animaux présents ---");
+            boolean any = false;
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sqlAnimaux)) {
+                pstmt.setInt(1, idBox);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    System.out.printf("%-8s | %-18s | %-12s | %-12s | %-14s | %s%n",
+                            "ID", "Nom", "Espèce", "Statut", "Puce", "Depuis");
+                    System.out.println("--------------------------------------------------------------------------------");
+                    while (rs.next()) {
+                        any = true;
+                        int idAnimal = rs.getInt("id_animal");
+                        String nom = rs.getString("nom");
+                        String espece = rs.getString("espece");
+                        String statut = rs.getString("statut");
+                        String puce = rs.getString("puce");
+                        java.sql.Date depuis = rs.getDate("DATE_D");
+
+                        System.out.printf("%-8d | %-18s | %-12s | %-12s | %-14s | %s%n",
+                                idAnimal,
+                                (nom != null ? nom : ""),
+                                (espece != null ? espece : ""),
+                                (statut != null ? statut : ""),
+                                (puce != null ? puce : ""),
+                                (depuis != null ? depuis.toString() : ""));
+                    }
+                }
+            }
+
+            if (!any) {
+                System.out.println("Aucun animal présent dans ce box.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL (Info Box) : " + e.getMessage());
+        }
+    }
 }
