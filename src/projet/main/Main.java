@@ -18,7 +18,7 @@ public class Main {
 
         // On ferme la connexion de test proprement
         try {
-            Connexion.close(); 
+            Connexion.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

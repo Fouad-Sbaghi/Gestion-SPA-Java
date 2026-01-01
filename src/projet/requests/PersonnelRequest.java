@@ -18,12 +18,13 @@ public class PersonnelRequest {
         String sql = "SELECT * FROM Personnel WHERE \"user\" = ?";
         Personnel personnel = null;
 
-        // On utilise try-with-resources pour fermer la connexion automatiquement après la requête
+        // On utilise try-with-resources pour fermer la connexion automatiquement après
+        // la requête
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, username);
-            
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     personnel = new Personnel();
@@ -41,7 +42,7 @@ public class PersonnelRequest {
         }
         return personnel;
     }
-    
+
     /**
      * Ajoute un nouveau membre du personnel (Bénévole, Veto, Admin).
      */
@@ -50,14 +51,14 @@ public class PersonnelRequest {
         String sql = "INSERT INTO Personnel (nom, prenom, tel, type_pers, \"user\", password) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, p.getNom());
             pstmt.setString(2, p.getPrenom());
             pstmt.setString(3, p.getTel());
             pstmt.setString(4, p.getType_pers());
-            pstmt.setString(5, p.getUser());      // Identifiant de connexion
-            pstmt.setString(6, p.getPassword());  // Mot de passe
+            pstmt.setString(5, p.getUser()); // Identifiant de connexion
+            pstmt.setString(6, p.getPassword()); // Mot de passe
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
@@ -69,14 +70,13 @@ public class PersonnelRequest {
         }
     }
 
-
     /**
      * Récupère un membre du personnel par son ID.
      */
     public Personnel getById(int id) {
         String sql = "SELECT * FROM Personnel WHERE id_pers = ?";
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -99,20 +99,21 @@ public class PersonnelRequest {
     }
 
     /**
-     * Recherche des bénévoles par nom/prénom/identifiant (recherche partielle, insensible à la casse).
+     * Recherche des bénévoles par nom/prénom/identifiant (recherche partielle,
+     * insensible à la casse).
      */
     public List<Personnel> searchBenevoles(String query) {
         List<Personnel> liste = new ArrayList<>();
         String sql = """
-            SELECT *
-            FROM Personnel
-            WHERE type_pers ILIKE 'Benevole'
-              AND (nom ILIKE ? OR prenom ILIKE ? OR "user" ILIKE ?)
-            ORDER BY nom ASC, prenom ASC
-        """;
+                    SELECT *
+                    FROM Personnel
+                    WHERE (type_pers ILIKE 'Benevole' OR type_pers ILIKE 'Bénévole')
+                      AND (nom ILIKE ? OR prenom ILIKE ? OR "user" ILIKE ?)
+                    ORDER BY nom ASC, prenom ASC
+                """;
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             String like = "%" + query + "%";
             pstmt.setString(1, like);

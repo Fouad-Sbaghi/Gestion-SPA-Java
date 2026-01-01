@@ -3,9 +3,10 @@ package projet.gestion;
 import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.text.Normalizer;
 
 // --- IMPORTS DES REQUESTS CRUD ---
-import projet.requests.ActiviteRequest; 
+import projet.requests.ActiviteRequest;
 import projet.requests.AffectationCreneauActiviteRequest;
 import projet.requests.AnimalRequest;
 import projet.requests.BoxRequest;
@@ -43,7 +44,7 @@ public class Controller {
     private IncidentRequest incidentReq;
     private PersonnelRequest personnelReq;
     private SoinRequest soinReq;
-    
+
     // --- INSTANCES LIAISONS ---
     private SejourBoxRequest sejourBoxReq;
     private SejourFamilleRequest sejourFamilleReq;
@@ -55,10 +56,10 @@ public class Controller {
     private RapportPlanningRequest rapportPlanning;
     private RapportAnimauxAdoptable rapportAdoptable;
     private RapportBenevoleRequest rapportBenevole;
-    private RapportBoxRequest rapportBox; 
+    private RapportBoxRequest rapportBox;
     private RapportHistoriqueAnimal rapportHistorique;
     private RapportIncidentRequest rapportIncident;
-    
+
     private Personnel currentUser;
 
     public Controller() {
@@ -98,25 +99,27 @@ public class Controller {
 
     public void listerAnimaux() {
         System.out.println("--- Liste complète des Animaux ---");
-        List<Animal> liste = animalReq.getAll(); 
-        
+        List<Animal> liste = animalReq.getAll();
+
         if (liste.isEmpty()) {
             System.out.println("Aucun animal trouvé.");
         } else {
-            System.out.printf("%-4s | %-12s | %-10s | %-8s | %-11s | %-11s | %-10s | %s%n", 
-                "ID", "Puce", "Nom", "Espèce", "Naissance", "Arrivée", "Statut", "Tests (H/B/Ch/Ct)");
-            System.out.println("----------------------------------------------------------------------------------------------------");
-            
+            System.out.printf("%-4s | %-12s | %-10s | %-8s | %-11s | %-11s | %-10s | %s%n",
+                    "ID", "Puce", "Nom", "Espèce", "Naissance", "Arrivée", "Statut", "Tests (H/B/Ch/Ct)");
+            System.out.println(
+                    "----------------------------------------------------------------------------------------------------");
+
             for (Animal a : liste) {
-                String tests = String.format("%s/%s/%s/%s", 
-                    a.isTests_humain() ? "V" : "X", a.isTests_bebe() ? "V" : "X",
-                    a.isTests_chien() ? "V" : "X", a.isTests_chat() ? "V" : "X");
+                String tests = String.format("%s/%s/%s/%s",
+                        a.isTests_humain() ? "V" : "X", a.isTests_bebe() ? "V" : "X",
+                        a.isTests_chien() ? "V" : "X", a.isTests_chat() ? "V" : "X");
 
                 String puce = (a.getPuce() == null) ? "-" : a.getPuce();
                 String naiss = (a.getDate_naissance() == null) ? "?" : a.getDate_naissance().toString();
 
-                System.out.printf("%-4d | %-12s | %-10s | %-8s | %-11s | %-11s | %-10s | %s%n", 
-                    a.getId_animal(), puce, a.getNom(), a.getEspece(), naiss, a.getDate_arrivee(), a.getStatut(), tests);
+                System.out.printf("%-4d | %-12s | %-10s | %-8s | %-11s | %-11s | %-10s | %s%n",
+                        a.getId_animal(), puce, a.getNom(), a.getEspece(), naiss, a.getDate_arrivee(), a.getStatut(),
+                        tests);
             }
         }
     }
@@ -126,14 +129,17 @@ public class Controller {
             System.out.println(">> Ajout d'un nouvel animal");
             Animal a = new Animal();
 
-            System.out.print("Nom : "); a.setNom(scanner.nextLine());
-            System.out.print("Espèce (Chat/Chien) : "); a.setEspece(scanner.nextLine());
-            System.out.print("Puce (Identifiant unique) : "); a.setPuce(scanner.nextLine());
-            
+            System.out.print("Nom : ");
+            a.setNom(scanner.nextLine());
+            System.out.print("Espèce (Chat/Chien) : ");
+            a.setEspece(scanner.nextLine());
+            System.out.print("Puce (Identifiant unique) : ");
+            a.setPuce(scanner.nextLine());
+
             a.setDate_arrivee(new Date(System.currentTimeMillis()));
             a.setStatut("En attente");
 
-            animalReq.add(a); 
+            animalReq.add(a);
             System.out.println("Succès : Animal ajouté.");
         } catch (Exception e) {
             System.out.println("Erreur ajout animal : " + e.getMessage());
@@ -155,11 +161,17 @@ public class Controller {
     public void chercherAnimal(String input) {
         try {
             int id = Integer.parseInt(input);
+<<<<<<< HEAD
             rapportHistorique.afficherDossier(id); 
+=======
+            // Si c'est un ID, on affiche le rapport complet (Dossier médical, etc.)
+            rapportHistorique.afficherDossier(id);
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
         } catch (NumberFormatException e) {
             System.out.println("Recherche par nom '" + input + "' :");
             List<Animal> res = animalReq.getByName(input);
-            for(Animal a : res) System.out.println(a);
+            for (Animal a : res)
+                System.out.println(a);
         }
     }
 
@@ -193,10 +205,12 @@ public class Controller {
         }
 
         System.out.printf("%-5s | %-20s | %-10s | %-25s | %s%n", "ID", "Nom", "Type", "Adresse", "Contact");
-        System.out.println("------------------------------------------------------------------------------------------");
+        System.out
+                .println("------------------------------------------------------------------------------------------");
         for (Famille f : res) {
             System.out.printf("%-5d | %-20s | %-10s | %-25s | %s%n",
-                f.getId_famille(), safe(f.getNom()), safe(f.getType_famille()), truncate(safe(f.getAdresse()), 25), safe(f.getContact()));
+                    f.getId_famille(), safe(f.getNom()), safe(f.getType_famille()), truncate(safe(f.getAdresse()), 25),
+                    safe(f.getContact()));
         }
     }
 
@@ -214,8 +228,9 @@ public class Controller {
                 System.out.println("Bénévole introuvable : #" + id);
                 return;
             }
-            if (p.getType_pers() == null || !p.getType_pers().equalsIgnoreCase("Benevole")) {
-                System.out.println("Info : la personne #" + id + " n'est pas un bénévole (type=" + p.getType_pers() + ").");
+            if (!isBenevoleType(p.getType_pers())) {
+                System.out.println(
+                        "Info : la personne #" + id + " n'est pas un bénévole (type=" + p.getType_pers() + ").");
                 return;
             }
             System.out.println("=== BÉNÉVOLE #" + id + " ===");
@@ -237,7 +252,7 @@ public class Controller {
         System.out.println("--------------------------------------------------------------------------");
         for (Personnel p : res) {
             System.out.printf("%-5d | %-15s | %-15s | %-15s | %s%n",
-                p.getId_pers(), safe(p.getNom()), safe(p.getPrenom()), safe(p.getTel()), safe(p.getUser()));
+                    p.getId_pers(), safe(p.getNom()), safe(p.getPrenom()), safe(p.getTel()), safe(p.getUser()));
         }
     }
 
@@ -259,19 +274,38 @@ public class Controller {
     private String safe(String s) { return (s == null) ? "-" : s; }
 
     private String truncate(String s, int max) {
-        if (s == null) return "-";
-        if (s.length() <= max) return s;
+        if (s == null)
+            return "-";
+        if (s.length() <= max)
+            return s;
         return s.substring(0, Math.max(0, max - 1)) + "…";
+    }
+
+    private static String normalizeNoAccentLower(String s) {
+        if (s == null)
+            return "";
+        String n = Normalizer.normalize(s, Normalizer.Form.NFD);
+        n = n.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return n.trim().toLowerCase();
+    }
+
+    private static boolean isBenevoleType(String type) {
+        // Tolère Benevole / Bénévole / variations de casse/accents
+        return "benevole".equals(normalizeNoAccentLower(type));
     }
 
     public void updateAnimal(int id, Scanner scanner) {
         Animal a = animalReq.getById(id);
-        if (a == null) { System.out.println("Animal introuvable."); return; }
-        
+        if (a == null) {
+            System.out.println("Animal introuvable.");
+            return;
+        }
+
         System.out.println("Modification de " + a.getNom());
         System.out.print("Nouveau statut (Actuel: " + a.getStatut() + ") [Entrée=Ignorer] : ");
         String stat = scanner.nextLine();
-        if(!stat.isEmpty()) a.setStatut(stat);
+        if (!stat.isEmpty())
+            a.setStatut(stat);
 
         animalReq.update(a);
         System.out.println("Mise à jour effectuée.");
@@ -280,7 +314,8 @@ public class Controller {
     public void filtrerAnimaux(String filtre) {
         List<Animal> liste = animalReq.getByStatut(filtre);
         System.out.println("--- Animaux statut : " + filtre + " ---");
-        for(Animal a : liste) System.out.println(a);
+        for (Animal a : liste)
+            System.out.println(a);
     }
 
     // ==================================================================================
@@ -290,25 +325,31 @@ public class Controller {
     public void ajouterFamille(Scanner scanner) {
         System.out.println(">> Création Famille");
         Famille f = new Famille();
-        
-        System.out.print("Nom de famille : "); f.setNom(scanner.nextLine());
-        System.out.print("Type (Accueil/Adoption) : "); f.setType_famille(scanner.nextLine());
-        System.out.print("Adresse : "); f.setAdresse(scanner.nextLine());
-        System.out.print("Contact : "); f.setContact(scanner.nextLine());
-        
+
+        System.out.print("Nom de famille : ");
+        f.setNom(scanner.nextLine());
+        System.out.print("Type (Accueil/Adoption) : ");
+        f.setType_famille(scanner.nextLine());
+        System.out.print("Adresse : ");
+        f.setAdresse(scanner.nextLine());
+        System.out.print("Contact : ");
+        f.setContact(scanner.nextLine());
+
         familyReq.add(f);
     }
 
     public void listerFamilles() {
         System.out.println("--- Liste des Familles ---");
         List<Famille> liste = familyReq.getAll();
-        for(Famille f : liste) {
-            System.out.printf("[%d] %s (%s) - %s%n", f.getId_famille(), f.getNom(), f.getType_famille(), f.getAdresse());
+        for (Famille f : liste) {
+            System.out.printf("[%d] %s (%s) - %s%n", f.getId_famille(), f.getNom(), f.getType_famille(),
+                    f.getAdresse());
         }
     }
 
     // MODIF : Met à jour le statut de l'animal après lien
     public void lierFamille(int idAnimal, int idFamille, String type) {
+<<<<<<< HEAD
         if(sejourFamilleReq.commencerSejour(idAnimal, idFamille)) {
              try {
                  Animal a = animalReq.getById(idAnimal);
@@ -320,11 +361,24 @@ public class Controller {
              } catch (Exception e) {
                  System.out.println("⚠ Séjour créé, mais erreur maj statut.");
              }
+=======
+        if (sejourFamilleReq.commencerSejour(idAnimal, idFamille)) {
+            Animal a = animalReq.getById(idAnimal);
+            if (a != null) {
+                a.setStatut("En " + type);
+                animalReq.update(a);
+            }
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
         }
     }
+<<<<<<< HEAD
     
     // MODIF : Met à jour le statut et ajoute un LOG d'activité
+=======
+
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
     public void retourDeFamille(int idAnimal) {
+<<<<<<< HEAD
         if(sejourFamilleReq.terminerSejour(idAnimal)) {
              try {
                  Animal a = animalReq.getById(idAnimal);
@@ -340,6 +394,15 @@ public class Controller {
              } catch (Exception e) {
                  System.out.println("⚠ Erreur maj statut/log.");
              }
+=======
+        if (sejourFamilleReq.terminerSejour(idAnimal)) {
+            Animal a = animalReq.getById(idAnimal);
+            if (a != null) {
+                a.setStatut("Au refuge");
+                animalReq.update(a);
+            }
+            System.out.println("Statut de l'animal mis à jour : Au refuge.");
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
         }
     }
 
@@ -347,12 +410,17 @@ public class Controller {
     public void historiqueFamille(int idFamille) {
         System.out.println("\n=== HISTORIQUE FAMILLE #" + idFamille + " ===");
         Famille f = familyReq.getById(idFamille);
+<<<<<<< HEAD
         if(f != null) {
             System.out.println("Famille : " + f.getNom() + ", " + f.getAdresse());
             sejourFamilleReq.afficherHistoriqueParFamille(idFamille);
         } else {
             System.out.println("❌ Famille introuvable.");
         }
+=======
+        if (f != null)
+            System.out.println("Famille : " + f.getNom() + ", " + f.getAdresse());
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
     }
 
     // ==================================================================================
@@ -361,7 +429,7 @@ public class Controller {
 
     public void listerBox() {
         System.out.println("--- État actuel des Box ---");
-        boxReq.afficherOccupation(); 
+        boxReq.afficherOccupation();
     }
 
     public void infoBox(int idBox) {
@@ -370,7 +438,7 @@ public class Controller {
 
     public void rapportAvanceBox() {
         System.out.println("--- Statistiques détaillées des Box ---");
-        rapportBox.afficherStatistiques(); 
+        rapportBox.afficherStatistiques();
     }
 
     public void placerAnimalBox(int idBox, int idAnimal) {
@@ -394,12 +462,17 @@ public class Controller {
         System.out.println(">> Nouveau Bénévole");
         Personnel p = new Personnel();
         p.setType_pers("Benevole");
-        
-        System.out.print("Nom : "); p.setNom(scanner.nextLine());
-        System.out.print("Prénom : "); p.setPrenom(scanner.nextLine());
-        System.out.print("Tel : "); p.setTel(scanner.nextLine());
-        System.out.print("User : "); p.setUser(scanner.nextLine());
-        System.out.print("Pass : "); p.setPassword(scanner.nextLine());
+
+        System.out.print("Nom : ");
+        p.setNom(scanner.nextLine());
+        System.out.print("Prénom : ");
+        p.setPrenom(scanner.nextLine());
+        System.out.print("Tel : ");
+        p.setTel(scanner.nextLine());
+        System.out.print("User : ");
+        p.setUser(scanner.nextLine());
+        System.out.print("Pass : ");
+        p.setPassword(scanner.nextLine());
 
         personnelReq.add(p);
         System.out.println("Bénévole ajouté.");
@@ -415,15 +488,18 @@ public class Controller {
     public void checkSousEffectif() {
         System.out.println("--- ALERTE : Créneaux en sous-effectif ---");
         List<String> alertes = rapportPlanning.getCreneauxManquants();
-        if (alertes.isEmpty()) System.out.println("R.A.S. Planning complet.");
-        else for (String alerte : alertes) System.out.println("⚠ " + alerte);
+        if (alertes.isEmpty())
+            System.out.println("R.A.S. Planning complet.");
+        else
+            for (String alerte : alertes)
+                System.out.println("⚠ " + alerte);
     }
 
     public void assignerBenevole(int idCreneau, int idBenevole) {
         int idActiviteDefaut = 1; 
         affectationReq.assigner(idCreneau, idBenevole, idActiviteDefaut);
     }
-    
+
     public void ajouterRdvAnimal(int idAnimal, int idCreneau, int idPers, Date date) {
         planningAnimalReq.assigner(idAnimal, idCreneau, idPers, date);
     }
@@ -435,7 +511,7 @@ public class Controller {
     public void ajouterActivite(int idAnimal, String type) {
         activityReq.add(idAnimal, type, "Activité enregistrée via menu");
     }
-    
+
     public void ajouterSoinComplet(int idAnimal, int idVeto, Scanner scanner) {
         System.out.println(">> Ajout d'un soin vétérinaire");
         System.out.print("Type (Vaccin/Opération/Examen) : ");
@@ -448,12 +524,12 @@ public class Controller {
         soinReq.add(idAnimal, type, libelle, commentaire);
         System.out.println("Info : Soin ajouté. Pensez à lier la signature vétérinaire si nécessaire.");
     }
-    
+
     public void listerTousLesSoins() {
         System.out.println("--- Liste globale des Soins ---");
         List<Animal> animaux = animalReq.getAll();
         boolean empty = true;
-        
+
         System.out.printf("%-5s | %-15s | %-15s | %-20s%n", "ID Soin", "Animal", "Type", "Libellé");
         System.out.println("----------------------------------------------------------------");
 
@@ -461,16 +537,19 @@ public class Controller {
             List<Soin> soins = soinReq.getByAnimal(a.getId_animal());
             for (Soin s : soins) {
                 empty = false;
-                System.out.printf("%-5d | %-15s | %-15s | %-20s%n", 
-                    s.getId_soin(), a.getNom(), s.getType_soin(), s.getLibelle());
+                System.out.printf("%-5d | %-15s | %-15s | %-20s%n",
+                        s.getId_soin(), a.getNom(), s.getType_soin(), s.getLibelle());
             }
         }
-        if (empty) System.out.println("Aucun soin enregistré.");
+        if (empty)
+            System.out.println("Aucun soin enregistré.");
     }
 
     public void supprimerSoin(int idSoin) {
-        if (soinReq.delete(idSoin)) System.out.println("Succès : Soin #" + idSoin + " supprimé.");
-        else System.out.println("Erreur : Soin introuvable.");
+        if (soinReq.delete(idSoin))
+            System.out.println("Succès : Soin #" + idSoin + " supprimé.");
+        else
+            System.out.println("Erreur : Soin introuvable.");
     }
 
     public void signerSoin(int idSoin, int idVeto) {
@@ -482,7 +561,7 @@ public class Controller {
         String type = scanner.nextLine();
         System.out.print("Description : ");
         String desc = scanner.nextLine();
-        
+
         incidentReq.add(idAnimal, type, desc);
     }
 
