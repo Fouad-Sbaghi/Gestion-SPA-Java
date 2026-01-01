@@ -47,9 +47,46 @@ public class Creneau implements ITable {
     public HashMap<String, fieldType> getMap() { return this.map; }
     @Override
     public boolean check(HashMap<String, fieldType> ts) { return true; }
+
+	public int getId_creneau() {
+		return id_creneau;
+	}
+
+	public void setId_creneau(int id_creneau) {
+		this.id_creneau = id_creneau;
+	}
+
+	public int getNb_benevole() {
+		return nb_benevole;
+	}
+
+	public void setNb_benevole(int nb_benevole) {
+		this.nb_benevole = nb_benevole;
+	}
+
+	public Time getHeure_d() {
+		return heure_d;
+	}
+
+	public void setHeure_d(Time heure_d) {
+		this.heure_d = heure_d;
+	}
+
+	public Time getHeure_f() {
+		return heure_f;
+	}
+
+	public void setHeure_f(Time heure_f) {
+		this.heure_f = heure_f;
+	}
+
+	public void setValues(String values) {
+		this.values = values;
+	}
+
+	public void setMap(HashMap<String, fieldType> map) {
+		this.map = map;
+	}
     
-    // Getters & Setters
-    public void setNb_benevole(int n) { this.nb_benevole = n; }
-    public void setHeure_d(Time t) { this.heure_d = t; }
-    public void setHeure_f(Time t) { this.heure_f = t; }
+ 
 }
