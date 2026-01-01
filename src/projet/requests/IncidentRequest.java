@@ -12,17 +12,20 @@ import projet.connexion.Connexion;
 public class IncidentRequest {
 
     /**
-     * Crée un nouvel incident ET le lie immédiatement à un animal.
-     * Cette méthode effectue deux insertions (Table Incident + Table Animal_Incident).
-     * * @param idAnimal L'ID de l'animal concerné.
-     * @param type Le type (Maladie, Accident, etc.).
-     * @param description L'intitulé ou la description courte.
+     * Cree un nouvel incident ET le lie immediatement a un animal.
+     * Cette methode effectue deux insertions (Table Incident + Table
+     * Animal_Incident).
+     * 
+     * @param idAnimal    L'ID de l'animal concerne.
+     * @param type        Le type (Maladie, Accident, etc.).
+     * @param description L'intitule ou la description courte.
+     * @param commentaire Details supplementaires (peut etre vide).
      */
-    public void add(int idAnimal, String type, String description) {
-        // 1. Requête pour créer l'incident
-        String sqlIncident = "INSERT INTO Incident (type_incident, intitule, date_incident) VALUES (?, ?, ?)";
-        
-        // 2. Requête pour faire le lien avec l'animal
+    public void add(int idAnimal, String type, String description, String commentaire) {
+        // 1. Requete pour creer l'incident
+        String sqlIncident = "INSERT INTO Incident (type_incident, intitule, commentaire, date_incident) VALUES (?, ?, ?, ?)";
+
+        // 2. Requete pour faire le lien avec l'animal
         String sqlLien = "INSERT INTO Animal_Incident (id_animal, id_incident) VALUES (?, ?)";
 
         Connection conn = null;
@@ -32,42 +35,45 @@ public class IncidentRequest {
 
         try {
             conn = Connexion.connectR();
-            
-            // --- ÉTAPE 1 : Insertion de l'incident ---
-            // On demande à récupérer la clé générée (l'ID incident créé)
+
+            // --- ETAPE 1 : Insertion de l'incident ---
             pstmtInc = conn.prepareStatement(sqlIncident, Statement.RETURN_GENERATED_KEYS);
             pstmtInc.setString(1, type);
             pstmtInc.setString(2, description);
-            pstmtInc.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            
+            pstmtInc.setString(3, (commentaire != null && !commentaire.isEmpty()) ? commentaire : null);
+            pstmtInc.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+
             int rows = pstmtInc.executeUpdate();
 
             if (rows > 0) {
-                // On récupère l'ID qui vient d'être créé par la base de données
                 rs = pstmtInc.getGeneratedKeys();
                 if (rs.next()) {
                     int idIncidentGenere = rs.getInt(1);
 
-                    // --- ÉTAPE 2 : Création du lien avec l'animal ---
+                    // --- ETAPE 2 : Creation du lien avec l'animal ---
                     pstmtLien = conn.prepareStatement(sqlLien);
                     pstmtLien.setInt(1, idAnimal);
                     pstmtLien.setInt(2, idIncidentGenere);
-                    
+
                     pstmtLien.executeUpdate();
-                    
-                    System.out.println("Succès : Incident déclaré pour l'animal #" + idAnimal + " (Ref Incident: " + idIncidentGenere + ")");
+
+                    System.out.println("Succes : Incident declare pour l'animal #" + idAnimal + " (Ref Incident: "
+                            + idIncidentGenere + ")");
                 }
             }
 
         } catch (SQLException e) {
-            System.err.println("Erreur déclaration incident : " + e.getMessage());
+            System.err.println("Erreur declaration incident : " + e.getMessage());
         } finally {
-            // Fermeture propre des ressources (manuelle car on a plusieurs statements)
             try {
-                if (rs != null) rs.close();
-                if (pstmtInc != null) pstmtInc.close();
-                if (pstmtLien != null) pstmtLien.close();
-                if (conn != null) conn.close();
+                if (rs != null)
+                    rs.close();
+                if (pstmtInc != null)
+                    pstmtInc.close();
+                if (pstmtLien != null)
+                    pstmtLien.close();
+                if (conn != null)
+                    conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -75,60 +81,62 @@ public class IncidentRequest {
     }
 
     /**
-     * Supprime un incident (et le lien associé grâce au CASCADE défini dans la BDD ou manuellement).
+     * Supprime un incident (et le lien associé grâce au CASCADE défini dans la BDD
+     * ou manuellement).
      */
     public boolean delete(int idIncident) {
         String sql = "DELETE FROM Incident WHERE id_incident = ?";
-        
+
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, idIncident);
             int rows = pstmt.executeUpdate();
             return rows > 0;
-            
+
         } catch (SQLException e) {
             System.err.println("Erreur suppression incident : " + e.getMessage());
             return false;
         }
     }
 
-
     /**
-     * Recherche des incidents par intitulé/type/commentaire et affiche les résultats.
+     * Recherche des incidents par intitulé/type/commentaire et affiche les
+     * résultats.
      * Recherche insensible à la casse (ILIKE).
      */
     public void afficherRecherche(String query) {
         String sql = """
-            SELECT i.id_incident,
-                   i.date_incident,
-                   i.type_incident,
-                   i.intitule,
-                   COALESCE(i.commentaire, '') AS commentaire,
-                   CASE
-                       WHEN i.type_incident ILIKE ? THEN 'Type'
-                       WHEN i.intitule ILIKE ? THEN 'Intitulé'
-                       WHEN i.commentaire ILIKE ? THEN 'Commentaire'
-                       ELSE '-'
-                   END AS match_field,
-                   COALESCE(string_agg(a.nom || ' (#' || a.id_animal || ')', ', ' ORDER BY a.id_animal), '-') AS animaux
-            FROM Incident i
-            LEFT JOIN Animal_Incident ai ON ai.id_incident = i.id_incident
-            LEFT JOIN Animal a ON a.id_animal = ai.id_animal
-            WHERE i.intitule ILIKE ?
-               OR i.commentaire ILIKE ?
-               OR i.type_incident ILIKE ?
-            GROUP BY i.id_incident, i.date_incident, i.type_incident, i.intitule, i.commentaire
-            ORDER BY i.date_incident DESC, i.id_incident DESC
-        """;
+                    SELECT i.id_incident,
+                           i.date_incident,
+                           i.type_incident,
+                           i.intitule,
+                           COALESCE(i.commentaire, '') AS commentaire,
+                           CASE
+                               WHEN i.type_incident ILIKE ? THEN 'Type'
+                               WHEN i.intitule ILIKE ? THEN 'Intitulé'
+                               WHEN i.commentaire ILIKE ? THEN 'Commentaire'
+                               ELSE '-'
+                           END AS match_field,
+                           COALESCE(string_agg(a.nom || ' (#' || a.id_animal || ')', ', ' ORDER BY a.id_animal), '-') AS animaux
+                    FROM Incident i
+                    LEFT JOIN Animal_Incident ai ON ai.id_incident = i.id_incident
+                    LEFT JOIN Animal a ON a.id_animal = ai.id_animal
+                    WHERE i.intitule ILIKE ?
+                       OR i.commentaire ILIKE ?
+                       OR i.type_incident ILIKE ?
+                    GROUP BY i.id_incident, i.date_incident, i.type_incident, i.intitule, i.commentaire
+                    ORDER BY i.date_incident DESC, i.id_incident DESC
+                """;
 
         System.out.println("--- Recherche incident : '" + query + "' ---");
         System.out.printf("%-5s | %-10s | %-12s | %-35s | %-11s | %-22s | %s%n",
                 "ID", "Date", "Type", "Intitulé", "Match", "Commentaire", "Animaux");
-        System.out.println("---------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println(
+                "---------------------------------------------------------------------------------------------------------------------------------");
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             String like = "%" + query + "%";
 
@@ -148,7 +156,8 @@ public class IncidentRequest {
                     found = true;
                     int id = rs.getInt("id_incident");
                     String dateStr = rs.getString("date_incident");
-                    if (dateStr != null && dateStr.length() > 10) dateStr = dateStr.substring(0, 10);
+                    if (dateStr != null && dateStr.length() > 10)
+                        dateStr = dateStr.substring(0, 10);
 
                     String type = rs.getString("type_incident");
                     String intitule = rs.getString("intitule");
@@ -180,21 +189,21 @@ public class IncidentRequest {
      */
     public void afficherInfo(int idIncident) {
         String sql = """
-            SELECT i.id_incident,
-                   i.date_incident,
-                   i.type_incident,
-                   i.intitule,
-                   COALESCE(i.commentaire, '') AS commentaire,
-                   COALESCE(string_agg(a.nom || ' (#' || a.id_animal || ')', ', ' ORDER BY a.id_animal), '-') AS animaux
-            FROM Incident i
-            LEFT JOIN Animal_Incident ai ON ai.id_incident = i.id_incident
-            LEFT JOIN Animal a ON a.id_animal = ai.id_animal
-            WHERE i.id_incident = ?
-            GROUP BY i.id_incident, i.date_incident, i.type_incident, i.intitule, i.commentaire
-        """;
+                    SELECT i.id_incident,
+                           i.date_incident,
+                           i.type_incident,
+                           i.intitule,
+                           COALESCE(i.commentaire, '') AS commentaire,
+                           COALESCE(string_agg(a.nom || ' (#' || a.id_animal || ')', ', ' ORDER BY a.id_animal), '-') AS animaux
+                    FROM Incident i
+                    LEFT JOIN Animal_Incident ai ON ai.id_incident = i.id_incident
+                    LEFT JOIN Animal a ON a.id_animal = ai.id_animal
+                    WHERE i.id_incident = ?
+                    GROUP BY i.id_incident, i.date_incident, i.type_incident, i.intitule, i.commentaire
+                """;
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idIncident);
 
@@ -224,8 +233,10 @@ public class IncidentRequest {
     }
 
     private String truncate(String s, int max) {
-        if (s == null) return "";
-        if (s.length() <= max) return s;
+        if (s == null)
+            return "";
+        if (s.length() <= max)
+            return s;
         return s.substring(0, Math.max(0, max - 1)) + "…";
     }
 
