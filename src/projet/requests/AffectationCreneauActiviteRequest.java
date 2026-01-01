@@ -97,4 +97,47 @@ public class AffectationCreneauActiviteRequest {
             System.err.println("Erreur affichage planning : " + e.getMessage());
         }
     }
+
+    /**
+     * NOUVEAU : Affiche le planning personnel d'un bénévole spécifique.
+     */
+    public void afficherPlanningPersonne(int idPersonne) {
+        String sql = """
+            SELECT c.id_creneau, c.heure_d, c.heure_f, a.type_act
+            FROM Affectation_Creneau_Activite aff
+            JOIN Creneau c ON aff.id_creneau = c.id_creneau
+            JOIN Activite a ON aff.id_activite = a.id_activite
+            WHERE aff.id_personne = ?
+            ORDER BY c.heure_d ASC
+        """;
+
+        System.out.println("--- Planning Personnel ---");
+        System.out.printf("%-5s | %-15s | %-20s%n", "ID Cr", "Heures", "Activité");
+        System.out.println("---------------------------------------------");
+
+        try (Connection conn = Connexion.connectR();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idPersonne);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                boolean empty = true;
+                while (rs.next()) {
+                    empty = false;
+                    String heures = rs.getTime("heure_d") + " - " + rs.getTime("heure_f");
+                    
+                    System.out.printf("%-5d | %-15s | %-20s%n", 
+                        rs.getInt("id_creneau"),
+                        heures,
+                        rs.getString("type_act"));
+                }
+                if (empty) {
+                    System.out.println("Aucun créneau prévu pour ce bénévole.");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lecture planning perso : " + e.getMessage());
+        }
+    }
 }

@@ -533,6 +533,24 @@ public class Controller {
         affectationReq.assigner(idCreneau, idBenevole, idActiviteDefaut);
     }
 
+    /**
+     * NOUVEAU : Affiche le planning d'un bénévole précis.
+     */
+    public void planningDuBenevole(int idBenevole) {
+        // 1. On récupère les infos du bénévole pour l'affichage
+        Personnel p = personnelReq.getById(idBenevole);
+        
+        if (p == null) {
+            System.out.println("❌ Bénévole introuvable (ID " + idBenevole + ").");
+            return;
+        }
+        
+        System.out.println("\n📅 Planning de : " + p.getPrenom() + " " + p.getNom() + " (ID " + idBenevole + ")");
+        
+        // 2. On affiche ses créneaux
+        affectationReq.afficherPlanningPersonne(idBenevole);
+    }
+
     public void ajouterRdvAnimal(int idAnimal, int idCreneau, int idPers, Date date) {
         planningAnimalReq.assigner(idAnimal, idCreneau, idPers, date);
     }

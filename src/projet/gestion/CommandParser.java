@@ -314,7 +314,7 @@ public class CommandParser {
 
     private void menuPlanning() {
         System.out.println("\n--- [4] PLANNING ---");
-        System.out.println("Commandes: benevole add, creneau [list | alert | assign], planning animal add");
+        System.out.println("Commandes: benevole add, creneau [list | alert | assign], benevole planning <id>");
 
         boolean back = false;
         while (!back) {
@@ -328,6 +328,7 @@ public class CommandParser {
             if (cmd.equalsIgnoreCase("help")) {
                 System.out.println("Commandes:");
                 System.out.println("  benevole add");
+                System.out.println("  benevole planning <idBenevole> (Nouveau !)");
                 System.out.println("  creneau list");
                 System.out.println("  creneau alert");
                 System.out.println("  creneau assign <idCreneau> <idBenevole>");
@@ -342,8 +343,14 @@ public class CommandParser {
             if (parts[0].equalsIgnoreCase("benevole")) {
                 if (parts.length >= 2 && parts[1].equalsIgnoreCase("add")) {
                     controller.ajouterBenevole(scanner);
-                } else {
-                    printUsage("benevole add");
+                } 
+                // CAS AJOUTE : Planning par bénévole
+                else if (parts.length >= 3 && parts[1].equalsIgnoreCase("planning")) {
+                    Integer id = parseIntOrNull(parts[2], "idBenevole");
+                    if (id != null) controller.planningDuBenevole(id);
+                }
+                else {
+                    printUsage("benevole [add | planning <id>]");
                 }
                 continue;
             }
@@ -478,6 +485,7 @@ public class CommandParser {
                 }
                 continue;
             }
+
             System.out.println("Commande inconnue. Tapez 'help'.");
         }
     }
