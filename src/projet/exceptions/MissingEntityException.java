@@ -7,10 +7,11 @@ package projet.exceptions;
 public class MissingEntityException extends DonneeException {
 
     public MissingEntityException(String typeEntite, int id) {
-        super("Impossible de trouver l'entité [" + typeEntite + "] avec l'identifiant " + id + ".");
+        super("MissingEntityException : Impossible de trouver l'entité [" + typeEntite + "] avec l'identifiant " + id
+                + ".");
     }
-    
+
     public MissingEntityException(String message) {
-        super(message);
+        super("MissingEntityException : " + message);
     }
 }

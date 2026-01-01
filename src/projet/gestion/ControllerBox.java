@@ -37,11 +37,11 @@ public class ControllerBox {
         try {
             sejourBoxReq.placerAnimal(idAnimal, idBox);
         } catch (BoxPleinException e) {
-            System.out.println("Erreur : " + e.getMessage());
+            System.out.println(e.getMessage());
         } catch (IncompatibiliteTypeException e) {
-            System.out.println("Erreur : " + e.getMessage());
+            System.out.println(e.getMessage());
         } catch (MissingEntityException e) {
-            System.out.println("Erreur : " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 

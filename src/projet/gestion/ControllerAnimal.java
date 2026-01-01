@@ -53,10 +53,12 @@ public class ControllerAnimal {
     }
 
     /**
-     * Valide qu'un nom ne contient pas de chiffres.
+     * Valide qu'un nom ne contient que des lettres (avec accents), espaces et
+     * tirets.
      */
     private void validerNom(String nom) throws InvalidFormatException {
-        if (nom != null && nom.matches(".*\\d.*")) {
+        // Regex : "Ne correspond PAS uniquement à des lettres, espaces ou tirets"
+        if (nom != null && !nom.matches("[a-zA-Zà-ÿÀ-ß\\s-]+")) {
             throw new InvalidFormatException("Nom", nom);
         }
     }
@@ -115,7 +117,7 @@ public class ControllerAnimal {
             animalReq.add(a);
             System.out.println("Succes : Animal ajoute !");
         } catch (InvalidFormatException e) {
-            System.out.println("Erreur : " + e.getMessage());
+            System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println("Erreur ajout animal : " + e.getMessage());
         }
