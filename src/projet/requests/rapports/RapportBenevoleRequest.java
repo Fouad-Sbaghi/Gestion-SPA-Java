@@ -7,33 +7,33 @@ import java.sql.Statement;
 
 import projet.connexion.Connexion;
 
-public class RapportBenevoleRequest extends RapportRequest 
-{
+public class RapportBenevoleRequest extends RapportRequest {
 
     /**
      * Affiche les bénévoles et leur nombre de missions (créneaux affectés).
      */
     public void afficherStatistiques() {
-        // Cette requête compte le nombre de fois qu'un bénévole apparaît dans la table d'affectation
+        // Cette requête compte le nombre de fois qu'un bénévole apparaît dans la table
+        // d'affectation
         String sql = """
-            SELECT p.id_pers, p.nom, p.prenom, p.tel, COUNT(a.id_creneau) as missions
-            FROM Personnel p
-            LEFT JOIN Affectation_Creneau_Activite a ON p.id_pers = a.id_personne
-            WHERE p.type_pers = 'Benevole'
-            GROUP BY p.id_pers, p.nom, p.prenom, p.tel
-            ORDER BY missions DESC, p.nom ASC
-        """;
+                    SELECT p.id_pers, p.nom, p.prenom, p.tel, COUNT(a.id_creneau) as missions
+                    FROM Personnel p
+                    LEFT JOIN Affectation_Creneau_Activite a ON p.id_pers = a.id_personne
+                    WHERE (p.type_pers ILIKE 'Benevole' OR p.type_pers ILIKE 'B�n�vole')
+                    GROUP BY p.id_pers, p.nom, p.prenom, p.tel
+                    ORDER BY missions DESC, p.nom ASC
+                """;
 
         printHeader("=== STATISTIQUES DES BÉNÉVOLES ===");
         System.out.printf("%-5s | %-15s | %-15s | %-12s | %s%n", "ID", "Nom", "Prénom", "Téléphone", "Missions");
         System.out.println("-------------------------------------------------------------------------");
 
         try (Connection conn = Connexion.connectR();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             int totalBenevoles = 0;
-            
+
             while (rs.next()) {
                 totalBenevoles++;
                 int id = rs.getInt("id_pers");
