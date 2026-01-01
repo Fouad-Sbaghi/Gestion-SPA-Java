@@ -40,7 +40,7 @@ public class Controller {
     private BoxRequest boxReq;
     private FamilleRequest familyReq;
     private CreneauRequest creneauReq;
-    private ActiviteRequest activityReq; // Correction du type ici
+    private ActiviteRequest activityReq; 
     private IncidentRequest incidentReq;
     private PersonnelRequest personnelReq;
     private SoinRequest soinReq;
@@ -68,7 +68,7 @@ public class Controller {
         this.boxReq = new BoxRequest();
         this.familyReq = new FamilleRequest();
         this.creneauReq = new CreneauRequest();
-        this.activityReq = new ActiviteRequest(); // Correction de l'instanciation ici
+        this.activityReq = new ActiviteRequest(); 
         this.incidentReq = new IncidentRequest();
         this.personnelReq = new PersonnelRequest();
         this.soinReq = new SoinRequest();
@@ -161,10 +161,13 @@ public class Controller {
     public void chercherAnimal(String input) {
         try {
             int id = Integer.parseInt(input);
+<<<<<<< HEAD
+            rapportHistorique.afficherDossier(id); 
+=======
             // Si c'est un ID, on affiche le rapport complet (Dossier médical, etc.)
             rapportHistorique.afficherDossier(id);
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
         } catch (NumberFormatException e) {
-            // Si ce n'est pas un nombre, on cherche par Nom
             System.out.println("Recherche par nom '" + input + "' :");
             List<Animal> res = animalReq.getByName(input);
             for (Animal a : res)
@@ -192,9 +195,7 @@ public class Controller {
             System.out.println("Adresse  : " + f.getAdresse());
             System.out.println("Contact  : " + f.getContact());
             return;
-        } catch (NumberFormatException ignore) {
-            // recherche par nom
-        }
+        } catch (NumberFormatException ignore) { }
 
         List<Famille> res = familyReq.getByName(q);
         System.out.println("--- Recherche famille : '" + q + "' ---");
@@ -238,9 +239,7 @@ public class Controller {
             System.out.println("Tel      : " + p.getTel());
             System.out.println("User     : " + p.getUser());
             return;
-        } catch (NumberFormatException ignore) {
-            // recherche texte
-        }
+        } catch (NumberFormatException ignore) { }
 
         List<Personnel> res = personnelReq.searchBenevoles(q);
         System.out.println("--- Recherche bénévole : '" + q + "' ---");
@@ -272,9 +271,7 @@ public class Controller {
         }
     }
 
-    private String safe(String s) {
-        return (s == null) ? "-" : s;
-    }
+    private String safe(String s) { return (s == null) ? "-" : s; }
 
     private String truncate(String s, int max) {
         if (s == null)
@@ -322,7 +319,7 @@ public class Controller {
     }
 
     // ==================================================================================
-    // 2. GESTION DES FAMILLES
+    // 2. GESTION DES FAMILLES (MODIFIÉ)
     // ==================================================================================
 
     public void ajouterFamille(Scanner scanner) {
@@ -350,17 +347,54 @@ public class Controller {
         }
     }
 
+    // MODIF : Met à jour le statut de l'animal après lien
     public void lierFamille(int idAnimal, int idFamille, String type) {
+<<<<<<< HEAD
+        if(sejourFamilleReq.commencerSejour(idAnimal, idFamille)) {
+             try {
+                 Animal a = animalReq.getById(idAnimal);
+                 if(a != null) {
+                     a.setStatut("En " + type); // En Accueil / En Adoption
+                     animalReq.update(a);
+                     System.out.println("✅ Statut animal mis à jour : " + a.getStatut());
+                 }
+             } catch (Exception e) {
+                 System.out.println("⚠ Séjour créé, mais erreur maj statut.");
+             }
+=======
         if (sejourFamilleReq.commencerSejour(idAnimal, idFamille)) {
             Animal a = animalReq.getById(idAnimal);
             if (a != null) {
                 a.setStatut("En " + type);
                 animalReq.update(a);
             }
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
         }
     }
+<<<<<<< HEAD
+    
+    // MODIF : Met à jour le statut et ajoute un LOG d'activité
+=======
 
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
     public void retourDeFamille(int idAnimal) {
+<<<<<<< HEAD
+        if(sejourFamilleReq.terminerSejour(idAnimal)) {
+             try {
+                 Animal a = animalReq.getById(idAnimal);
+                 if(a != null) {
+                     a.setStatut("Au refuge");
+                     animalReq.update(a);
+                     System.out.println("✅ Statut animal repassé à : Au refuge.");
+
+                     // ADD LOG
+                     activityReq.add(idAnimal, "Retour Famille", "Fin de séjour externe");
+                     System.out.println("📝 Activité enregistrée.");
+                 }
+             } catch (Exception e) {
+                 System.out.println("⚠ Erreur maj statut/log.");
+             }
+=======
         if (sejourFamilleReq.terminerSejour(idAnimal)) {
             Animal a = animalReq.getById(idAnimal);
             if (a != null) {
@@ -368,14 +402,25 @@ public class Controller {
                 animalReq.update(a);
             }
             System.out.println("Statut de l'animal mis à jour : Au refuge.");
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
         }
     }
 
+    // MODIF : Affiche l'historique complet
     public void historiqueFamille(int idFamille) {
-        System.out.println("Historique de la famille " + idFamille);
+        System.out.println("\n=== HISTORIQUE FAMILLE #" + idFamille + " ===");
         Famille f = familyReq.getById(idFamille);
+<<<<<<< HEAD
+        if(f != null) {
+            System.out.println("Famille : " + f.getNom() + ", " + f.getAdresse());
+            sejourFamilleReq.afficherHistoriqueParFamille(idFamille);
+        } else {
+            System.out.println("❌ Famille introuvable.");
+        }
+=======
         if (f != null)
             System.out.println("Famille : " + f.getNom() + ", " + f.getAdresse());
+>>>>>>> branch 'master' of https://github.com/Nakken13/App-Gestion-BDD-Spa.git
     }
 
     // ==================================================================================
@@ -451,7 +496,7 @@ public class Controller {
     }
 
     public void assignerBenevole(int idCreneau, int idBenevole) {
-        int idActiviteDefaut = 1; // ID 1 supposé exister (Nettoyage/Général)
+        int idActiviteDefaut = 1; 
         affectationReq.assigner(idCreneau, idBenevole, idActiviteDefaut);
     }
 
@@ -464,7 +509,6 @@ public class Controller {
     // ==================================================================================
 
     public void ajouterActivite(int idAnimal, String type) {
-        // CORRECTION : activityReq est maintenant de type ActiviteRequest
         activityReq.add(idAnimal, type, "Activité enregistrée via menu");
     }
 

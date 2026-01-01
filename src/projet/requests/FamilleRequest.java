@@ -1,7 +1,6 @@
 package projet.requests;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,10 +37,13 @@ public class FamilleRequest {
 
     /**
      * Récupère toutes les familles enregistrées.
+     * MODIF ICI : Tri par ID croissant.
      */
     public List<Famille> getAll() {
         List<Famille> liste = new ArrayList<>();
-        String sql = "SELECT * FROM Famille ORDER BY nom ASC";
+        // AVANT : ORDER BY nom ASC
+        // APRES : ORDER BY id_famille ASC
+        String sql = "SELECT * FROM Famille ORDER BY id_famille ASC";
 
         try (Connection conn = Connexion.connectR();
              Statement stmt = conn.createStatement();
@@ -90,60 +92,7 @@ public class FamilleRequest {
     }
 
     /**
-     * Démarre un séjour en famille pour un animal (Adoption ou Accueil).
-     * Table : Sejour_Famille
-     */
-    public boolean demarrerSejour(int idAnimal, int idFamille) {
-        String sql = "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D) VALUES (?, ?, ?)";
-
-        try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idAnimal);
-            pstmt.setInt(2, idFamille);
-            pstmt.setDate(3, new Date(System.currentTimeMillis())); // Date du jour
-
-            int rows = pstmt.executeUpdate();
-            if (rows > 0) {
-                System.out.println("Succès : Animal #" + idAnimal + " placé dans la famille #" + idFamille);
-                return true;
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Erreur placement famille (Animal déjà placé ?) : " + e.getMessage());
-        }
-        return false;
-    }
-
-    /**
-     * Termine un séjour en famille (met à jour la date de fin).
-     */
-    public void terminerSejour(int idAnimal, int idFamille) {
-        String sql = "UPDATE Sejour_Famille SET DATE_F_FAMILLE = ? WHERE id_animal = ? AND id_famille = ? AND DATE_F_FAMILLE IS NULL";
-
-        try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setDate(1, new Date(System.currentTimeMillis()));
-            pstmt.setInt(2, idAnimal);
-            pstmt.setInt(3, idFamille);
-
-            int rows = pstmt.executeUpdate();
-            if (rows > 0) {
-                System.out.println("Séjour terminé pour l'animal #" + idAnimal);
-            } else {
-                System.out.println("Erreur : Aucun séjour en cours trouvé pour ce couple Animal/Famille.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Erreur fin de séjour : " + e.getMessage());
-        }
-    }
-
-
-    /**
      * Recherche des familles par nom (ou partie du nom).
-     * @param nom Nom ou fragment de nom.
      */
     public List<Famille> getByName(String nom) {
         List<Famille> liste = new ArrayList<>();
