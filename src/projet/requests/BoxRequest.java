@@ -18,19 +18,19 @@ public class BoxRequest {
     public void afficherOccupation() {
         // Requête complexe : Jointure pour compter les animaux présents
         String sql = """
-            SELECT b.id_box, b.type_box, b.capacite_max, COUNT(s.id_animal) as occupe
-            FROM Box b
-            LEFT JOIN Sejour_Box s ON b.id_box = s.id_box AND s.DATE_F_BOX IS NULL
-            GROUP BY b.id_box, b.type_box, b.capacite_max
-            ORDER BY b.id_box ASC
-        """;
+                    SELECT b.id_box, b.type_box, b.capacite_max, COUNT(s.id_animal) as occupe
+                    FROM Box b
+                    LEFT JOIN Sejour_Box s ON b.id_box = s.id_box AND s.DATE_F_BOX IS NULL
+                    GROUP BY b.id_box, b.type_box, b.capacite_max
+                    ORDER BY b.id_box ASC
+                """;
 
         System.out.printf("%-5s | %-15s | %-10s | %-10s%n", "ID", "Type", "Capacité", "Occupé");
         System.out.println("---------------------------------------------------------");
 
         try (Connection conn = Connexion.connectR();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 int id = rs.getInt("id_box");
@@ -40,7 +40,7 @@ public class BoxRequest {
 
                 // Affichage avec alerte visuelle si plein
                 String alerte = (occ >= cap) ? " (PLEIN)" : "";
-                
+
                 System.out.printf("%-5d | %-15s | %-10d | %-10s%n", id, type, cap, occ + alerte);
             }
 
@@ -56,7 +56,7 @@ public class BoxRequest {
         String sql = "INSERT INTO Box (type_box, capacite_max) VALUES (?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, box.getType_box());
             pstmt.setInt(2, box.getCapacite_max());
@@ -75,39 +75,41 @@ public class BoxRequest {
         String sql = "DELETE FROM Box WHERE id_box = ?";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idBox);
             int rows = pstmt.executeUpdate();
             return rows > 0;
 
         } catch (SQLException e) {
-            // Souvent causé par une contrainte de clé étrangère (si le box a encore des animaux)
+            // Souvent causé par une contrainte de clé étrangère (si le box a encore des
+            // animaux)
             System.err.println("Erreur suppression (Le box est-il vide ?) : " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Affiche les informations détaillées d'un box (caractéristiques + animaux actuellement présents).
+     * Affiche les informations détaillées d'un box (caractéristiques + animaux
+     * actuellement présents).
      * Un animal est considéré "présent" si son séjour a DATE_F_BOX IS NULL.
      */
     public void afficherInfoBox(int idBox) {
         String sqlBox = """
-            SELECT b.id_box, b.type_box, b.capacite_max, COUNT(s.id_animal) as occupe
-            FROM Box b
-            LEFT JOIN Sejour_Box s ON b.id_box = s.id_box AND s.DATE_F_BOX IS NULL
-            WHERE b.id_box = ?
-            GROUP BY b.id_box, b.type_box, b.capacite_max
-        """;
+                    SELECT b.id_box, b.type_box, b.capacite_max, COUNT(s.id_animal) as occupe
+                    FROM Box b
+                    LEFT JOIN Sejour_Box s ON b.id_box = s.id_box AND s.DATE_F_BOX IS NULL
+                    WHERE b.id_box = ?
+                    GROUP BY b.id_box, b.type_box, b.capacite_max
+                """;
 
         String sqlAnimaux = """
-            SELECT a.id_animal, a.nom, a.espece, a.statut, a.puce, s.DATE_D
-            FROM Sejour_Box s
-            JOIN Animal a ON a.id_animal = s.id_animal
-            WHERE s.id_box = ? AND s.DATE_F_BOX IS NULL
-            ORDER BY s.DATE_D ASC, a.id_animal ASC
-        """;
+                    SELECT a.id_animal, a.nom, a.espece, a.statut, a.puce, s.DATE_D
+                    FROM Sejour_Box s
+                    JOIN Animal a ON a.id_animal = s.id_animal
+                    WHERE s.id_box = ? AND s.DATE_F_BOX IS NULL
+                    ORDER BY s.DATE_D ASC, a.id_animal ASC
+                """;
 
         try (Connection conn = Connexion.connectR()) {
 
@@ -150,7 +152,8 @@ public class BoxRequest {
                 try (ResultSet rs = pstmt.executeQuery()) {
                     System.out.printf("%-8s | %-18s | %-12s | %-12s | %-14s | %s%n",
                             "ID", "Nom", "Espèce", "Statut", "Puce", "Depuis");
-                    System.out.println("--------------------------------------------------------------------------------");
+                    System.out.println(
+                            "--------------------------------------------------------------------------------");
                     while (rs.next()) {
                         any = true;
                         int idAnimal = rs.getInt("id_animal");
@@ -177,6 +180,31 @@ public class BoxRequest {
 
         } catch (SQLException e) {
             System.err.println("Erreur SQL (Info Box) : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Met à jour les informations d'un box.
+     */
+    public void update(Box box) {
+        String sql = "UPDATE Box SET type_box = ?, capacite_max = ? WHERE id_box = ?";
+
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, box.getType_box());
+            pstmt.setInt(2, box.getCapacite_max());
+            pstmt.setInt(3, box.getId_box());
+
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Box #" + box.getId_box() + " mis à jour.");
+            } else {
+                System.out.println("Erreur : Box #" + box.getId_box() + " introuvable.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL (Update Box) : " + e.getMessage());
         }
     }
 }

@@ -144,4 +144,60 @@ public class ControllerPlanning {
     private String safe(String s) {
         return (s == null) ? "-" : s;
     }
+
+    public void modifierBenevole(int id, Scanner scanner) {
+        Personnel p = personnelReq.getById(id);
+        if (p == null) {
+            System.out.println("Bénévole #" + id + " introuvable.");
+            return;
+        }
+        if (!isBenevoleType(p.getType_pers())) {
+            System.out
+                    .println("Attention : L'ID " + id + " correspond à un " + p.getType_pers() + ", pas un bénévole.");
+            // On continue quand même ou on bloque ? Modifions-le quand même.
+        }
+
+        System.out.println("Modification du bénévole : " + p.getPrenom() + " " + p.getNom());
+        System.out.println("(Laissez vide pour ne pas changer)");
+
+        System.out.print("Nouveau Nom (" + p.getNom() + ") : ");
+        String nom = scanner.nextLine().trim();
+        if (!nom.isEmpty())
+            p.setNom(nom);
+
+        System.out.print("Nouveau Prénom (" + p.getPrenom() + ") : ");
+        String prenom = scanner.nextLine().trim();
+        if (!prenom.isEmpty())
+            p.setPrenom(prenom);
+
+        System.out.print("Nouveau Tel (" + p.getTel() + ") : ");
+        String tel = scanner.nextLine().trim();
+        if (!tel.isEmpty())
+            p.setTel(tel);
+
+        System.out.print("Nouveau User (" + p.getUser() + ") : ");
+        String user = scanner.nextLine().trim();
+        if (!user.isEmpty())
+            p.setUser(user);
+
+        System.out.print("Nouveau Pass (?) : ");
+        String pass = scanner.nextLine().trim();
+        if (!pass.isEmpty())
+            p.setPassword(pass);
+
+        personnelReq.update(p);
+    }
+
+    public void supprimerBenevole(int id) {
+        Personnel p = personnelReq.getById(id);
+        if (p == null) {
+            System.out.println("Bénévole #" + id + " introuvable.");
+            return;
+        }
+        // Vérification optionnelle du type
+        // if (!isBenevoleType(p.getType_pers())) { ... }
+
+        System.out.println("Suppression de " + p.getPrenom() + " " + p.getNom() + "...");
+        personnelReq.delete(id);
+    }
 }

@@ -16,7 +16,7 @@ public class PersonnelRequest {
         Personnel personnel = null;
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, username);
 
@@ -37,7 +37,7 @@ public class PersonnelRequest {
         }
         return personnel;
     }
-    
+
     /**
      * Ajoute un nouveau membre du personnel (Bénévole, Veto, Admin).
      */
@@ -46,14 +46,14 @@ public class PersonnelRequest {
         String sql = "INSERT INTO Personnel (nom, prenom, tel, type_pers, \"user\", password) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, p.getNom());
             pstmt.setString(2, p.getPrenom());
             pstmt.setString(3, p.getTel());
             pstmt.setString(4, p.getType_pers());
-            pstmt.setString(5, p.getUser());      
-            pstmt.setString(6, p.getPassword());  
+            pstmt.setString(5, p.getUser());
+            pstmt.setString(6, p.getPassword());
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
@@ -71,7 +71,7 @@ public class PersonnelRequest {
     public Personnel getById(int id) {
         String sql = "SELECT * FROM Personnel WHERE id_pers = ?";
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -99,14 +99,14 @@ public class PersonnelRequest {
     public java.util.List<Personnel> searchBenevoles(String query) {
         java.util.List<Personnel> liste = new java.util.ArrayList<>();
         String sql = """
-            SELECT * FROM Personnel 
-            WHERE (type_pers ILIKE 'Benevole' OR type_pers ILIKE 'Bénévole')
-              AND (nom ILIKE ? OR prenom ILIKE ? OR "user" ILIKE ?)
-            ORDER BY nom ASC, prenom ASC
-        """;
+                    SELECT * FROM Personnel
+                    WHERE (type_pers ILIKE 'Benevole' OR type_pers ILIKE 'Bénévole')
+                      AND (nom ILIKE ? OR prenom ILIKE ? OR "user" ILIKE ?)
+                    ORDER BY nom ASC, prenom ASC
+                """;
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             String like = "%" + query + "%";
             pstmt.setString(1, like);
@@ -131,5 +131,58 @@ public class PersonnelRequest {
         }
 
         return liste;
+    }
+
+    /**
+     * Met à jour les informations d'un membre du personnel.
+     */
+    public void update(Personnel p) {
+        String sql = "UPDATE Personnel SET nom = ?, prenom = ?, tel = ?, \"user\" = ?, password = ? WHERE id_pers = ?";
+
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, p.getNom());
+            pstmt.setString(2, p.getPrenom());
+            pstmt.setString(3, p.getTel());
+            pstmt.setString(4, p.getUser());
+            pstmt.setString(5, p.getPassword());
+            pstmt.setInt(6, p.getId_pers());
+
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Personnel #" + p.getId_pers() + " mis à jour.");
+            } else {
+                System.out.println("Erreur : Personnel #" + p.getId_pers() + " introuvable.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL (Update Personnel) : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Supprime un membre du personnel.
+     */
+    public boolean delete(int id) {
+        String sql = "DELETE FROM Personnel WHERE id_pers = ?";
+
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Personnel #" + id + " supprimé.");
+                return true;
+            } else {
+                System.out.println("Personnel #" + id + " introuvable.");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur suppression personnel (possible dépendance) : " + e.getMessage());
+            return false;
+        }
     }
 }

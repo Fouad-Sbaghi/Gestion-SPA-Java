@@ -27,6 +27,6 @@ public class Main {
         CommandParser app = new CommandParser();
         app.run();
 
-        System.out.println("Application fermée.");
+        System.out.println("\nApplication fermée.");
     }
 }

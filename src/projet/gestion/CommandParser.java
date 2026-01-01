@@ -217,6 +217,9 @@ public class CommandParser {
         System.out.println("\n--- [2] BOX ---");
         System.out.println("Commandes:");
         System.out.println("  box list");
+        System.out.println("  box add");
+        System.out.println("  box update <idBox>");
+        System.out.println("  box delete <idBox>");
         System.out.println("  box info <idBox>     (détails + animaux présents)");
         System.out.println("  box add-animal <idBox> <idAnimal>");
         System.out.println("  box clear <idBox>");
@@ -233,6 +236,9 @@ public class CommandParser {
             if (cmd.equalsIgnoreCase("help")) {
                 System.out.println("Commandes:");
                 System.out.println("  box list");
+                System.out.println("  box add");
+                System.out.println("  box update <idBox>");
+                System.out.println("  box delete <idBox>");
                 System.out.println("  box info <idBox>     (détails + animaux présents)");
                 System.out.println("  box add-animal <idBox> <idAnimal>");
                 System.out.println("  box clear <idBox>");
@@ -253,6 +259,25 @@ public class CommandParser {
 
             switch (parts[1].toLowerCase()) {
                 case "list" -> controllerBox.listerBox();
+                case "add" -> controllerBox.ajouterBox(scanner);
+                case "update" -> {
+                    if (parts.length < 3) {
+                        printUsage("box update <idBox>");
+                        break;
+                    }
+                    Integer idBox = parseIntOrNull(parts[2], "idBox");
+                    if (idBox != null)
+                        controllerBox.updateBox(idBox, scanner);
+                }
+                case "delete" -> {
+                    if (parts.length < 3) {
+                        printUsage("box delete <idBox>");
+                        break;
+                    }
+                    Integer idBox = parseIntOrNull(parts[2], "idBox");
+                    if (idBox != null)
+                        controllerBox.supprimerBox(idBox);
+                }
                 case "info" -> {
                     Integer idBox;
                     if (parts.length >= 3) {
@@ -369,7 +394,7 @@ public class CommandParser {
 
     private void menuPlanning() {
         System.out.println("\n--- [4] PLANNING ---");
-        System.out.println("Commandes: benevole add, creneau [list | alert | assign], benevole planning <id>");
+        System.out.println("Commandes: benevole [add | update | delete | planning], creneau [list | alert | assign]");
 
         boolean back = false;
         while (!back) {
@@ -383,7 +408,9 @@ public class CommandParser {
             if (cmd.equalsIgnoreCase("help")) {
                 System.out.println("Commandes:");
                 System.out.println("  benevole add");
-                System.out.println("  benevole planning <idBenevole> (Nouveau !)");
+                System.out.println("  benevole planning <idBenevole>");
+                System.out.println("  benevole update <idBenevole>");
+                System.out.println("  benevole delete <idBenevole>");
                 System.out.println("  creneau list");
                 System.out.println("  creneau alert");
                 System.out.println("  creneau assign <idCreneau> <idBenevole>");
@@ -405,8 +432,18 @@ public class CommandParser {
                     Integer id = parseIntOrNull(parts[2], "idBenevole");
                     if (id != null)
                         controllerPlanning.planningDuBenevole(id);
+                }
+                // CAS AJOUTE : Modifier / Supprimer
+                else if (parts.length >= 3 && parts[1].equalsIgnoreCase("update")) {
+                    Integer id = parseIntOrNull(parts[2], "idBenevole");
+                    if (id != null)
+                        controllerPlanning.modifierBenevole(id, scanner);
+                } else if (parts.length >= 3 && parts[1].equalsIgnoreCase("delete")) {
+                    Integer id = parseIntOrNull(parts[2], "idBenevole");
+                    if (id != null)
+                        controllerPlanning.supprimerBenevole(id);
                 } else {
-                    printUsage("benevole [add | planning <id>]");
+                    printUsage("benevole [add | planning <id> | update <id> | delete <id>]");
                 }
                 continue;
             }
@@ -594,7 +631,7 @@ public class CommandParser {
 
     private void menuRapport() {
         System.out.println("\n--- [6] RAPPORTS ---");
-        System.out.println("Commandes: stats [benevoles | adoptables | box]");
+        System.out.println("Commandes: stats [benevoles | adoptables | box], animal <id|nom>");
 
         boolean back = false;
         while (!back) {
@@ -610,11 +647,24 @@ public class CommandParser {
                 System.out.println("  stats benevoles");
                 System.out.println("  stats adoptables");
                 System.out.println("  stats box");
+                System.out.println("  animal <id|nom>");
                 continue;
             }
 
             String[] parts = cmd.split("\\s+");
-            if (parts.length < 2 || !parts[0].equalsIgnoreCase("stats")) {
+            if (parts.length < 2) {
+                System.out.println("Commande inconnue. Tapez 'help'.");
+                continue;
+            }
+
+            // Cas specifique pour "animal" qui n'est pas un "stats ..."
+            if (parts[0].equalsIgnoreCase("animal")) {
+                controllerAnimal.chercherAnimal(joinFrom(parts, 1));
+                continue;
+            }
+
+            // Cas classique "stats ..."
+            if (!parts[0].equalsIgnoreCase("stats")) {
                 System.out.println("Commande inconnue. Tapez 'help'.");
                 continue;
             }

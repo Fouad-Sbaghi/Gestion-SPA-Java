@@ -53,4 +53,44 @@ public class ControllerBox {
             System.out.println("Info : Aucun sejour actif trouve pour le box #" + idBox + ".");
         }
     }
+
+    public void ajouterBox(java.util.Scanner scanner) {
+        System.out.println(">> Ajout d'un nouveau Box");
+        System.out.print("Type (Chien/Chat) : ");
+        String type = scanner.nextLine().trim();
+        System.out.print("Capacité max : ");
+        String capStr = scanner.nextLine().trim();
+
+        try {
+            int cap = Integer.parseInt(capStr);
+            projet.tables.Box box = new projet.tables.Box(0, type, cap);
+            boxReq.add(box);
+        } catch (NumberFormatException e) {
+            System.out.println("Erreur : La capacité doit être un nombre entier.");
+        }
+    }
+
+    public void updateBox(int idBox, java.util.Scanner scanner) {
+        System.out.println(">> Modification du Box #" + idBox);
+        System.out.print("Nouveau Type (Chien/Chat) : ");
+        String type = scanner.nextLine().trim();
+        System.out.print("Nouvelle Capacité max : ");
+        String capStr = scanner.nextLine().trim();
+
+        try {
+            int cap = Integer.parseInt(capStr);
+            projet.tables.Box box = new projet.tables.Box(idBox, type, cap);
+            boxReq.update(box);
+        } catch (NumberFormatException e) {
+            System.out.println("Erreur : La capacité doit être un nombre entier.");
+        }
+    }
+
+    public void supprimerBox(int idBox) {
+        if (boxReq.delete(idBox)) {
+            System.out.println("Box #" + idBox + " supprimé avec succès.");
+        } else {
+            System.out.println("Échec de la suppression du Box #" + idBox + ".");
+        }
+    }
 }
