@@ -541,8 +541,34 @@ public class Controller {
     // 5. ACTIVITÉS, SOINS & INCIDENTS
     // ==================================================================================
 
+    public void listerActivites() {
+        System.out.println("--- Liste des types d'activites ---");
+        var liste = activityReq.getAll();
+        if (liste.isEmpty()) {
+            System.out.println("Aucune activite definie.");
+        } else {
+            System.out.printf("%-5s | %s%n", "ID", "Type");
+            System.out.println("---------------------");
+            for (var a : liste) {
+                System.out.printf("%-5d | %s%n", a.getId_activite(), a.getType_act());
+            }
+        }
+    }
+
     public void ajouterActivite(int idAnimal, String type) {
-        activityReq.add(idAnimal, type, "Activité enregistrée via menu");
+        activityReq.add(idAnimal, type, "Activite enregistree via menu");
+    }
+
+    public void ajouterTypeActivite(String type) {
+        activityReq.addType(type);
+    }
+
+    public void supprimerActivite(int idActivite) {
+        if (activityReq.deleteType(idActivite)) {
+            System.out.println("Activite #" + idActivite + " supprimee.");
+        } else {
+            System.out.println("Erreur : Activite introuvable ou utilisee dans le planning.");
+        }
     }
 
     public void ajouterSoinComplet(int idAnimal, int idVeto, Scanner scanner) {
@@ -563,19 +589,23 @@ public class Controller {
         List<Animal> animaux = animalReq.getAll();
         boolean empty = true;
 
-        System.out.printf("%-5s | %-15s | %-15s | %-20s%n", "ID Soin", "Animal", "Type", "Libellé");
+        System.out.printf("%-5s | %-15s | %-15s | %-20s%n", "ID Soin", "Animal", "Type", "Libelle");
         System.out.println("----------------------------------------------------------------");
 
         for (Animal a : animaux) {
             List<Soin> soins = soinReq.getByAnimal(a.getId_animal());
             for (Soin s : soins) {
+                // Filtrer les activites (qui ont le libelle "Activite Quotidienne")
+                if (s.getLibelle() != null && s.getLibelle().contains("Activit")) {
+                    continue; // Ignorer les activites
+                }
                 empty = false;
                 System.out.printf("%-5d | %-15s | %-15s | %-20s%n",
                         s.getId_soin(), a.getNom(), s.getType_soin(), s.getLibelle());
             }
         }
         if (empty)
-            System.out.println("Aucun soin enregistré.");
+            System.out.println("Aucun soin enregistre.");
     }
 
     public void supprimerSoin(int idSoin) {
@@ -590,12 +620,15 @@ public class Controller {
     }
 
     public void declarerIncident(int idAnimal, Scanner scanner) {
-        System.out.print("Type (Maladie/Accident) : ");
-        String type = scanner.nextLine();
-        System.out.print("Description : ");
-        String desc = scanner.nextLine();
+        System.out.println(">> Declaration d'incident pour animal #" + idAnimal);
+        System.out.print("Type (Maladie/Accident/Comportement/Autre) : ");
+        String type = scanner.nextLine().trim();
+        System.out.print("Description courte : ");
+        String desc = scanner.nextLine().trim();
+        System.out.print("Detail/Commentaire (optionnel) : ");
+        String detail = scanner.nextLine().trim();
 
-        incidentReq.add(idAnimal, type, desc);
+        incidentReq.add(idAnimal, type, desc, detail);
     }
 
     public void listerIncidents(int idAnimal) {
