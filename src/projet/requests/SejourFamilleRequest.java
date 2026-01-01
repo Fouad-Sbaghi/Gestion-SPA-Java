@@ -12,8 +12,6 @@ public class SejourFamilleRequest {
 
     /**
      * Débute un séjour en famille (Accueil ou Adoption).
-     * @param idAnimal L'animal concerné.
-     * @param idFamille La famille d'accueil/adoptante.
      */
     public boolean commencerSejour(int idAnimal, int idFamille) {
         // On clôture d'abord tout séjour précédent potentiellement ouvert
@@ -41,8 +39,7 @@ public class SejourFamilleRequest {
     }
 
     /**
-     * Termine le séjour actuel d'un animal en famille (retour au refuge ou changement).
-     * Met à jour la date de fin (DATE_F_FAMILLE) à aujourd'hui.
+     * Termine le séjour actuel d'un animal en famille.
      */
     public boolean terminerSejour(int idAnimal) {
         String sql = "UPDATE Sejour_Famille SET DATE_F_FAMILLE = ? WHERE id_animal = ? AND DATE_F_FAMILLE IS NULL";
@@ -55,8 +52,10 @@ public class SejourFamilleRequest {
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
-                System.out.println("Fin du séjour en famille pour l'animal #" + idAnimal);
-                return true;
+                System.out.println("Séjour terminé pour l'animal #" + idAnimal);
+                return true; // Ajout du return true pour le controller
+            } else {
+                System.out.println("Erreur : Aucun séjour en cours trouvé pour ce couple Animal/Famille.");
             }
 
         } catch (SQLException e) {
@@ -67,7 +66,6 @@ public class SejourFamilleRequest {
 
     /**
      * Récupère l'ID de la famille qui héberge actuellement l'animal.
-     * @return ID de la famille, ou -1 si l'animal n'est pas en famille.
      */
     public int getFamilleActuelle(int idAnimal) {
         String sql = "SELECT id_famille FROM Sejour_Famille WHERE id_animal = ? AND DATE_F_FAMILLE IS NULL";
@@ -87,5 +85,43 @@ public class SejourFamilleRequest {
             System.err.println("Erreur recherche famille actuelle : " + e.getMessage());
         }
         return -1; // Pas en famille
+    }
+
+    /**
+     * AJOUT : Affiche l'historique des animaux pour une famille donnée.
+     */
+    public void afficherHistoriqueParFamille(int idFamille) {
+        String sql = """
+            SELECT a.nom, a.espece, s.DATE_D, s.DATE_F_FAMILLE
+            FROM Sejour_Famille s
+            JOIN Animal a ON s.id_animal = a.id_animal
+            WHERE s.id_famille = ?
+            ORDER BY s.DATE_D DESC
+        """;
+
+        try (Connection conn = Connexion.connectR();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idFamille);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                System.out.println("--- Animaux accueillis ---");
+                boolean found = false;
+                while (rs.next()) {
+                    found = true;
+                    String nom = rs.getString("nom");
+                    String espece = rs.getString("espece");
+                    Date debut = rs.getDate("DATE_D");
+                    Date fin = rs.getDate("DATE_F_FAMILLE");
+                    String finStr = (fin != null) ? fin.toString() : "EN COURS";
+
+                    System.out.printf("- %s (%s) : du %s au %s%n", nom, espece, debut, finStr);
+                }
+                if (!found) System.out.println("Aucun historique pour cette famille.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur historique famille : " + e.getMessage());
+        }
     }
 }
