@@ -81,8 +81,6 @@ public class SejourFamilleRequest {
             if (rows > 0) {
                 System.out.println("Sejour termine pour l'animal #" + idAnimal);
                 return true;
-            } else {
-                System.out.println("Info : Aucun sejour en cours trouve pour cet animal.");
             }
 
         } catch (SQLException e) {

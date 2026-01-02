@@ -3,6 +3,7 @@ package projet.gestion;
 import projet.requests.BoxRequest;
 import projet.requests.SejourBoxRequest;
 import projet.requests.rapports.RapportBoxRequest;
+import projet.requests.SejourFamilleRequest;
 import projet.exceptions.BoxPleinException;
 import projet.exceptions.IncompatibiliteTypeException;
 import projet.exceptions.MissingEntityException;
@@ -11,11 +12,13 @@ public class ControllerBox {
 
     private BoxRequest boxReq;
     private SejourBoxRequest sejourBoxReq;
+    private SejourFamilleRequest sejourFamilleReq;
     private RapportBoxRequest rapportBox;
 
     public ControllerBox() {
         this.boxReq = new BoxRequest();
         this.sejourBoxReq = new SejourBoxRequest();
+        this.sejourFamilleReq = new SejourFamilleRequest();
         this.rapportBox = new RapportBoxRequest();
     }
 
@@ -35,6 +38,9 @@ public class ControllerBox {
 
     public void placerAnimalBox(int idBox, int idAnimal) {
         try {
+            // AJOUT : Sortir l'animal de sa famille s'il y est
+            sejourFamilleReq.terminerSejour(idAnimal);
+
             if (sejourBoxReq.placerAnimal(idAnimal, idBox)) {
                 // Mise a jour du statut selon le type de box
                 try {
