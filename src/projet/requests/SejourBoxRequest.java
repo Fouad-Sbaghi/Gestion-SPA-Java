@@ -194,4 +194,46 @@ public class SejourBoxRequest {
             return 0;
         }
     }
+
+    /**
+     * Compte le nombre d'animaux actuellement dans le box (séjours actifs).
+     */
+    public int getNbOccupants(int idBox) {
+        String sql = "SELECT COUNT(*) as nb FROM Sejour_Box WHERE id_box = ? AND DATE_F_BOX IS NULL";
+
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idBox);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("nb");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur comptage occupants : " + e.getMessage());
+        }
+        return 0;
+    }
+
+    /**
+     * Supprime tout l'historique de séjours pour un box donné.
+     * ATTENTION : Irréversible.
+     */
+    public void supprimerHistoriqueBox(int idBox) {
+        String sql = "DELETE FROM Sejour_Box WHERE id_box = ?";
+
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idBox);
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Historique du box #" + idBox + " supprimé (" + rows + " entrées).");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur suppression historique box : " + e.getMessage());
+        }
+    }
 }

@@ -87,6 +87,18 @@ public class ControllerBox {
     }
 
     public void supprimerBox(int idBox) {
+        // 1. Verifier si le box est vide (occupants actuels)
+        int occupants = sejourBoxReq.getNbOccupants(idBox);
+        if (occupants > 0) {
+            System.out.println("Erreur : Le box #" + idBox + " n'est pas vide (" + occupants + " animaux présents).");
+            System.out.println("Veuillez vider le box avant de le supprimer.");
+            return;
+        }
+
+        // 2. Supprimer l'historique des séjours (FK constraint)
+        sejourBoxReq.supprimerHistoriqueBox(idBox);
+
+        // 3. Supprimer le box
         if (boxReq.delete(idBox)) {
             System.out.println("Box #" + idBox + " supprimé avec succès.");
         } else {
