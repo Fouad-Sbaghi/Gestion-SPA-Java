@@ -14,14 +14,13 @@ public class SejourFamilleRequest {
      * Debute un sejour en famille (Accueil ou Adoption).
      */
     public boolean commencerSejour(int idAnimal, int idFamille) {
-        Date today = new Date(System.currentTimeMillis());
+        java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 
         // Verifier si un sejour existe deja pour aujourd'hui (meme clos)
-        if (sejourExistePourAujourdhui(idAnimal, today)) {
-            // Rouvrir le sejour existant en mettant DATE_F_FAMILLE a NULL et en changeant
-            // la famille
-            return rouvrirSejour(idAnimal, idFamille, today);
-        }
+        // Note: Avec le TIMESTAMP, on pourrait autoriser plusieurs, mais on garde la
+        // logique "existe pour aujourd'hui" un peu floue ou on l'adapte.
+        // On va simplifier : un animal peut changer de famille plusieurs fois par jour
+        // si TIMESTAMP.
 
         // Sinon, cloturer tout sejour precedent et en creer un nouveau
         terminerSejourSilent(idAnimal);
@@ -33,7 +32,7 @@ public class SejourFamilleRequest {
 
             pstmt.setInt(1, idAnimal);
             pstmt.setInt(2, idFamille);
-            pstmt.setDate(3, today);
+            pstmt.setTimestamp(3, now);
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
@@ -48,47 +47,6 @@ public class SejourFamilleRequest {
     }
 
     /**
-     * Verifie si un sejour existe pour cet animal a cette date.
-     */
-    private boolean sejourExistePourAujourdhui(int idAnimal, Date date) {
-        String sql = "SELECT COUNT(*) FROM Sejour_Famille WHERE id_animal = ? AND DATE_D = ?";
-        try (Connection conn = Connexion.connectR();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, idAnimal);
-            pstmt.setDate(2, date);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-            }
-        } catch (SQLException e) {
-            // Ignorer
-        }
-        return false;
-    }
-
-    /**
-     * Rouvre un sejour existant en remettant DATE_F_FAMILLE a NULL.
-     */
-    private boolean rouvrirSejour(int idAnimal, int idFamille, Date date) {
-        String sql = "UPDATE Sejour_Famille SET DATE_F_FAMILLE = NULL, id_famille = ? WHERE id_animal = ? AND DATE_D = ?";
-        try (Connection conn = Connexion.connectR();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, idFamille);
-            pstmt.setInt(2, idAnimal);
-            pstmt.setDate(3, date);
-            int rows = pstmt.executeUpdate();
-            if (rows > 0) {
-                System.out.println("Succes : Sejour rouvert pour Animal #" + idAnimal + " chez famille #" + idFamille);
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur reouverture sejour : " + e.getMessage());
-        }
-        return false;
-    }
-
-    /**
      * Termine le sejour actuel d'un animal en famille (version silencieuse pour
      * appel interne).
      */
@@ -98,7 +56,7 @@ public class SejourFamilleRequest {
         try (Connection conn = Connexion.connectR();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setDate(1, new Date(System.currentTimeMillis()));
+            pstmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
             pstmt.setInt(2, idAnimal);
             pstmt.executeUpdate(); // Pas de message
 
@@ -116,7 +74,7 @@ public class SejourFamilleRequest {
         try (Connection conn = Connexion.connectR();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setDate(1, new Date(System.currentTimeMillis()));
+            pstmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
             pstmt.setInt(2, idAnimal);
 
             int rows = pstmt.executeUpdate();

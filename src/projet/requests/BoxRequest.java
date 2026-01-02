@@ -207,4 +207,23 @@ public class BoxRequest {
             System.err.println("Erreur SQL (Update Box) : " + e.getMessage());
         }
     }
+
+    /**
+     * Récupère le type d'un box.
+     */
+    public String getBoxType(int idBox) {
+        String sql = "SELECT type_box FROM Box WHERE id_box = ?";
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idBox);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("type_box");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL (Get Box Type) : " + e.getMessage());
+        }
+        return null;
+    }
 }

@@ -35,7 +35,31 @@ public class ControllerBox {
 
     public void placerAnimalBox(int idBox, int idAnimal) {
         try {
-            sejourBoxReq.placerAnimal(idAnimal, idBox);
+            if (sejourBoxReq.placerAnimal(idAnimal, idBox)) {
+                // Mise a jour du statut selon le type de box
+                try {
+                    projet.requests.AnimalRequest anReq = new projet.requests.AnimalRequest();
+                    projet.tables.Animal a = anReq.getById(idAnimal);
+
+                    String typeBox = boxReq.getBoxType(idBox);
+                    String newStatut = "Adoptable";
+
+                    if (typeBox != null) {
+                        if (typeBox.equalsIgnoreCase("Quarantaine")) {
+                            newStatut = "Quarantaine";
+                        } else if (typeBox.equalsIgnoreCase("Infirmerie")) {
+                            newStatut = "Soins";
+                        }
+                    }
+
+                    a.setStatut(newStatut);
+                    anReq.update(a);
+                    System.out.println("Statut animal mis a jour : " + newStatut);
+
+                } catch (Exception ex) {
+                    System.out.println("Erreur maj statut : " + ex.getMessage());
+                }
+            }
         } catch (BoxPleinException e) {
             System.out.println(e.getMessage());
         } catch (IncompatibiliteTypeException e) {

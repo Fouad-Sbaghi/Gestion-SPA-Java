@@ -124,8 +124,8 @@ public class SetupDatabase {
                         CREATE TABLE Sejour_Famille (
                             id_animal INT NOT NULL,
                             id_famille INT NOT NULL,
-                            DATE_D DATE NOT NULL,
-                            DATE_F_FAMILLE DATE,
+                            DATE_D TIMESTAMP NOT NULL,
+                            DATE_F_FAMILLE TIMESTAMP,
                             PRIMARY KEY (id_animal, DATE_D),
                             FOREIGN KEY (id_animal) REFERENCES Animal(id_animal),
                             FOREIGN KEY (id_famille) REFERENCES Famille(id_famille)
@@ -135,8 +135,8 @@ public class SetupDatabase {
                         CREATE TABLE Sejour_Box (
                             id_animal INT NOT NULL,
                             id_box INT NOT NULL,
-                            DATE_D DATE NOT NULL,
-                            DATE_F_BOX DATE,
+                            DATE_D TIMESTAMP NOT NULL,
+                            DATE_F_BOX TIMESTAMP,
                             PRIMARY KEY (id_animal, DATE_D),
                             FOREIGN KEY (id_animal) REFERENCES Animal(id_animal),
                             FOREIGN KEY (id_box) REFERENCES Box(id_box)
@@ -179,16 +179,17 @@ public class SetupDatabase {
                 // --- Tables Indépendantes ---
 
                 // Box
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chien', 2)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chat', 5)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Quarantaine', 1)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chien', 3)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chat', 4)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Infirmerie', 1)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chien', 2)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Exotique', 2)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chat', 3)",
-                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chien', 1)",
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chien', 2)", // Box 1
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chat', 5)", // Box 2
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Quarantaine', 1)", // Box 3
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chien', 3)", // Box 4
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chat', 4)", // Box 5
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Infirmerie', 1)", // Box 6
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chien', 2)", // Box 7
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Quarantaine', 2)", // Box 8 (Changement Exotique ->
+                                                                                      // Quarantaine pour test)
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chat', 3)", // Box 9
+                "INSERT INTO Box (type_box, capacite_max) VALUES ('Chien', 1)", // Box 10
 
                 // Famille
                 "INSERT INTO Famille (type_famille, nom, adresse, contact) VALUES ('Accueil', 'Dupont', '10 Rue des Fleurs', '0601010101')",
@@ -251,15 +252,26 @@ public class SetupDatabase {
                 "INSERT INTO Incident (type_incident, intitule, commentaire, date_incident) VALUES ('Autre', 'Perte collier', 'Retrouvé cassé', '2023-01-19 12:00:00')",
 
                 // Animal
+                // Animal
+                // 1. Rex (Chien) -> Box 1 (Chien) -> Adoptable
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600001', 'Chien', 'Rex', '2020-05-20', 'Adoptable', TRUE, FALSE, TRUE, FALSE, '2023-01-01')",
+                // 2. Mimi (Chat) -> Famille 2 (Adoptante) -> Adopté
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600002', 'Chat', 'Mimi', '2021-06-15', 'Adopté', TRUE, TRUE, FALSE, TRUE, '2023-01-02')",
+                // 3. Max (Chien) -> Box 4 (Chien) -> Adoptable
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600003', 'Chien', 'Max', '2019-01-10', 'Adoptable', TRUE, TRUE, TRUE, TRUE, '2023-01-03')",
+                // 4. Luna (Chat) -> Box 3 (Quarantaine) -> Quarantaine
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600004', 'Chat', 'Luna', '2022-02-20', 'Quarantaine', FALSE, FALSE, FALSE, FALSE, '2023-01-04')",
+                // 5. Rocky (Chien) -> Box 7 (Chien) -> Adoptable
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600005', 'Chien', 'Rocky', '2018-11-30', 'Adoptable', TRUE, FALSE, FALSE, FALSE, '2023-01-05')",
+                // 6. Simba (Chat) -> Famille 6 (Accueil) -> Famille
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600006', 'Chat', 'Simba', '2020-08-05', 'Famille', TRUE, TRUE, TRUE, TRUE, '2023-01-06')",
+                // 7. Bella (Chien) -> Box 6 (Infirmerie) -> Soins
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600007', 'Chien', 'Bella', '2021-12-12', 'Soins', TRUE, TRUE, TRUE, FALSE, '2023-01-07')",
+                // 8. Nala (Chat) -> Box 2 (Chat) -> Adoptable
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600008', 'Chat', 'Nala', '2019-03-25', 'Adoptable', TRUE, FALSE, FALSE, TRUE, '2023-01-08')",
+                // 9. Tyson (Chien) -> Box 10 (Chien) -> Adoptable
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600009', 'Chien', 'Tyson', '2017-07-14', 'Adoptable', FALSE, FALSE, TRUE, FALSE, '2023-01-09')",
+                // 10. Oreo (Chat) -> Box 8 (Quarantaine) -> Quarantaine
                 "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, tests_humain, tests_bebe, tests_chien, tests_chat, date_arrivee) VALUES ('2502600010', 'Chat', 'Oreo', '2022-09-01', 'Quarantaine', TRUE, TRUE, TRUE, TRUE, '2023-01-10')",
 
                 // --- Tables Dépendantes ---
@@ -289,28 +301,61 @@ public class SetupDatabase {
                 "INSERT INTO Affectation_Creneau_Activite VALUES (10, 10, 10)",
 
                 // Sejour_Famille (FK: id_animal, id_famille)
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (1, 1, '2023-03-01', '2023-03-15')",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (2, 2, '2023-03-02', NULL)",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (3, 3, '2023-03-03', '2023-03-20')",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (4, 4, '2023-03-04', NULL)",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (5, 5, '2023-03-05', '2023-03-10')",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (6, 6, '2023-03-06', NULL)",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (7, 7, '2023-03-07', '2023-04-01')",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (8, 8, '2023-03-08', NULL)",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (9, 9, '2023-03-09', '2023-03-12')",
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (10, 10, '2023-03-10', NULL)",
+                // 2. Mimi: Active stay (famille 2 - Adoptante)
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (2, 2, '2023-03-02 11:00:00', NULL)",
+
+                // 3. Max: Closed stay (famille 3)
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (3, 3, '2023-03-03 09:00:00', '2023-03-20 18:00:00')",
+
+                // 6. Simba: Active stay (famille 6 - Accueil)
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (6, 6, '2023-03-06 08:30:00', NULL)",
+
+                // 7. Bella: Closed stay (famille 7)
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (7, 7, '2023-03-07 10:00:00', '2023-04-01 10:00:00')",
+
+                // 9. Tyson: Closed stay (famille 9)
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (9, 9, '2023-03-09 11:00:00', '2023-03-12 09:00:00')",
 
                 // Sejour_Box (FK: id_animal, id_box)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (1, 1, '2023-01-01', '2023-02-28')",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (2, 2, '2023-01-02', '2023-03-01')",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 3, '2023-01-03', NULL)",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (4, 4, '2023-01-04', NULL)",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (5, 5, '2023-01-05', '2023-01-20')",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (6, 6, '2023-01-06', NULL)",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (7, 7, '2023-01-07', NULL)",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (8, 8, '2023-01-08', NULL)",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 9, '2023-01-09', NULL)",
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (10, 10, '2023-01-10', '2023-03-09')",
+                // 1. Rex (Box 1 - Active)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (1, 1, '2023-01-01 08:00:00', NULL)",
+
+                // 2. Mimi (Box 2 - Closed prev to famille)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (2, 2, '2023-01-02 09:00:00', '2023-03-02 10:00:00')",
+
+                // 3. Max (Box 4 - Active) (Returned from family 2023-03-20 ?) Let's say he is
+                // back.
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 3, '2023-01-03 10:00:00', '2023-03-03 08:00:00')", // Old
+                                                                                                                                              // box
+                                                                                                                                              // stay
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 4, '2023-03-20 19:00:00', NULL)", // New
+                                                                                                                             // active
+                                                                                                                             // box
+                                                                                                                             // stay
+                                                                                                                             // after
+                                                                                                                             // family
+
+                // 4. Luna (Box 3 - Active)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (4, 3, '2023-01-04 11:00:00', NULL)",
+
+                // 5. Rocky (Box 7 - Active)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (5, 7, '2023-01-05 12:00:00', NULL)",
+
+                // 6. Simba (Box 5/6? - Closed prev to famille)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (6, 5, '2023-01-06 13:00:00', '2023-03-06 08:00:00')",
+
+                // 7. Bella (Box 6 - Active) (Returned from family)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (7, 6, '2023-04-01 11:00:00', NULL)",
+
+                // 8. Nala (Box 2 - Active)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (8, 2, '2023-01-08 15:00:00', NULL)",
+
+                // 9. Tyson (Box 10 - Active) (Returned)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 9, '2023-01-09 16:00:00', '2023-03-09 10:00:00')", // Old
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 10, '2023-03-12 10:00:00', NULL)", // New
+
+                // 10. Oreo (Box 8 - Active)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (10, 8, '2023-01-10 17:00:00', NULL)",
 
                 // Animal_Incident (FK: id_animal, id_incident)
                 "INSERT INTO Animal_Incident VALUES (1, 1)",

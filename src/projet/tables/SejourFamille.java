@@ -1,21 +1,24 @@
 package projet.tables;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 
 /**
- * Représente l'historique d'accueil d'un animal au sein d'une famille d'accueil.
+ * Représente l'historique d'accueil d'un animal au sein d'une famille
+ * d'accueil.
  */
 public class SejourFamille implements ITable {
 
     private int id_animal;
     private int id_famille;
-    private Date date_d;
-    private Date date_f_famille;
+    private Timestamp date_d;
+    private Timestamp date_f_famille;
     private String values;
     private HashMap<String, fieldType> map;
 
-    public SejourFamille() { getStruct(); }
+    public SejourFamille() {
+        getStruct();
+    }
 
     @Override
     public void getStruct() {
@@ -32,9 +35,14 @@ public class SejourFamille implements ITable {
         this.values = this.id_animal + ", " + this.id_famille + ", '" + this.date_d + "', " + fin;
         return this.values;
     }
-    
+
     @Override
-    public HashMap<String, fieldType> getMap() { return this.map; }
+    public HashMap<String, fieldType> getMap() {
+        return this.map;
+    }
+
     @Override
-    public boolean check(HashMap<String, fieldType> ts) { return true; }
+    public boolean check(HashMap<String, fieldType> ts) {
+        return true;
+    }
 }

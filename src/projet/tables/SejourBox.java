@@ -1,6 +1,6 @@
 package projet.tables;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 
 /**
@@ -14,14 +14,16 @@ public class SejourBox implements ITable {
 
     private int id_animal;
     private int id_box;
-    private Date date_d;
-    private Date date_f_box;
+    private Timestamp date_d;
+    private Timestamp date_f_box;
     private String values;
     private HashMap<String, fieldType> map;
 
-    public SejourBox() { getStruct(); }
+    public SejourBox() {
+        getStruct();
+    }
 
-    public SejourBox(int id_animal, int id_box, Date date_d, Date date_f_box) {
+    public SejourBox(int id_animal, int id_box, Timestamp date_d, Timestamp date_f_box) {
         this.id_animal = id_animal;
         this.id_box = id_box;
         this.date_d = date_d;
@@ -46,17 +48,45 @@ public class SejourBox implements ITable {
     }
 
     @Override
-    public HashMap<String, fieldType> getMap() { return this.map; }
+    public HashMap<String, fieldType> getMap() {
+        return this.map;
+    }
+
     @Override
-    public boolean check(HashMap<String, fieldType> ts) { return true; }
-    
+    public boolean check(HashMap<String, fieldType> ts) {
+        return true;
+    }
+
     // Getters
-    public int getId_animal() { return id_animal; }
-    public void setId_animal(int id) { this.id_animal = id; }
-    public int getId_box() { return id_box; }
-    public void setId_box(int id) { this.id_box = id; }
-    public Date getDate_d() { return date_d; }
-    public void setDate_d(Date d) { this.date_d = d; }
-    public Date getDate_f_box() { return date_f_box; }
-    public void setDate_f_box(Date d) { this.date_f_box = d; }
+    public int getId_animal() {
+        return id_animal;
+    }
+
+    public void setId_animal(int id) {
+        this.id_animal = id;
+    }
+
+    public int getId_box() {
+        return id_box;
+    }
+
+    public void setId_box(int id) {
+        this.id_box = id;
+    }
+
+    public Timestamp getDate_d() {
+        return date_d;
+    }
+
+    public void setDate_d(Timestamp d) {
+        this.date_d = d;
+    }
+
+    public Timestamp getDate_f_box() {
+        return date_f_box;
+    }
+
+    public void setDate_f_box(Timestamp d) {
+        this.date_f_box = d;
+    }
 }

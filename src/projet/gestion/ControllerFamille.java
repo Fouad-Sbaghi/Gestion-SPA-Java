@@ -47,11 +47,21 @@ public class ControllerFamille {
     }
 
     public void lierFamille(int idAnimal, int idFamille, String type) {
+        // AJOUT : Sortir l'animal du box s'il y est
+        projet.requests.SejourBoxRequest boxReq = new projet.requests.SejourBoxRequest();
+        boxReq.sortirAnimal(idAnimal);
+
         if (sejourFamilleReq.commencerSejour(idAnimal, idFamille)) {
             try {
                 Animal a = animalReq.getById(idAnimal);
                 if (a != null) {
-                    a.setStatut("En " + type);
+                    // Normalisation des statuts
+                    String nouveauStatut = "Famille";
+                    if (type != null && type.equalsIgnoreCase("Adoption")) {
+                        nouveauStatut = "Adopté";
+                    }
+
+                    a.setStatut(nouveauStatut);
                     animalReq.update(a);
                     System.out.println("Statut animal mis a jour : " + a.getStatut());
                 }
@@ -69,6 +79,7 @@ public class ControllerFamille {
                     a.setStatut("Adoptable");
                     animalReq.update(a);
                     System.out.println("Statut animal repasse a : Adoptable");
+                    System.out.println("Note : Pensez a replacer l'animal dans un box.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur maj statut.");

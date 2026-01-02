@@ -1,7 +1,6 @@
 package projet.requests;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -108,7 +107,9 @@ public class SejourBoxRequest {
 
             pstmt.setInt(1, idAnimal);
             pstmt.setInt(2, idBox);
-            pstmt.setDate(3, new Date(System.currentTimeMillis()));
+            // Utilisé un Timestamp pour éviter le conflit de clé primaire (id_animal,
+            // date_d)
+            pstmt.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
@@ -134,7 +135,7 @@ public class SejourBoxRequest {
         try (Connection conn = Connexion.connectR();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setDate(1, new Date(System.currentTimeMillis()));
+            pstmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
             pstmt.setInt(2, idAnimal);
 
             int rows = pstmt.executeUpdate();
@@ -184,7 +185,7 @@ public class SejourBoxRequest {
         try (Connection conn = Connexion.connectR();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setDate(1, new Date(System.currentTimeMillis()));
+            pstmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
             pstmt.setInt(2, idBox);
 
             return pstmt.executeUpdate();

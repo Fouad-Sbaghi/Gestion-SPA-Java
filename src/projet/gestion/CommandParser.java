@@ -505,7 +505,7 @@ public class CommandParser {
     private void menuActivites() {
         System.out.println("\n--- [5] ACTIVITES & SOINS ---");
         System.out.println(
-                "Commandes: activity [list | add | delete], incident [add | list], soin [add | list | delete | sign]");
+                "Commandes: activity [list | add | delete], incident [add | list], soin [add | list | delete]");
 
         boolean back = false;
         while (!back) {
