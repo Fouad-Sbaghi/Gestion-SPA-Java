@@ -6,6 +6,7 @@ import java.util.Scanner;
 import projet.auth.Login;
 import projet.tables.Personnel;
 import projet.exceptions.donnee.ElementIntrouvableException;
+import projet.exceptions.donnee.format.InvalidPuceException;
 
 public class CommandParser {
 
@@ -202,7 +203,13 @@ public class CommandParser {
                     }
                     Integer id = parseIntOrNull(parts[2], "idAnimal");
                     if (id != null)
-                        controllerAnimal.updateAnimal(id, scanner);
+                        try {
+                            controllerAnimal.updateAnimal(id, scanner);
+                        } catch (ElementIntrouvableException e) {
+                            System.out.println(e.getMessage());
+                        } catch (InvalidPuceException e) {
+                            System.out.println(e.getMessage());
+                        }
                 }
                 case "history" -> {
                     if (parts.length < 3) {

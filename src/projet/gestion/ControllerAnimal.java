@@ -11,6 +11,7 @@ import projet.tables.Personnel;
 import projet.exceptions.donnee.format.InvalidFormatException;
 import projet.exceptions.regle.DroitsInsuffisantsException;
 import projet.exceptions.donnee.ElementIntrouvableException;
+import projet.exceptions.donnee.format.InvalidPuceException;
 
 public class ControllerAnimal {
 
@@ -233,11 +234,10 @@ public class ControllerAnimal {
         // L'ElementIntrouvableException remontera toute seule vers l'appelant
     }
 
-    public void updateAnimal(int id, Scanner scanner) {
+    public void updateAnimal(int id, Scanner scanner) throws ElementIntrouvableException, InvalidPuceException {
         Animal a = animalReq.getById(id);
         if (a == null) {
-            System.out.println("Animal introuvable.");
-            return;
+            throw new ElementIntrouvableException("Animal", id);
         }
 
         System.out.println("\n=== Modification de " + a.getNom() + " (ID: " + id + ") ===");
@@ -255,8 +255,10 @@ public class ControllerAnimal {
 
         System.out.print("Puce (Actuel: " + a.getPuce() + ") : ");
         String puce = scanner.nextLine().trim();
-        if (!puce.isEmpty())
+        if (!puce.isEmpty()) {
+            validerPuce(puce);
             a.setPuce(puce);
+        }
 
         System.out.print("Statut (Actuel: " + a.getStatut() + ") : ");
         String statut = scanner.nextLine().trim();
