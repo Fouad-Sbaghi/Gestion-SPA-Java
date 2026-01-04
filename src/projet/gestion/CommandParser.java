@@ -11,6 +11,12 @@ import projet.exceptions.AuthentificationException;
 import projet.exceptions.SpaException;
 import projet.exceptions.regle.DroitsInsuffisantsException;
 import projet.exceptions.regle.SejourActifException;
+import projet.gestion.controller.ControllerActivite;
+import projet.gestion.controller.ControllerAnimal;
+import projet.gestion.controller.ControllerBox;
+import projet.gestion.controller.ControllerFamille;
+import projet.gestion.controller.ControllerPlanning;
+import projet.gestion.controller.ControllerRapport;
 import projet.exceptions.donnee.format.InvalidTelephoneException;
 
 /**
@@ -745,11 +751,12 @@ public class CommandParser {
 
     /**
      * Affiche et gère le sous-menu Rapports.
-     * Commandes : stats benevoles/adoptables/box, animal.
+     * Commandes : stats, export, animal.
      */
     private void menuRapport() {
         System.out.println("\n--- [6] RAPPORTS ---");
-        System.out.println("Commandes: stats [benevoles | adoptables | box], animal <id|nom>");
+        System.out.println(
+                "Commandes: stats [benevoles | adoptables | box], export [...], load [list | <fichier.ser>], animal <id|nom>");
 
         boolean back = false;
         while (!back) {
@@ -762,10 +769,15 @@ public class CommandParser {
             }
             if (cmd.equalsIgnoreCase("help")) {
                 System.out.println("Commandes:");
-                System.out.println("  stats benevoles");
-                System.out.println("  stats adoptables");
-                System.out.println("  stats box");
-                System.out.println("  animal <id|nom>");
+                System.out.println("  stats benevoles     - Affiche les stats bénévoles");
+                System.out.println("  stats adoptables    - Affiche les animaux adoptables");
+                System.out.println("  stats box           - Affiche l'occupation des box");
+                System.out.println("  export benevoles    - Sauvegarde le rapport bénévoles (.ser)");
+                System.out.println("  export adoptables   - Sauvegarde le rapport adoptables (.ser)");
+                System.out.println("  export box          - Sauvegarde le rapport box (.ser)");
+                System.out.println("  load list           - Liste les rapports sauvegardés");
+                System.out.println("  load <fichier.ser>  - Charge et affiche un rapport sauvegardé");
+                System.out.println("  animal <id|nom>     - Affiche le dossier d'un animal");
                 continue;
             }
 
@@ -784,17 +796,36 @@ public class CommandParser {
                 continue;
             }
 
-            if (!parts[0].equalsIgnoreCase("stats")) {
-                System.out.println("Commande inconnue. Tapez 'help'.");
+            if (parts[0].equalsIgnoreCase("stats")) {
+                switch (parts[1].toLowerCase()) {
+                    case "benevoles" -> controllerRapport.statsBenevoles();
+                    case "adoptables" -> controllerRapport.statsAdoptables();
+                    case "box" -> controllerBox.rapportAvanceBox();
+                    default -> System.out.println("Rapport inconnu. Tapez 'help'.");
+                }
                 continue;
             }
 
-            switch (parts[1].toLowerCase()) {
-                case "benevoles" -> controllerRapport.statsBenevoles();
-                case "adoptables" -> controllerRapport.statsAdoptables();
-                case "box" -> controllerBox.rapportAvanceBox();
-                default -> System.out.println("Rapport inconnu. Tapez 'help'.");
+            if (parts[0].equalsIgnoreCase("export")) {
+                switch (parts[1].toLowerCase()) {
+                    case "benevoles" -> Sauvegarde.exporterBenevoles();
+                    case "adoptables" -> Sauvegarde.exporterAdoptables();
+                    case "box" -> Sauvegarde.exporterBox();
+                    default -> System.out.println("Export inconnu. Tapez 'help'.");
+                }
+                continue;
             }
+
+            if (parts[0].equalsIgnoreCase("load")) {
+                if (parts[1].equalsIgnoreCase("list")) {
+                    Sauvegarde.listerRapports();
+                } else {
+                    Sauvegarde.chargerEtAfficher(parts[1]);
+                }
+                continue;
+            }
+
+            System.out.println("Commande inconnue. Tapez 'help'.");
         }
     }
 

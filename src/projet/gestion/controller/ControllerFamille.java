@@ -1,4 +1,4 @@
-package projet.gestion;
+package projet.gestion.controller;
 
 import java.util.List;
 import java.util.Scanner;

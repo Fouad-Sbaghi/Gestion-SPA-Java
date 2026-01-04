@@ -1,4 +1,4 @@
-package projet.gestion;
+package projet.gestion.controller;
 
 import projet.requests.rapports.RapportAnimauxAdoptable;
 import projet.requests.rapports.RapportBenevoleRequest;

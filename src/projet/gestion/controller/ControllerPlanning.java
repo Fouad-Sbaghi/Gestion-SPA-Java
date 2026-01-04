@@ -1,4 +1,4 @@
-package projet.gestion;
+package projet.gestion.controller;
 
 import java.sql.Date;
 import java.util.List;

@@ -1,4 +1,4 @@
-package projet.gestion;
+package projet.gestion.controller;
 
 import projet.requests.BoxRequest;
 import projet.requests.SejourBoxRequest;
