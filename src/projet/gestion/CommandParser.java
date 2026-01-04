@@ -177,7 +177,13 @@ public class CommandParser {
 
             switch (parts[1].toLowerCase()) {
                 case "list" -> controllerAnimal.listerAnimaux();
-                case "add" -> controllerAnimal.ajouterAnimal(scanner);
+                case "add" -> {
+                    try {
+                        controllerAnimal.ajouterAnimal(scanner);
+                    } catch (projet.exceptions.SpaException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
                 case "delete" -> {
                     if (parts.length < 3) {
                         printUsage("animal delete <idAnimal>");
@@ -457,7 +463,11 @@ public class CommandParser {
             // benevole ...
             if (parts[0].equalsIgnoreCase("benevole")) {
                 if (parts.length >= 2 && parts[1].equalsIgnoreCase("add")) {
-                    controllerPlanning.ajouterBenevole(scanner);
+                    try {
+                        controllerPlanning.ajouterBenevole(scanner);
+                    } catch (projet.exceptions.donnee.format.InvalidTelephoneException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
                 // CAS AJOUTE : Planning par bénévole
                 else if (parts.length >= 3 && parts[1].equalsIgnoreCase("planning")) {

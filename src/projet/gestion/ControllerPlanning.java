@@ -38,30 +38,26 @@ public class ControllerPlanning {
         }
     }
 
-    public void ajouterBenevole(Scanner scanner) {
-        try {
-            System.out.println(">> Nouveau Benevole");
-            Personnel p = new Personnel();
-            p.setType_pers("Benevole");
+    public void ajouterBenevole(Scanner scanner) throws InvalidTelephoneException {
+        System.out.println(">> Nouveau Benevole");
+        Personnel p = new Personnel();
+        p.setType_pers("Benevole");
 
-            System.out.print("Nom : ");
-            p.setNom(scanner.nextLine());
-            System.out.print("Prenom : ");
-            p.setPrenom(scanner.nextLine());
-            System.out.print("Tel : ");
-            String tel = scanner.nextLine();
-            validerTelephone(tel);
-            p.setTel(tel);
-            System.out.print("User : ");
-            p.setUser(scanner.nextLine());
-            System.out.print("Pass : ");
-            p.setPassword(scanner.nextLine());
+        System.out.print("Nom : ");
+        p.setNom(scanner.nextLine());
+        System.out.print("Prenom : ");
+        p.setPrenom(scanner.nextLine());
+        System.out.print("Tel : ");
+        String tel = scanner.nextLine();
+        validerTelephone(tel);
+        p.setTel(tel);
+        System.out.print("User : ");
+        p.setUser(scanner.nextLine());
+        System.out.print("Pass : ");
+        p.setPassword(scanner.nextLine());
 
-            personnelReq.add(p);
-            System.out.println("Benevole ajoute.");
-        } catch (InvalidTelephoneException e) {
-            System.out.println(e.getMessage());
-        }
+        personnelReq.add(p);
+        System.out.println("Benevole ajoute.");
     }
 
     public void afficherPlanning() {

@@ -93,94 +93,78 @@ public class ControllerAnimal {
         }
     }
 
-    public void ajouterAnimal(Scanner scanner) {
-        try {
-            System.out.println(">> Ajout d'un nouvel animal");
-            Animal a = new Animal();
+    public void ajouterAnimal(Scanner scanner) throws projet.exceptions.donnee.format.DateIncoherenteException,
+            projet.exceptions.donnee.format.DateFutureException,
+            projet.exceptions.donnee.format.InvalidPuceException,
+            InvalidFormatException,
+            projet.exceptions.regle.EspeceInconnueException,
+            projet.exceptions.donnee.DuplicatedIdException {
 
-            System.out.print("Nom : ");
-            String nom = scanner.nextLine().trim();
-            validerNom(nom);
-            a.setNom(nom);
+        System.out.println(">> Ajout d'un nouvel animal");
+        Animal a = new Animal();
 
-            System.out.print("Espece (Chat/Chien/Lapin/Rongeur/Oiseau/Reptile/Autre) : ");
-            String espece = scanner.nextLine().trim();
-            validerEspece(espece);
-            a.setEspece(espece);
+        System.out.print("Nom : ");
+        String nom = scanner.nextLine().trim();
+        validerNom(nom);
+        a.setNom(nom);
 
-            System.out.print("Puce (laisser vide si inconnue, format: 10 chiffres) : ");
-            String puce = scanner.nextLine().trim();
-            if (!puce.isEmpty()) {
-                validerPuce(puce);
-            }
-            a.setPuce(puce.isEmpty() ? null : puce);
+        System.out.print("Espece (Chat/Chien/Lapin/Rongeur/Oiseau/Reptile/Autre) : ");
+        String espece = scanner.nextLine().trim();
+        validerEspece(espece);
+        a.setEspece(espece);
 
-            System.out.print("Date de naissance (YYYY-MM-DD, vide si inconnue) : ");
-            String naissStr = scanner.nextLine().trim();
-            if (!naissStr.isEmpty()) {
-                try {
-                    Date dateNaissance = Date.valueOf(naissStr);
-                    // Vérifier que la date n'est pas dans le futur
-                    if (dateNaissance.after(new Date(System.currentTimeMillis()))) {
-                        throw new projet.exceptions.donnee.format.DateFutureException("Date de naissance", naissStr);
-                    }
-                    a.setDate_naissance(dateNaissance);
-                } catch (projet.exceptions.donnee.format.DateFutureException e) {
-                    throw e; // Relancer pour le catch externe
-                } catch (Exception e) {
-                    System.out.println("Date invalide, ignoree.");
-                }
-            }
-
-            System.out.print("Statut (Adoptable/Quarantaine/Soins/Au refuge) [defaut: Au refuge] : ");
-            String statut = scanner.nextLine().trim();
-            a.setStatut(statut.isEmpty() ? "Au refuge" : statut);
-
-            System.out.println("--- Tests comportementaux (repondez V/F) ---");
-
-            System.out.print("Test Humain (V/F) [defaut: F] : ");
-            String tH = scanner.nextLine().trim().toUpperCase();
-            a.setTests_humain(tH.equals("V"));
-
-            System.out.print("Test Bebe (V/F) [defaut: F] : ");
-            String tB = scanner.nextLine().trim().toUpperCase();
-            a.setTests_bebe(tB.equals("V"));
-
-            System.out.print("Test Chien (V/F) [defaut: F] : ");
-            String tC = scanner.nextLine().trim().toUpperCase();
-            a.setTests_chien(tC.equals("V"));
-
-            System.out.print("Test Chat (V/F) [defaut: F] : ");
-            String tCh = scanner.nextLine().trim().toUpperCase();
-            a.setTests_chat(tCh.equals("V"));
-
-            Date dateArrivee = new Date(System.currentTimeMillis());
-            a.setDate_arrivee(dateArrivee);
-
-            // Vérifier que la date de naissance est antérieure ou égale à la date d'arrivée
-            if (a.getDate_naissance() != null && a.getDate_naissance().after(dateArrivee)) {
-                throw new projet.exceptions.donnee.format.DateIncoherenteException(
-                        "Date de naissance", "Date d'arrivée",
-                        "La date de naissance ne peut pas être postérieure à la date d'arrivée");
-            }
-
-            animalReq.add(a);
-            System.out.println("Succes : Animal ajoute !");
-        } catch (projet.exceptions.donnee.format.DateIncoherenteException e) {
-            System.out.println(e.getMessage());
-        } catch (projet.exceptions.donnee.format.DateFutureException e) {
-            System.out.println(e.getMessage());
-        } catch (projet.exceptions.donnee.format.InvalidPuceException e) {
-            System.out.println(e.getMessage());
-        } catch (InvalidFormatException e) {
-            System.out.println(e.getMessage());
-        } catch (projet.exceptions.regle.EspeceInconnueException e) {
-            System.out.println(e.getMessage());
-        } catch (projet.exceptions.donnee.DuplicatedIdException e) {
-            System.out.println(e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erreur ajout animal : " + e.getMessage());
+        System.out.print("Puce (laisser vide si inconnue, format: 10 chiffres) : ");
+        String puce = scanner.nextLine().trim();
+        if (!puce.isEmpty()) {
+            validerPuce(puce);
         }
+        a.setPuce(puce.isEmpty() ? null : puce);
+
+        System.out.print("Date de naissance (YYYY-MM-DD, vide si inconnue) : ");
+        String naissStr = scanner.nextLine().trim();
+        if (!naissStr.isEmpty()) {
+            Date dateNaissance = Date.valueOf(naissStr);
+            // Vérifier que la date n'est pas dans le futur
+            if (dateNaissance.after(new Date(System.currentTimeMillis()))) {
+                throw new projet.exceptions.donnee.format.DateFutureException("Date de naissance", naissStr);
+            }
+            a.setDate_naissance(dateNaissance);
+        }
+
+        System.out.print("Statut (Adoptable/Quarantaine/Soins/Au refuge) [defaut: Au refuge] : ");
+        String statut = scanner.nextLine().trim();
+        a.setStatut(statut.isEmpty() ? "Au refuge" : statut);
+
+        System.out.println("--- Tests comportementaux (repondez V/F) ---");
+
+        System.out.print("Test Humain (V/F) [defaut: F] : ");
+        String tH = scanner.nextLine().trim().toUpperCase();
+        a.setTests_humain(tH.equals("V"));
+
+        System.out.print("Test Bebe (V/F) [defaut: F] : ");
+        String tB = scanner.nextLine().trim().toUpperCase();
+        a.setTests_bebe(tB.equals("V"));
+
+        System.out.print("Test Chien (V/F) [defaut: F] : ");
+        String tC = scanner.nextLine().trim().toUpperCase();
+        a.setTests_chien(tC.equals("V"));
+
+        System.out.print("Test Chat (V/F) [defaut: F] : ");
+        String tCh = scanner.nextLine().trim().toUpperCase();
+        a.setTests_chat(tCh.equals("V"));
+
+        Date dateArrivee = new Date(System.currentTimeMillis());
+        a.setDate_arrivee(dateArrivee);
+
+        // Vérifier que la date de naissance est antérieure ou égale à la date d'arrivée
+        if (a.getDate_naissance() != null && a.getDate_naissance().after(dateArrivee)) {
+            throw new projet.exceptions.donnee.format.DateIncoherenteException(
+                    "Date de naissance", "Date d'arrivée",
+                    "La date de naissance ne peut pas être postérieure à la date d'arrivée");
+        }
+
+        animalReq.add(a);
+        System.out.println("Succes : Animal ajoute !");
     }
 
     public void supprimerAnimal(int id) throws DroitsInsuffisantsException, ElementIntrouvableException,
