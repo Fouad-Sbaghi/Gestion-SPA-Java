@@ -5,6 +5,7 @@ projet.exceptions.donnee
 projet.exceptions.donnee.format
 projet.exceptions.regle
 projet.gestion
+projet.gestion.controller
 projet.main
 projet.requests
 projet.requests.rapports
