@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 import projet.auth.Login;
 import projet.tables.Personnel;
+import projet.exceptions.donnee.ElementIntrouvableException;
 
 public class CommandParser {
 
@@ -182,8 +183,17 @@ public class CommandParser {
                         break;
                     }
                     Integer id = parseIntOrNull(parts[2], "idAnimal");
-                    if (id != null)
-                        controllerAnimal.supprimerAnimal(id);
+                    if (id != null) {
+                        try {
+                            controllerAnimal.supprimerAnimal(id);
+                        } catch (projet.exceptions.regle.DroitsInsuffisantsException e) {
+                            System.out.println(e.getMessage());
+                        } catch (projet.exceptions.regle.SejourActifException e) {
+                            System.out.println(e.getMessage());
+                        } catch (ElementIntrouvableException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
                 }
                 case "update" -> {
                     if (parts.length < 3) {
@@ -199,7 +209,11 @@ public class CommandParser {
                         printUsage("animal history <idAnimal|nom>");
                         break;
                     }
-                    controllerAnimal.chercherAnimal(joinFrom(parts, 2));
+                    try {
+                        controllerAnimal.chercherAnimal(joinFrom(parts, 2));
+                    } catch (ElementIntrouvableException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case "filter" -> {
                     if (parts.length < 3) {
@@ -208,7 +222,13 @@ public class CommandParser {
                     }
                     controllerAnimal.filtrerAnimaux(joinFrom(parts, 2));
                 }
-                default -> controllerAnimal.chercherAnimal(joinFrom(parts, 1));
+                default -> {
+                    try {
+                        controllerAnimal.chercherAnimal(joinFrom(parts, 1));
+                    } catch (ElementIntrouvableException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
             }
         }
     }
@@ -659,7 +679,11 @@ public class CommandParser {
 
             // Cas specifique pour "animal" qui n'est pas un "stats ..."
             if (parts[0].equalsIgnoreCase("animal")) {
-                controllerAnimal.chercherAnimal(joinFrom(parts, 1));
+                try {
+                    controllerAnimal.chercherAnimal(joinFrom(parts, 1));
+                } catch (ElementIntrouvableException e) {
+                    System.out.println(e.getMessage());
+                }
                 continue;
             }
 
@@ -711,7 +735,13 @@ public class CommandParser {
             String query = joinFrom(parts, 1);
 
             switch (entity) {
-                case "animal" -> controllerAnimal.chercherAnimal(query);
+                case "animal" -> {
+                    try {
+                        controllerAnimal.chercherAnimal(query);
+                    } catch (ElementIntrouvableException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
                 case "famille" -> controllerFamille.chercherFamille(query);
                 case "benevole" -> controllerPlanning.chercherBenevole(query);
                 case "incident" -> controllerActivite.chercherIncident(query);

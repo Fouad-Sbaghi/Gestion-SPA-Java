@@ -10,6 +10,7 @@ import projet.tables.Animal;
 import projet.tables.Personnel;
 import projet.exceptions.donnee.format.InvalidFormatException;
 import projet.exceptions.regle.DroitsInsuffisantsException;
+import projet.exceptions.donnee.ElementIntrouvableException;
 
 public class ControllerAnimal {
 
@@ -181,62 +182,55 @@ public class ControllerAnimal {
         }
     }
 
-    public void supprimerAnimal(int id) {
-        try {
-            if (currentUser != null && !"Admin".equalsIgnoreCase(currentUser.getType_pers())) {
-                throw new DroitsInsuffisantsException("Suppression d'animal", currentUser.getType_pers(), "Admin");
-            }
+    public void supprimerAnimal(int id) throws DroitsInsuffisantsException, ElementIntrouvableException,
+            projet.exceptions.regle.SejourActifException {
+        if (currentUser != null && !"Admin".equalsIgnoreCase(currentUser.getType_pers())) {
+            throw new DroitsInsuffisantsException("Suppression d'animal", currentUser.getType_pers(), "Admin");
+        }
 
-            // Vérifier si l'animal a un séjour actif (box ou famille)
-            projet.requests.SejourBoxRequest boxReq = new projet.requests.SejourBoxRequest();
-            projet.requests.SejourFamilleRequest familleReq = new projet.requests.SejourFamilleRequest();
+        // Vérifier si l'animal a un séjour actif (box ou famille)
+        projet.requests.SejourBoxRequest boxReq = new projet.requests.SejourBoxRequest();
+        projet.requests.SejourFamilleRequest familleReq = new projet.requests.SejourFamilleRequest();
 
-            int boxActuel = boxReq.getBoxActuel(id);
-            int familleActuelle = familleReq.getFamilleActuelle(id);
+        int boxActuel = boxReq.getBoxActuel(id);
+        int familleActuelle = familleReq.getFamilleActuelle(id);
 
-            if (boxActuel != -1) {
-                throw new projet.exceptions.regle.SejourActifException(id,
-                        "suppression (l'animal est dans le box #" + boxActuel + ")");
-            }
-            if (familleActuelle != -1) {
-                throw new projet.exceptions.regle.SejourActifException(id,
-                        "suppression (l'animal est dans la famille #" + familleActuelle + ")");
-            }
+        if (boxActuel != -1) {
+            throw new projet.exceptions.regle.SejourActifException(id,
+                    "suppression (l'animal est dans le box #" + boxActuel + ")");
+        }
+        if (familleActuelle != -1) {
+            throw new projet.exceptions.regle.SejourActifException(id,
+                    "suppression (l'animal est dans la famille #" + familleActuelle + ")");
+        }
 
-            // Vérifier que l'animal existe
-            Animal a = animalReq.getById(id);
-            if (a == null) {
-                throw new projet.exceptions.donnee.ElementIntrouvableException("Animal", id);
-            }
+        // Vérifier que l'animal existe
+        Animal a = animalReq.getById(id);
+        if (a == null) {
+            throw new projet.exceptions.donnee.ElementIntrouvableException("Animal", id);
+        }
 
-            if (animalReq.delete(id)) {
-                System.out.println("Succes : Animal " + id + " supprime.");
-            }
-        } catch (DroitsInsuffisantsException e) {
-            System.out.println(e.getMessage());
-        } catch (projet.exceptions.regle.SejourActifException e) {
-            System.out.println(e.getMessage());
-        } catch (projet.exceptions.donnee.ElementIntrouvableException e) {
-            System.out.println(e.getMessage());
+        if (animalReq.delete(id)) {
+            System.out.println("Succes : Animal " + id + " supprime.");
         }
     }
 
-    public void chercherAnimal(String input) {
+    public void chercherAnimal(String input) throws ElementIntrouvableException {
         try {
+            // Si c'est un ID numérique
             int id = Integer.parseInt(input);
             rapportHistorique.afficherDossier(id);
         } catch (NumberFormatException e) {
-            System.out.println("Recherche par nom '" + input + "' :");
+            // Si c'est un nom
             List<Animal> res = animalReq.getByName(input);
             if (res.isEmpty()) {
-                System.out.println("Aucun animal trouve avec ce nom.");
-            } else {
-                for (Animal a : res) {
-                    rapportHistorique.afficherDossier(a.getId_animal());
-                    System.out.println();
-                }
+                throw new ElementIntrouvableException("Animal", input);
+            }
+            for (Animal a : res) {
+                rapportHistorique.afficherDossier(a.getId_animal());
             }
         }
+        // L'ElementIntrouvableException remontera toute seule vers l'appelant
     }
 
     public void updateAnimal(int id, Scanner scanner) {
