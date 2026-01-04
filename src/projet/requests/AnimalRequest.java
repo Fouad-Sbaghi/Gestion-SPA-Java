@@ -54,9 +54,8 @@ public class AnimalRequest {
      * Ajoute un nouvel animal dans la base de données.
      * 
      * @param animal L'objet Animal à insérer.
-     * @throws DuplicatedIdException si la puce existe déjà dans la base.
      */
-    public void add(Animal animal) throws projet.exceptions.donnee.DuplicatedIdException {
+    public void add(Animal animal) {
         String sql = "INSERT INTO Animal (puce, espece, nom, date_naissance, statut, date_arrivee, " +
                 "tests_humain, tests_bebe, tests_chien, tests_chat) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -80,10 +79,6 @@ public class AnimalRequest {
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            // Vérifier si c'est une erreur de duplicate key (puce)
-            if (e.getSQLState() != null && e.getSQLState().equals("23505")) {
-                throw new projet.exceptions.donnee.DuplicatedIdException(animal.getPuce());
-            }
             System.err.println("Erreur SQL (Ajout Animal) : " + e.getMessage());
         }
     }
