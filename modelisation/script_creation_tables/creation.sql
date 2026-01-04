@@ -42,16 +42,6 @@ CREATE TABLE Incident (
     date_incident DATETIME NOT NULL
 );
 
-
-
-
-
-
-
-
-
-
-
 CREATE TABLE Animal (
     id_animal INT PRIMARY KEY AUTO_INCREMENT,
     puce VARCHAR(50) UNIQUE,
@@ -66,7 +56,6 @@ CREATE TABLE Animal (
     date_arrivee DATE NOT NULL
 );
 
-
 CREATE TABLE Soin (
     id_soin INT PRIMARY KEY AUTO_INCREMENT,
     id_animal INT NOT NULL, 
@@ -76,7 +65,6 @@ CREATE TABLE Soin (
     date_soin DATETIME NOT NULL,
     FOREIGN KEY (id_animal) REFERENCES Animal(id_animal)
 );
-
 
 CREATE TABLE Affectation_Creneau_Activite (
     id_creneau INT NOT NULL,
@@ -98,14 +86,6 @@ CREATE TABLE Sejour_Famille (
     FOREIGN KEY (id_famille) REFERENCES Famille(id_famille)
 );
 
-
-
-
-
-
-
-
-
 CREATE TABLE Sejour_Box (
     id_animal INT NOT NULL,
     id_box INT NOT NULL,
@@ -116,7 +96,6 @@ CREATE TABLE Sejour_Box (
     FOREIGN KEY (id_box) REFERENCES Box(id_box)
 );
 
-
 CREATE TABLE Animal_Incident (
     id_animal INT NOT NULL,
     id_incident INT NOT NULL,
@@ -124,7 +103,6 @@ CREATE TABLE Animal_Incident (
     FOREIGN KEY (id_animal) REFERENCES Animal(id_animal),
     FOREIGN KEY (id_incident) REFERENCES Incident(id_incident)
 );
-
 
 CREATE TABLE Veterinaire(
     id_personne INT NOT NULL,

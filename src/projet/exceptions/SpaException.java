@@ -1,7 +1,7 @@
 package projet.exceptions;
 
 /**
- * Exception mère pour toutes les erreurs métier de l'application.
+ * Exception mère abstraite pour toutes les erreurs de l'application.
  */
 public abstract class SpaException extends Exception {
 
