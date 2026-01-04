@@ -15,7 +15,7 @@ import projet.exceptions.regle.MissingEntityException;
  * DAO pour la gestion des séjours en box.
 
  * Gère le placement, la sortie et l'historique des animaux dans les box.
- * Vérifie les règles métier (capacité, compatibilité de type).
+ * Vérifie les règles (capacité, compatibilité de type).
 
  * 
  */
