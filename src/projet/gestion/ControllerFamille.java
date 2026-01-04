@@ -90,6 +90,8 @@ public class ControllerFamille {
             } catch (Exception e) {
                 System.out.println("Erreur maj statut.");
             }
+        } else {
+            System.out.println("Erreur : L'animal #" + idAnimal + " n'a pas de sejour actif en famille.");
         }
     }
 
