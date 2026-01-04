@@ -22,7 +22,6 @@ import projet.exceptions.donnee.format.InvalidPuceException;
  * d'accès (droits administrateur pour la suppression).
  * </p>
  * 
- * @author Projet SPA
  * @version 1.0
  * @see projet.requests.AnimalRequest
  * @see projet.tables.Animal

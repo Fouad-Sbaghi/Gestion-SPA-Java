@@ -19,7 +19,6 @@ import projet.tables.Soin;
  * des soins vétérinaires, et de déclarer/rechercher des incidents.
  * </p>
  * 
- * @author Projet SPA
  * @version 1.0
  * @see projet.requests.ActiviteRequest
  * @see projet.requests.SoinRequest

@@ -20,7 +20,6 @@ import projet.exceptions.donnee.ElementIntrouvableException;
  * capacité maximale.
  * </p>
  * 
- * @author Projet SPA
  * @version 1.0
  * @see projet.requests.BoxRequest
  * @see projet.requests.SejourBoxRequest

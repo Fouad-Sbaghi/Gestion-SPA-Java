@@ -10,7 +10,6 @@ import projet.requests.rapports.RapportBenevoleRequest;
  * et la liste des animaux adoptables.
  * </p>
  * 
- * @author Projet SPA
  * @version 1.0
  * @see projet.requests.rapports.RapportAnimauxAdoptable
  * @see projet.requests.rapports.RapportBenevoleRequest

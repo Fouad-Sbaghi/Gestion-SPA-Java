@@ -10,7 +10,6 @@ import projet.gestion.CommandParser;
  * Initialise la connexion à la base de données et lance l'interface CLI.
  * </p>
  * 
- * @author Projet L2 JAVA
  */
 public class Main {
 

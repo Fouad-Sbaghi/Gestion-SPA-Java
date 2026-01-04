@@ -22,7 +22,6 @@ import projet.tables.Personnel;
  * Il vérifie les formats de données comme les numéros de téléphone.
  * </p>
  * 
- * @author Projet SPA
  * @version 1.0
  * @see projet.requests.PersonnelRequest
  * @see projet.requests.CreneauRequest

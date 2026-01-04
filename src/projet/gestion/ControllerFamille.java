@@ -21,7 +21,6 @@ import projet.tables.Famille;
  * et le statut de quarantaine.
  * </p>
  * 
- * @author Projet SPA
  * @version 1.0
  * @see projet.requests.FamilleRequest
  * @see projet.requests.SejourFamilleRequest

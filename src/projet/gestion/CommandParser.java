@@ -30,7 +30,6 @@ import projet.exceptions.donnee.format.InvalidTelephoneException;
  * <li>Recherche - Recherche multi-entités</li>
  * </ul>
  * 
- * @author Projet SPA
  * @version 1.0
  * @see ControllerAnimal
  * @see ControllerBox
