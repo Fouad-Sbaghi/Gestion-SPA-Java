@@ -8,4 +8,8 @@ public class ElementIntrouvableException extends DonneeException {
     public ElementIntrouvableException(String typeElement, String nom) {
         super("ElementIntrouvableException : Impossible de trouver " + typeElement + " avec le nom " + nom);
     }
+
+    public ElementIntrouvableException(String typeElement) {
+        super("ElementIntrouvableException : Impossible de trouver " + typeElement);
+    }
 }

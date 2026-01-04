@@ -8,6 +8,7 @@ import projet.exceptions.regle.AnimalDejaPlaceException;
 import projet.exceptions.regle.BoxPleinException;
 import projet.exceptions.regle.IncompatibiliteTypeException;
 import projet.exceptions.regle.MissingEntityException;
+import projet.exceptions.donnee.ElementIntrouvableException;
 
 public class ControllerBox {
 
@@ -28,7 +29,7 @@ public class ControllerBox {
         boxReq.afficherOccupation();
     }
 
-    public void infoBox(int idBox) {
+    public void infoBox(int idBox) throws ElementIntrouvableException {
         boxReq.afficherInfoBox(idBox);
     }
 

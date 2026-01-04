@@ -314,8 +314,13 @@ public class CommandParser {
                         String idStr = scanner.nextLine().trim();
                         idBox = parseIntOrNull(idStr, "idBox");
                     }
-                    if (idBox != null)
-                        controllerBox.infoBox(idBox);
+                    if (idBox != null) {
+                        try {
+                            controllerBox.infoBox(idBox);
+                        } catch (ElementIntrouvableException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
                 }
                 case "add-animal" -> {
                     if (parts.length < 4) {

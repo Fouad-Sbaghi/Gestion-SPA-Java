@@ -8,6 +8,7 @@ import java.sql.Statement;
 
 import projet.connexion.Connexion;
 import projet.tables.Box;
+import projet.exceptions.donnee.ElementIntrouvableException;
 
 public class BoxRequest {
 
@@ -94,7 +95,7 @@ public class BoxRequest {
      * actuellement présents).
      * Un animal est considéré "présent" si son séjour a DATE_F_BOX IS NULL.
      */
-    public void afficherInfoBox(int idBox) {
+    public void afficherInfoBox(int idBox) throws ElementIntrouvableException {
         String sqlBox = """
                     SELECT b.id_box, b.type_box, b.capacite_max, COUNT(s.id_animal) as occupe
                     FROM Box b
@@ -130,8 +131,7 @@ public class BoxRequest {
             }
 
             if (cap == null || occ == null || type == null) {
-                System.out.println("Box #" + idBox + " introuvable.");
-                return;
+                throw new ElementIntrouvableException("le box #" + idBox);
             }
 
             int libres = Math.max(0, cap - occ);
