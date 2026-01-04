@@ -11,20 +11,30 @@ import java.util.List;
 import projet.connexion.Connexion;
 import projet.tables.Soin;
 
+/**
+ * DAO pour la gestion des soins vétérinaires.
+ * <p>
+ * Gère l'enregistrement et l'historique médical des animaux.
+ * </p>
+ * 
+ * @see projet.tables.Soin
+ */
 public class SoinRequest {
 
     /**
      * Ajoute un soin vétérinaire ou une intervention médicale.
-     * @param idAnimal L'animal concerné.
-     * @param type "Vaccin", "Chirurgie", "Examen", etc.
-     * @param libelle Nom du médicament ou de l'acte (ex: "Rabies", "Stérilisation").
+     * 
+     * @param idAnimal    L'animal concerné.
+     * @param type        "Vaccin", "Chirurgie", "Examen", etc.
+     * @param libelle     Nom du médicament ou de l'acte (ex: "Rabies",
+     *                    "Stérilisation").
      * @param commentaire Détails ou observations du vétérinaire.
      */
     public void add(int idAnimal, String type, String libelle, String commentaire) {
         String sql = "INSERT INTO Soin (id_animal, type_soin, libelle, commentaire, date_soin) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idAnimal);
             pstmt.setString(2, type);
@@ -50,10 +60,10 @@ public class SoinRequest {
         String sql = "SELECT * FROM Soin WHERE id_animal = ? ORDER BY date_soin DESC";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idAnimal);
-            
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Soin s = new Soin();
@@ -63,7 +73,7 @@ public class SoinRequest {
                     s.setLibelle(rs.getString("libelle"));
                     s.setCommentaire(rs.getString("commentaire"));
                     s.setDate_soin(rs.getTimestamp("date_soin"));
-                    
+
                     liste.add(s);
                 }
             }
@@ -81,7 +91,7 @@ public class SoinRequest {
         String sql = "DELETE FROM Soin WHERE id_soin = ?";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idSoin);
             int rows = pstmt.executeUpdate();

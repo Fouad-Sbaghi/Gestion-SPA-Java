@@ -9,6 +9,12 @@ import projet.exceptions.SpaException;
  * </p>
  */
 public class DonneeException extends SpaException {
+
+    /**
+     * Constructeur avec message.
+     * 
+     * @param message Description de l'erreur.
+     */
     public DonneeException(String message) {
         super("DonneeException : " + message);
     }

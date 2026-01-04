@@ -12,6 +12,19 @@ import projet.requests.rapports.RapportIncidentRequest;
 import projet.tables.Animal;
 import projet.tables.Soin;
 
+/**
+ * Contrôleur gérant les activités, soins et incidents.
+ * <p>
+ * Ce contrôleur permet de gérer les types d'activités, d'enregistrer
+ * des soins vétérinaires, et de déclarer/rechercher des incidents.
+ * </p>
+ * 
+ * @author Projet SPA
+ * @version 1.0
+ * @see projet.requests.ActiviteRequest
+ * @see projet.requests.SoinRequest
+ * @see projet.requests.IncidentRequest
+ */
 public class ControllerActivite {
 
     private ActiviteRequest activityReq;
@@ -21,6 +34,10 @@ public class ControllerActivite {
     private VeterinaireRequest vetoReq;
     private RapportIncidentRequest rapportIncident;
 
+    /**
+     * Constructeur par défaut.
+     * Initialise les requêtes pour les activités, soins et incidents.
+     */
     public ControllerActivite() {
         this.activityReq = new ActiviteRequest();
         this.incidentReq = new IncidentRequest();
@@ -30,6 +47,9 @@ public class ControllerActivite {
         this.rapportIncident = new RapportIncidentRequest();
     }
 
+    /**
+     * Affiche la liste de tous les types d'activités définis.
+     */
     public void listerActivites() {
         System.out.println("--- Liste des types d'activites ---");
         var liste = activityReq.getAll();
@@ -44,14 +64,30 @@ public class ControllerActivite {
         }
     }
 
+    /**
+     * Ajoute une activité pour un animal.
+     * 
+     * @param idAnimal L'identifiant de l'animal.
+     * @param type     Le type d'activité.
+     */
     public void ajouterActivite(int idAnimal, String type) {
         activityReq.add(idAnimal, type, "Activite enregistree via menu");
     }
 
+    /**
+     * Ajoute un nouveau type d'activité.
+     * 
+     * @param type Le libellé du type d'activité.
+     */
     public void ajouterTypeActivite(String type) {
         activityReq.addType(type);
     }
 
+    /**
+     * Supprime un type d'activité.
+     * 
+     * @param idActivite L'identifiant du type à supprimer.
+     */
     public void supprimerActivite(int idActivite) {
         if (activityReq.deleteType(idActivite)) {
             System.out.println("Activite #" + idActivite + " supprimee.");
@@ -60,6 +96,13 @@ public class ControllerActivite {
         }
     }
 
+    /**
+     * Ajoute un soin vétérinaire via saisie interactive.
+     * 
+     * @param idAnimal L'identifiant de l'animal.
+     * @param idVeto   L'identifiant du vétérinaire.
+     * @param scanner  Le scanner pour la saisie utilisateur.
+     */
     public void ajouterSoinComplet(int idAnimal, int idVeto, Scanner scanner) {
         System.out.println(">> Ajout d'un soin veterinaire");
         System.out.print("Type (Vaccin/Operation/Examen) : ");
@@ -73,6 +116,9 @@ public class ControllerActivite {
         System.out.println("Info : Soin ajoute.");
     }
 
+    /**
+     * Affiche la liste globale de tous les soins enregistrés.
+     */
     public void listerTousLesSoins() {
         System.out.println("--- Liste globale des Soins ---");
         List<Animal> animaux = animalReq.getAll();
@@ -96,6 +142,11 @@ public class ControllerActivite {
             System.out.println("Aucun soin enregistre.");
     }
 
+    /**
+     * Supprime un soin par son identifiant.
+     * 
+     * @param idSoin L'identifiant du soin à supprimer.
+     */
     public void supprimerSoin(int idSoin) {
         if (soinReq.delete(idSoin))
             System.out.println("Succes : Soin #" + idSoin + " supprime.");
@@ -103,10 +154,22 @@ public class ControllerActivite {
             System.out.println("Erreur : Soin introuvable.");
     }
 
+    /**
+     * Assigne un vétérinaire à un soin.
+     * 
+     * @param idSoin L'identifiant du soin.
+     * @param idVeto L'identifiant du vétérinaire.
+     */
     public void signerSoin(int idSoin, int idVeto) {
         vetoReq.assigner(idVeto, idSoin);
     }
 
+    /**
+     * Déclare un incident pour un animal via saisie interactive.
+     * 
+     * @param idAnimal L'identifiant de l'animal concerné.
+     * @param scanner  Le scanner pour la saisie utilisateur.
+     */
     public void declarerIncident(int idAnimal, Scanner scanner) {
         System.out.println(">> Declaration d'incident pour animal #" + idAnimal);
         System.out.print("Type (Maladie/Accident/Comportement/Autre) : ");
@@ -119,10 +182,20 @@ public class ControllerActivite {
         incidentReq.add(idAnimal, type, desc, detail);
     }
 
+    /**
+     * Affiche les incidents d'un animal.
+     * 
+     * @param idAnimal L'identifiant de l'animal.
+     */
     public void listerIncidents(int idAnimal) {
         rapportIncident.afficherParAnimal(idAnimal);
     }
 
+    /**
+     * Recherche et affiche un incident par ID ou intitulé.
+     * 
+     * @param input L'ID ou l'intitulé de l'incident recherché.
+     */
     public void chercherIncident(String input) {
         String q = (input == null) ? "" : input.trim();
         if (q.isEmpty()) {

@@ -13,21 +13,49 @@ import projet.exceptions.regle.DroitsInsuffisantsException;
 import projet.exceptions.donnee.ElementIntrouvableException;
 import projet.exceptions.donnee.format.InvalidPuceException;
 
+/**
+ * Contrôleur gérant toutes les opérations liées aux animaux.
+ * <p>
+ * Ce contrôleur permet de lister, ajouter, modifier, supprimer et rechercher
+ * des animaux dans le système. Il gère également les validations métier
+ * (format de puce, espèces autorisées, dates cohérentes) et les contrôles
+ * d'accès (droits administrateur pour la suppression).
+ * </p>
+ * 
+ * @author Projet SPA
+ * @version 1.0
+ * @see projet.requests.AnimalRequest
+ * @see projet.tables.Animal
+ */
 public class ControllerAnimal {
 
     private AnimalRequest animalReq;
     private RapportHistoriqueAnimal rapportHistorique;
     private Personnel currentUser;
 
+    /**
+     * Constructeur par défaut.
+     * Initialise les requêtes animales et le générateur de rapports.
+     */
     public ControllerAnimal() {
         this.animalReq = new AnimalRequest();
         this.rapportHistorique = new RapportHistoriqueAnimal();
     }
 
+    /**
+     * Définit l'utilisateur actuellement connecté.
+     * Utilisé pour les contrôles d'accès (ex: suppression réservée aux admins).
+     * 
+     * @param user L'utilisateur connecté.
+     */
     public void setCurrentUser(Personnel user) {
         this.currentUser = user;
     }
 
+    /**
+     * Affiche la liste complète de tous les animaux enregistrés.
+     * Affiche un tableau formaté avec ID, puce, nom, espèce, dates et tests.
+     */
     public void listerAnimaux() {
         System.out.println("--- Liste complete des Animaux ---");
         List<Animal> liste = animalReq.getAll();
@@ -56,28 +84,35 @@ public class ControllerAnimal {
     }
 
     /**
-     * Valide qu'un nom ne contient que des lettres (avec accents), espaces et
-     * tirets.
+     * Valide qu'un nom ne contient que des lettres, espaces et tirets.
+     * 
+     * @param nom Le nom à valider.
+     * @throws InvalidFormatException Si le nom contient des caractères invalides.
      */
     private void validerNom(String nom) throws InvalidFormatException {
-        // Regex : "Ne correspond PAS uniquement à des lettres, espaces ou tirets"
         if (nom != null && !nom.matches("[a-zA-Zà-ÿÀ-ß\\s-]+")) {
             throw new InvalidFormatException("Nom", nom);
         }
     }
 
     /**
-     * Valide le format d'une puce (10 chiffres selon la norme ISO).
+     * Valide le format d'une puce électronique (10 chiffres, norme ISO).
+     * 
+     * @param puce Le numéro de puce à valider.
+     * @throws InvalidPuceException Si le format est invalide.
      */
-    private void validerPuce(String puce) throws projet.exceptions.donnee.format.InvalidPuceException {
+    private void validerPuce(String puce) throws InvalidPuceException {
         if (puce != null && !puce.isEmpty() && !puce.matches("^[0-9]{10}$")) {
-            throw new projet.exceptions.donnee.format.InvalidPuceException(puce,
-                    "La puce doit contenir exactement 10 chiffres");
+            throw new InvalidPuceException(puce, "La puce doit contenir exactement 10 chiffres");
         }
     }
 
     /**
-     * Valide que l'espèce est connue.
+     * Valide que l'espèce est dans la liste des espèces autorisées.
+     * 
+     * @param espece L'espèce à valider.
+     * @throws projet.exceptions.regle.EspeceInconnueException Si l'espèce n'est pas
+     *                                                         reconnue.
      */
     private void validerEspece(String espece) throws projet.exceptions.regle.EspeceInconnueException {
         String[] especesAcceptees = { "Chat", "Chien", "Lapin", "Rongeur", "Oiseau", "Reptile", "Autre" };
@@ -93,6 +128,17 @@ public class ControllerAnimal {
         }
     }
 
+    /**
+     * Ajoute un nouvel animal via une saisie interactive.
+     * Demande toutes les informations nécessaires et valide chaque champ.
+     * 
+     * @param scanner Le scanner pour la saisie utilisateur.
+     * @throws projet.exceptions.donnee.format.DateIncoherenteException
+     * @throws projet.exceptions.donnee.format.DateFutureException
+     * @throws InvalidFormatException
+     * @throws projet.exceptions.regle.EspeceInconnueException
+     * @throws projet.exceptions.donnee.DuplicatedIdException
+     */
     public void ajouterAnimal(Scanner scanner) throws projet.exceptions.donnee.format.DateIncoherenteException,
             projet.exceptions.donnee.format.DateFutureException,
             projet.exceptions.donnee.format.InvalidPuceException,
@@ -124,7 +170,6 @@ public class ControllerAnimal {
         String naissStr = scanner.nextLine().trim();
         if (!naissStr.isEmpty()) {
             Date dateNaissance = Date.valueOf(naissStr);
-            // Vérifier que la date n'est pas dans le futur
             if (dateNaissance.after(new Date(System.currentTimeMillis()))) {
                 throw new projet.exceptions.donnee.format.DateFutureException("Date de naissance", naissStr);
             }
@@ -156,7 +201,6 @@ public class ControllerAnimal {
         Date dateArrivee = new Date(System.currentTimeMillis());
         a.setDate_arrivee(dateArrivee);
 
-        // Vérifier que la date de naissance est antérieure ou égale à la date d'arrivée
         if (a.getDate_naissance() != null && a.getDate_naissance().after(dateArrivee)) {
             throw new projet.exceptions.donnee.format.DateIncoherenteException(
                     "Date de naissance", "Date d'arrivée",
@@ -167,13 +211,24 @@ public class ControllerAnimal {
         System.out.println("Succes : Animal ajoute !");
     }
 
+    /**
+     * Supprime un animal du système.
+     * Réservé aux administrateurs. Vérifie qu'aucun séjour n'est actif.
+     * 
+     * @param id L'identifiant de l'animal à supprimer.
+     * @throws DroitsInsuffisantsException                  Si l'utilisateur n'est
+     *                                                      pas administrateur.
+     * @throws ElementIntrouvableException                  Si l'animal n'existe
+     *                                                      pas.
+     * @throws projet.exceptions.regle.SejourActifException Si l'animal est dans un
+     *                                                      box ou une famille.
+     */
     public void supprimerAnimal(int id) throws DroitsInsuffisantsException, ElementIntrouvableException,
             projet.exceptions.regle.SejourActifException {
         if (currentUser != null && !"Admin".equalsIgnoreCase(currentUser.getType_pers())) {
             throw new DroitsInsuffisantsException("Suppression d'animal", currentUser.getType_pers(), "Admin");
         }
 
-        // Vérifier si l'animal a un séjour actif (box ou famille)
         projet.requests.SejourBoxRequest boxReq = new projet.requests.SejourBoxRequest();
         projet.requests.SejourFamilleRequest familleReq = new projet.requests.SejourFamilleRequest();
 
@@ -189,10 +244,9 @@ public class ControllerAnimal {
                     "suppression (l'animal est dans la famille #" + familleActuelle + ")");
         }
 
-        // Vérifier que l'animal existe
         Animal a = animalReq.getById(id);
         if (a == null) {
-            throw new projet.exceptions.donnee.ElementIntrouvableException("Animal", id);
+            throw new ElementIntrouvableException("Animal", id);
         }
 
         if (animalReq.delete(id)) {
@@ -200,13 +254,18 @@ public class ControllerAnimal {
         }
     }
 
+    /**
+     * Recherche et affiche le dossier complet d'un animal.
+     * Accepte un ID numérique ou un nom d'animal.
+     * 
+     * @param input L'ID ou le nom de l'animal recherché.
+     * @throws ElementIntrouvableException Si aucun animal ne correspond.
+     */
     public void chercherAnimal(String input) throws ElementIntrouvableException {
         try {
-            // Si c'est un ID numérique
             int id = Integer.parseInt(input);
             rapportHistorique.afficherDossier(id);
         } catch (NumberFormatException e) {
-            // Si c'est un nom
             List<Animal> res = animalReq.getByName(input);
             if (res.isEmpty()) {
                 throw new ElementIntrouvableException("Animal", input);
@@ -215,9 +274,18 @@ public class ControllerAnimal {
                 rapportHistorique.afficherDossier(a.getId_animal());
             }
         }
-        // L'ElementIntrouvableException remontera toute seule vers l'appelant
     }
 
+    /**
+     * Modifie les informations d'un animal existant via saisie interactive.
+     * Les champs laissés vides conservent leur valeur actuelle.
+     * 
+     * @param id      L'identifiant de l'animal à modifier.
+     * @param scanner Le scanner pour la saisie utilisateur.
+     * @throws ElementIntrouvableException Si l'animal n'existe pas.
+     * @throws InvalidPuceException        Si le nouveau format de puce est
+     *                                     invalide.
+     */
     public void updateAnimal(int id, Scanner scanner) throws ElementIntrouvableException, InvalidPuceException {
         Animal a = animalReq.getById(id);
         if (a == null) {
@@ -286,6 +354,12 @@ public class ControllerAnimal {
         }
     }
 
+    /**
+     * Filtre et affiche les animaux selon leur statut.
+     * N'affiche que les animaux ayant au moins un test comportemental positif.
+     * 
+     * @param filtre Le statut à filtrer (ex: "Adoptable", "Quarantaine").
+     */
     public void filtrerAnimaux(String filtre) {
         List<Animal> liste = animalReq.getByStatut(filtre);
         System.out.println("--- Animaux statut : " + filtre + " ---");
@@ -295,7 +369,11 @@ public class ControllerAnimal {
             }
     }
 
-    // Methodes utilitaires pour la recherche
+    /**
+     * Retourne l'instance de requête pour les animaux.
+     * 
+     * @return L'objet AnimalRequest utilisé par ce contrôleur.
+     */
     public AnimalRequest getAnimalReq() {
         return animalReq;
     }

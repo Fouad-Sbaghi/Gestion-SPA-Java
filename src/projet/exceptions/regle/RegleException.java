@@ -10,6 +10,12 @@ import projet.exceptions.SpaException;
  * </p>
  */
 public class RegleException extends SpaException {
+
+    /**
+     * Constructeur.
+     * 
+     * @param message Description de la violation de règle.
+     */
     public RegleException(String message) {
         super("RegleException : " + message);
     }

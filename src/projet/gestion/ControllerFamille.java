@@ -11,18 +11,42 @@ import projet.requests.SejourFamilleRequest;
 import projet.tables.Animal;
 import projet.tables.Famille;
 
+/**
+ * Contrôleur gérant toutes les opérations liées aux familles d'accueil et
+ * d'adoption.
+ * <p>
+ * Ce contrôleur permet de gérer les familles (ajout, liste, recherche),
+ * de lier des animaux à des familles (accueil ou adoption), et de gérer
+ * les retours d'animaux. Il vérifie les règles métier comme l'adoptabilité
+ * et le statut de quarantaine.
+ * </p>
+ * 
+ * @author Projet SPA
+ * @version 1.0
+ * @see projet.requests.FamilleRequest
+ * @see projet.requests.SejourFamilleRequest
+ */
 public class ControllerFamille {
 
     private FamilleRequest familyReq;
     private SejourFamilleRequest sejourFamilleReq;
     private AnimalRequest animalReq;
 
+    /**
+     * Constructeur par défaut.
+     * Initialise les requêtes pour les familles, séjours et animaux.
+     */
     public ControllerFamille() {
         this.familyReq = new FamilleRequest();
         this.sejourFamilleReq = new SejourFamilleRequest();
         this.animalReq = new AnimalRequest();
     }
 
+    /**
+     * Ajoute une nouvelle famille via saisie interactive.
+     * 
+     * @param scanner Le scanner pour la saisie utilisateur.
+     */
     public void ajouterFamille(Scanner scanner) {
         System.out.println(">> Creation Famille");
         Famille f = new Famille();
@@ -39,6 +63,9 @@ public class ControllerFamille {
         familyReq.add(f);
     }
 
+    /**
+     * Affiche la liste de toutes les familles enregistrées.
+     */
     public void listerFamilles() {
         System.out.println("--- Liste des Familles ---");
         List<Famille> liste = familyReq.getAll();
@@ -48,16 +75,22 @@ public class ControllerFamille {
         }
     }
 
+    /**
+     * Lie un animal à une famille (accueil ou adoption).
+     * Termine automatiquement tout séjour en box et met à jour le statut.
+     * 
+     * @param idAnimal  L'identifiant de l'animal.
+     * @param idFamille L'identifiant de la famille.
+     * @param type      Le type de séjour ("Accueil" ou "Adoption").
+     */
     public void lierFamille(int idAnimal, int idFamille, String type) {
         try {
-            // AJOUT : Sortir l'animal du box s'il y est
             projet.requests.SejourBoxRequest boxReq = new projet.requests.SejourBoxRequest();
             boxReq.sortirAnimal(idAnimal);
 
             if (sejourFamilleReq.commencerSejour(idAnimal, idFamille)) {
                 Animal a = animalReq.getById(idAnimal);
                 if (a != null) {
-                    // Normalisation des statuts
                     String nouveauStatut = "Famille";
                     if (type != null && type.equalsIgnoreCase("Adoption")) {
                         nouveauStatut = "Adopté";
@@ -77,6 +110,12 @@ public class ControllerFamille {
         }
     }
 
+    /**
+     * Gère le retour d'un animal depuis une famille.
+     * Termine le séjour et repasse le statut à "Adoptable".
+     * 
+     * @param idAnimal L'identifiant de l'animal à retourner.
+     */
     public void retourDeFamille(int idAnimal) {
         if (sejourFamilleReq.terminerSejour(idAnimal)) {
             try {
@@ -95,6 +134,11 @@ public class ControllerFamille {
         }
     }
 
+    /**
+     * Affiche l'historique des animaux accueillis par une famille.
+     * 
+     * @param idFamille L'identifiant de la famille.
+     */
     public void historiqueFamille(int idFamille) {
         System.out.println("\n=== HISTORIQUE FAMILLE #" + idFamille + " ===");
         Famille f = familyReq.getById(idFamille);
@@ -106,6 +150,12 @@ public class ControllerFamille {
         }
     }
 
+    /**
+     * Recherche et affiche les informations d'une famille.
+     * Accepte un ID numérique ou un nom de famille.
+     * 
+     * @param input L'ID ou le nom de la famille recherchée.
+     */
     public void chercherFamille(String input) {
         String q = (input == null) ? "" : input.trim();
         if (q.isEmpty()) {
@@ -146,10 +196,16 @@ public class ControllerFamille {
         }
     }
 
+    /**
+     * Retourne une valeur par défaut si la chaîne est null.
+     */
     private String safe(String s) {
         return (s == null) ? "-" : s;
     }
 
+    /**
+     * Tronque une chaîne à la longueur maximale spécifiée.
+     */
     private String truncate(String s, int max) {
         if (s == null)
             return "-";

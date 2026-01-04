@@ -9,11 +9,22 @@ package projet.exceptions.regle;
  */
 public class QuarantaineException extends RegleException {
 
+    /**
+     * Constructeur avec ID.
+     * 
+     * @param idAnimal L'identifiant de l'animal en quarantaine.
+     */
     public QuarantaineException(int idAnimal) {
         super("L'animal #" + idAnimal + " est en quarantaine. " +
                 "Opération non autorisée tant que la quarantaine n'est pas levée.");
     }
 
+    /**
+     * Constructeur avec nom et opération.
+     * 
+     * @param nomAnimal Le nom de l'animal.
+     * @param operation L'opération tentée (ex: "placement en famille").
+     */
     public QuarantaineException(String nomAnimal, String operation) {
         super("Impossible de " + operation + " l'animal '" + nomAnimal +
                 "' : il est actuellement en quarantaine.");

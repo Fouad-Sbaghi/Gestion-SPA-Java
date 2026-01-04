@@ -11,6 +11,15 @@ import java.util.List;
 import projet.connexion.Connexion;
 import projet.tables.Animal;
 
+/**
+ * DAO (Data Access Object) pour la gestion des animaux.
+ * <p>
+ * Fournit les opérations CRUD et les requêtes de recherche
+ * pour la table Animal de la base de données.
+ * </p>
+ * 
+ * @see projet.tables.Animal
+ */
 public class AnimalRequest {
 
     /**

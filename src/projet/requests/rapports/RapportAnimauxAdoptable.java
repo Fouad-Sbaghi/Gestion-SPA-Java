@@ -7,6 +7,12 @@ import java.sql.Statement;
 
 import projet.connexion.Connexion;
 
+/**
+ * Rapport listant les animaux prêts à l'adoption.
+ * <p>
+ * Affiche les animaux avec le statut "Adoptable".
+ * </p>
+ */
 public class RapportAnimauxAdoptable extends RapportRequest {
 
     /**

@@ -4,6 +4,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import projet.exceptions.ConnexionBDDException;
 
+/**
+ * Gestionnaire de connexion à la base de données PostgreSQL.
+ * <p>
+ * Fournit une connexion unique partagée pour toutes les requêtes.
+ * </p>
+ */
 public class Connexion {
 
     public static java.sql.Connection connection;
@@ -41,8 +47,6 @@ public class Connexion {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                // --- ON COMMENTE CETTE LIGNE ---
-                // System.out.println("Déconnexion réussie");
             }
         } catch (SQLException e) {
             e.printStackTrace();

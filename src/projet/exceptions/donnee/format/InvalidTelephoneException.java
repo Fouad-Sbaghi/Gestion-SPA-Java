@@ -8,10 +8,21 @@ package projet.exceptions.donnee.format;
  */
 public class InvalidTelephoneException extends InvalidFormatException {
 
+    /**
+     * Constructeur simple.
+     * 
+     * @param valeur Le numéro invalide.
+     */
     public InvalidTelephoneException(String valeur) {
         super("Téléphone", valeur);
     }
 
+    /**
+     * Constructeur avec raison.
+     * 
+     * @param valeur Le numéro invalide.
+     * @param raison La raison de l'invalidité.
+     */
     public InvalidTelephoneException(String valeur, String raison) {
         super("Téléphone", valeur + " - " + raison);
     }

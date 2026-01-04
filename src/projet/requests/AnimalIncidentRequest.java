@@ -6,6 +6,14 @@ import java.sql.SQLException;
 
 import projet.connexion.Connexion;
 
+/**
+ * DAO pour la gestion de la table de liaison Animal-Incident.
+ * <p>
+ * Gère l'association et la dissociation entre animaux et incidents.
+ * </p>
+ * 
+ * @see projet.tables.AnimalIncident
+ */
 public class AnimalIncidentRequest {
 
     /**
@@ -16,7 +24,7 @@ public class AnimalIncidentRequest {
         String sql = "INSERT INTO Animal_Incident (id_animal, id_incident) VALUES (?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idAnimal);
             pstmt.setInt(2, idIncident);
@@ -34,13 +42,14 @@ public class AnimalIncidentRequest {
     }
 
     /**
-     * Supprime le lien entre un animal et un incident (sans supprimer l'incident lui-même).
+     * Supprime le lien entre un animal et un incident (sans supprimer l'incident
+     * lui-même).
      */
     public boolean dissocier(int idAnimal, int idIncident) {
         String sql = "DELETE FROM Animal_Incident WHERE id_animal = ? AND id_incident = ?";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idAnimal);
             pstmt.setInt(2, idIncident);

@@ -1,5 +1,11 @@
 package projet.requests.rapports;
 
+/**
+ * Classe abstraite de base pour tous les rapports.
+ * <p>
+ * Fournit des utilitaires d'affichage communs aux rapports dérivés.
+ * </p>
+ */
 public abstract class RapportRequest {
 
     /**

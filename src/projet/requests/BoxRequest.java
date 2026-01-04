@@ -10,6 +10,14 @@ import projet.connexion.Connexion;
 import projet.tables.Box;
 import projet.exceptions.donnee.ElementIntrouvableException;
 
+/**
+ * DAO pour la gestion des box d'hébergement.
+ * <p>
+ * Gère les opérations CRUD et l'affichage de l'occupation des box.
+ * </p>
+ * 
+ * @see projet.tables.Box
+ */
 public class BoxRequest {
 
     /**

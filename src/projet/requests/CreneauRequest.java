@@ -12,6 +12,14 @@ import java.util.List;
 import projet.connexion.Connexion;
 import projet.tables.Creneau;
 
+/**
+ * DAO pour la gestion des créneaux horaires.
+ * <p>
+ * Gère les plages horaires de travail et les affectations bénévoles.
+ * </p>
+ * 
+ * @see projet.tables.Creneau
+ */
 public class CreneauRequest {
 
     /**
@@ -49,7 +57,8 @@ public class CreneauRequest {
      * @throws HorairesInvalidesException si l'heure de fin est avant ou égale à
      *                                    l'heure de début.
      */
-    public void add(int nbBenevole, String debut, String fin) throws projet.exceptions.regle.HorairesInvalidesException {
+    public void add(int nbBenevole, String debut, String fin)
+            throws projet.exceptions.regle.HorairesInvalidesException {
         String sql = "INSERT INTO Creneau (nb_benevole, heure_d, heure_f) VALUES (?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();

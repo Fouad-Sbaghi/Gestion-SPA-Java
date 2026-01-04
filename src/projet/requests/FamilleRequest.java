@@ -11,6 +11,14 @@ import java.util.List;
 import projet.connexion.Connexion;
 import projet.tables.Famille;
 
+/**
+ * DAO pour la gestion des familles d'accueil et d'adoption.
+ * <p>
+ * Fournit les opérations CRUD et les recherches pour la table Famille.
+ * </p>
+ * 
+ * @see projet.tables.Famille
+ */
 public class FamilleRequest {
 
     /**
@@ -20,7 +28,7 @@ public class FamilleRequest {
         String sql = "INSERT INTO Famille (type_famille, nom, adresse, contact) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, f.getType_famille()); // ex: "Accueil", "Adoption"
             pstmt.setString(2, f.getNom());
@@ -46,8 +54,8 @@ public class FamilleRequest {
         String sql = "SELECT * FROM Famille ORDER BY id_famille ASC";
 
         try (Connection conn = Connexion.connectR();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Famille f = new Famille();
@@ -71,7 +79,7 @@ public class FamilleRequest {
     public Famille getById(int id) {
         String sql = "SELECT * FROM Famille WHERE id_famille = ?";
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
@@ -99,7 +107,7 @@ public class FamilleRequest {
         String sql = "SELECT * FROM Famille WHERE nom ILIKE ? ORDER BY nom ASC";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, "%" + nom + "%");
 

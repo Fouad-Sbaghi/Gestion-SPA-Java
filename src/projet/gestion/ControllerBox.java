@@ -10,6 +10,21 @@ import projet.exceptions.regle.IncompatibiliteTypeException;
 import projet.exceptions.regle.MissingEntityException;
 import projet.exceptions.donnee.ElementIntrouvableException;
 
+/**
+ * Contrôleur gérant toutes les opérations liées aux box d'hébergement.
+ * <p>
+ * Ce contrôleur permet de gérer les box (ajout, modification, suppression),
+ * de placer et retirer des animaux, et d'afficher des statistiques
+ * d'occupation.
+ * Il gère les règles métier comme la compatibilité espèce/type de box et la
+ * capacité maximale.
+ * </p>
+ * 
+ * @author Projet SPA
+ * @version 1.0
+ * @see projet.requests.BoxRequest
+ * @see projet.requests.SejourBoxRequest
+ */
 public class ControllerBox {
 
     private BoxRequest boxReq;
@@ -17,6 +32,10 @@ public class ControllerBox {
     private SejourFamilleRequest sejourFamilleReq;
     private RapportBoxRequest rapportBox;
 
+    /**
+     * Constructeur par défaut.
+     * Initialise les requêtes pour les box et les séjours.
+     */
     public ControllerBox() {
         this.boxReq = new BoxRequest();
         this.sejourBoxReq = new SejourBoxRequest();
@@ -24,27 +43,44 @@ public class ControllerBox {
         this.rapportBox = new RapportBoxRequest();
     }
 
+    /**
+     * Affiche l'état d'occupation de tous les box.
+     */
     public void listerBox() {
         System.out.println("--- Etat actuel des Box ---");
         boxReq.afficherOccupation();
     }
 
+    /**
+     * Affiche les informations détaillées d'un box spécifique.
+     * 
+     * @param idBox L'identifiant du box.
+     * @throws ElementIntrouvableException Si le box n'existe pas.
+     */
     public void infoBox(int idBox) throws ElementIntrouvableException {
         boxReq.afficherInfoBox(idBox);
     }
 
+    /**
+     * Affiche les statistiques avancées des box.
+     */
     public void rapportAvanceBox() {
         System.out.println("--- Statistiques detaillees des Box ---");
         rapportBox.afficherStatistiques();
     }
 
+    /**
+     * Place un animal dans un box.
+     * Termine automatiquement tout séjour en famille et met à jour le statut.
+     * 
+     * @param idBox    L'identifiant du box de destination.
+     * @param idAnimal L'identifiant de l'animal à placer.
+     */
     public void placerAnimalBox(int idBox, int idAnimal) {
         try {
-            // AJOUT : Sortir l'animal de sa famille s'il y est
             sejourFamilleReq.terminerSejour(idAnimal);
 
             if (sejourBoxReq.placerAnimal(idAnimal, idBox)) {
-                // Mise a jour du statut selon le type de box
                 try {
                     projet.requests.AnimalRequest anReq = new projet.requests.AnimalRequest();
                     projet.tables.Animal a = anReq.getById(idAnimal);
@@ -79,6 +115,11 @@ public class ControllerBox {
         }
     }
 
+    /**
+     * Vide un box en clôturant tous les séjours actifs.
+     * 
+     * @param idBox L'identifiant du box à vider.
+     */
     public void viderBox(int idBox) {
         int rows = sejourBoxReq.viderBox(idBox);
         if (rows > 0) {
@@ -88,6 +129,11 @@ public class ControllerBox {
         }
     }
 
+    /**
+     * Ajoute un nouveau box via saisie interactive.
+     * 
+     * @param scanner Le scanner pour la saisie utilisateur.
+     */
     public void ajouterBox(java.util.Scanner scanner) {
         System.out.println(">> Ajout d'un nouveau Box");
         System.out.print("Type (Chien/Chat) : ");
@@ -104,6 +150,12 @@ public class ControllerBox {
         }
     }
 
+    /**
+     * Modifie un box existant via saisie interactive.
+     * 
+     * @param idBox   L'identifiant du box à modifier.
+     * @param scanner Le scanner pour la saisie utilisateur.
+     */
     public void updateBox(int idBox, java.util.Scanner scanner) {
         System.out.println(">> Modification du Box #" + idBox);
         System.out.print("Nouveau Type (Chien/Chat) : ");
@@ -120,8 +172,13 @@ public class ControllerBox {
         }
     }
 
+    /**
+     * Supprime un box du système.
+     * Vérifie que le box est vide avant suppression.
+     * 
+     * @param idBox L'identifiant du box à supprimer.
+     */
     public void supprimerBox(int idBox) {
-        // 1. Verifier si le box est vide (occupants actuels)
         int occupants = sejourBoxReq.getNbOccupants(idBox);
         if (occupants > 0) {
             System.out.println("Erreur : Le box #" + idBox + " n'est pas vide (" + occupants + " animaux présents).");
@@ -129,10 +186,8 @@ public class ControllerBox {
             return;
         }
 
-        // 2. Supprimer l'historique des séjours (FK constraint)
         sejourBoxReq.supprimerHistoriqueBox(idBox);
 
-        // 3. Supprimer le box
         if (boxReq.delete(idBox)) {
             System.out.println("Box #" + idBox + " supprimé avec succès.");
         } else {

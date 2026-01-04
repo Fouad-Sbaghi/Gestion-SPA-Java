@@ -7,36 +7,69 @@ import projet.auth.Login;
 import projet.tables.Personnel;
 import projet.exceptions.donnee.ElementIntrouvableException;
 import projet.exceptions.donnee.format.InvalidPuceException;
+import projet.exceptions.AuthentificationException;
+import projet.exceptions.SpaException;
+import projet.exceptions.regle.DroitsInsuffisantsException;
+import projet.exceptions.regle.SejourActifException;
+import projet.exceptions.donnee.format.InvalidTelephoneException;
 
+/**
+ * Analyseur de commandes et point d'entrée de l'interface CLI.
+ * <p>
+ * Cette classe gère l'interface en ligne de commande de l'application.
+ * Elle authentifie l'utilisateur, affiche les menus et route les commandes
+ * vers les contrôleurs appropriés. L'application est organisée en 7 modules :
+ * </p>
+ * <ul>
+ * <li>Animaux - Gestion du registre des animaux</li>
+ * <li>Box - Gestion des box d'hébergement</li>
+ * <li>Familles - Gestion des familles d'accueil/adoption</li>
+ * <li>Planning - Gestion des bénévoles et créneaux</li>
+ * <li>Activités - Gestion des soins et incidents</li>
+ * <li>Rapports - Génération de statistiques</li>
+ * <li>Recherche - Recherche multi-entités</li>
+ * </ul>
+ * 
+ * @author Projet SPA
+ * @version 1.0
+ * @see ControllerAnimal
+ * @see ControllerBox
+ * @see ControllerFamille
+ * @see ControllerPlanning
+ * @see ControllerActivite
+ * @see ControllerRapport
+ */
 public class CommandParser {
 
     private Scanner scanner;
-
-    // 6 Controllers separes
     private ControllerAnimal controllerAnimal;
     private ControllerFamille controllerFamille;
     private ControllerBox controllerBox;
     private ControllerPlanning controllerPlanning;
     private ControllerActivite controllerActivite;
     private ControllerRapport controllerRapport;
-
     private Personnel currentUser;
     private boolean running;
 
+    /**
+     * Constructeur par défaut.
+     * Initialise le scanner et tous les contrôleurs.
+     */
     public CommandParser() {
         this.scanner = new Scanner(System.in);
-
-        // Initialisation des 6 controllers
         this.controllerAnimal = new ControllerAnimal();
         this.controllerFamille = new ControllerFamille();
         this.controllerBox = new ControllerBox();
         this.controllerPlanning = new ControllerPlanning();
         this.controllerActivite = new ControllerActivite();
         this.controllerRapport = new ControllerRapport();
-
         this.running = true;
     }
 
+    /**
+     * Lance la boucle principale de l'application.
+     * Authentifie l'utilisateur puis affiche le menu principal en boucle.
+     */
     public void run() {
         System.out.println("-------------------------------------");
         System.out.println("|===== APPLICATION GESTION SPA =====|");
@@ -57,10 +90,13 @@ public class CommandParser {
         scanner.close();
     }
 
-    // ==================================================================================
-    // Helpers
-    // ==================================================================================
-
+    /**
+     * Parse une chaîne en entier, affiche une erreur si invalide.
+     * 
+     * @param raw   La chaîne à parser.
+     * @param label Le libellé du champ pour le message d'erreur.
+     * @return L'entier parsé ou null si invalide.
+     */
     private static Integer parseIntOrNull(String raw, String label) {
         try {
             return Integer.parseInt(raw);
@@ -70,16 +106,34 @@ public class CommandParser {
         }
     }
 
+    /**
+     * Joint les éléments d'un tableau à partir d'un index.
+     * 
+     * @param parts      Le tableau de chaînes.
+     * @param startIndex L'index de départ.
+     * @return La chaîne jointe avec des espaces.
+     */
     private static String joinFrom(String[] parts, int startIndex) {
         if (parts == null || parts.length <= startIndex)
             return "";
         return String.join(" ", Arrays.copyOfRange(parts, startIndex, parts.length)).trim();
     }
 
+    /**
+     * Affiche un message d'usage pour une commande.
+     * 
+     * @param usage La syntaxe attendue.
+     */
     private static void printUsage(String usage) {
         System.out.println("Usage : " + usage);
     }
 
+    /**
+     * Gère la phase d'authentification.
+     * Boucle jusqu'à ce que l'utilisateur soit authentifié.
+     * 
+     * @return true si authentifié, false sinon.
+     */
     private boolean loginPhase() {
         Login loginAuth = new Login();
         System.out.println("Veuillez vous identifier.\n");
@@ -95,12 +149,15 @@ public class CommandParser {
                 System.out.println("\nBienvenue " + currentUser.getPrenom() + " !");
                 controllerAnimal.setCurrentUser(currentUser);
                 return true;
-            } catch (projet.exceptions.AuthentificationException e) {
+            } catch (AuthentificationException e) {
                 System.out.println("Erreur : " + e.getMessage());
             }
         }
     }
 
+    /**
+     * Affiche le menu principal avec les 7 options.
+     */
     private void afficherMenuPrincipal() {
         System.out.println("\n==== Menu principal ====");
         System.out.println("  1 Animaux");
@@ -114,6 +171,11 @@ public class CommandParser {
         System.out.println("[>] Choisissez un chiffre ou tapez 'exit' :");
     }
 
+    /**
+     * Route le choix du menu principal vers le sous-menu approprié.
+     * 
+     * @param choix Le numéro du menu choisi.
+     */
     private void traiterMenuPrincipal(String choix) {
         switch (choix) {
             case "1" -> menuAnimaux();
@@ -128,8 +190,10 @@ public class CommandParser {
         }
     }
 
-    // --- SOUS-MENUS ---
-
+    /**
+     * Affiche et gère le sous-menu Animaux.
+     * Commandes : list, add, history, update, delete, filter.
+     */
     private void menuAnimaux() {
         System.out.println("\n--- [1] ANIMAUX ---");
         System.out.println("Commandes:");
@@ -180,7 +244,7 @@ public class CommandParser {
                 case "add" -> {
                     try {
                         controllerAnimal.ajouterAnimal(scanner);
-                    } catch (projet.exceptions.SpaException e) {
+                    } catch (SpaException e) {
                         System.out.println(e.getMessage());
                     }
                 }
@@ -193,9 +257,9 @@ public class CommandParser {
                     if (id != null) {
                         try {
                             controllerAnimal.supprimerAnimal(id);
-                        } catch (projet.exceptions.regle.DroitsInsuffisantsException e) {
+                        } catch (DroitsInsuffisantsException e) {
                             System.out.println(e.getMessage());
-                        } catch (projet.exceptions.regle.SejourActifException e) {
+                        } catch (SejourActifException e) {
                             System.out.println(e.getMessage());
                         } catch (ElementIntrouvableException e) {
                             System.out.println(e.getMessage());
@@ -246,6 +310,10 @@ public class CommandParser {
         }
     }
 
+    /**
+     * Affiche et gère le sous-menu Box.
+     * Commandes : list, add, update, delete, info, add-animal, clear.
+     */
     private void menuBox() {
         System.out.println("\n--- [2] BOX ---");
         System.out.println("Commandes:");
@@ -352,6 +420,10 @@ public class CommandParser {
         }
     }
 
+    /**
+     * Affiche et gère le sous-menu Familles.
+     * Commandes : add, list, link, return, history.
+     */
     private void menuFamilles() {
         System.out.println("\n--- [3] FAMILLES ---");
         System.out.println("Commandes:");
@@ -430,6 +502,10 @@ public class CommandParser {
         }
     }
 
+    /**
+     * Affiche et gère le sous-menu Planning.
+     * Commandes : benevole, creneau, planning animal.
+     */
     private void menuPlanning() {
         System.out.println("\n--- [4] PLANNING ---");
         System.out.println("Commandes: benevole [add | update | delete | planning], creneau [list | alert | assign]");
@@ -460,23 +536,18 @@ public class CommandParser {
             if (parts.length == 0)
                 continue;
 
-            // benevole ...
             if (parts[0].equalsIgnoreCase("benevole")) {
                 if (parts.length >= 2 && parts[1].equalsIgnoreCase("add")) {
                     try {
                         controllerPlanning.ajouterBenevole(scanner);
-                    } catch (projet.exceptions.donnee.format.InvalidTelephoneException e) {
+                    } catch (InvalidTelephoneException e) {
                         System.out.println(e.getMessage());
                     }
-                }
-                // CAS AJOUTE : Planning par bénévole
-                else if (parts.length >= 3 && parts[1].equalsIgnoreCase("planning")) {
+                } else if (parts.length >= 3 && parts[1].equalsIgnoreCase("planning")) {
                     Integer id = parseIntOrNull(parts[2], "idBenevole");
                     if (id != null)
                         controllerPlanning.planningDuBenevole(id);
-                }
-                // CAS AJOUTE : Modifier / Supprimer
-                else if (parts.length >= 3 && parts[1].equalsIgnoreCase("update")) {
+                } else if (parts.length >= 3 && parts[1].equalsIgnoreCase("update")) {
                     Integer id = parseIntOrNull(parts[2], "idBenevole");
                     if (id != null)
                         controllerPlanning.modifierBenevole(id, scanner);
@@ -490,7 +561,6 @@ public class CommandParser {
                 continue;
             }
 
-            // creneau ...
             if (parts[0].equalsIgnoreCase("creneau")) {
                 if (parts.length < 2) {
                     printUsage("creneau [list|alert|assign] ...");
@@ -515,7 +585,6 @@ public class CommandParser {
                 continue;
             }
 
-            // planning animal add ...
             if (parts[0].equalsIgnoreCase("planning")) {
                 if (parts.length >= 3 && parts[1].equalsIgnoreCase("animal") && parts[2].equalsIgnoreCase("add")) {
                     if (parts.length < 7) {
@@ -544,6 +613,10 @@ public class CommandParser {
         }
     }
 
+    /**
+     * Affiche et gère le sous-menu Activités et Soins.
+     * Commandes : activity, incident, soin.
+     */
     private void menuActivites() {
         System.out.println("\n--- [5] ACTIVITES & SOINS ---");
         System.out.println(
@@ -671,6 +744,10 @@ public class CommandParser {
         }
     }
 
+    /**
+     * Affiche et gère le sous-menu Rapports.
+     * Commandes : stats benevoles/adoptables/box, animal.
+     */
     private void menuRapport() {
         System.out.println("\n--- [6] RAPPORTS ---");
         System.out.println("Commandes: stats [benevoles | adoptables | box], animal <id|nom>");
@@ -699,7 +776,6 @@ public class CommandParser {
                 continue;
             }
 
-            // Cas specifique pour "animal" qui n'est pas un "stats ..."
             if (parts[0].equalsIgnoreCase("animal")) {
                 try {
                     controllerAnimal.chercherAnimal(joinFrom(parts, 1));
@@ -709,7 +785,6 @@ public class CommandParser {
                 continue;
             }
 
-            // Cas classique "stats ..."
             if (!parts[0].equalsIgnoreCase("stats")) {
                 System.out.println("Commande inconnue. Tapez 'help'.");
                 continue;
@@ -724,6 +799,10 @@ public class CommandParser {
         }
     }
 
+    /**
+     * Affiche et gère le sous-menu Recherche.
+     * Permet de rechercher : animal, famille, benevole, incident.
+     */
     private void menuRecherche() {
         System.out.println("\n--- [7] RECHERCHE ---");
         System.out.println(

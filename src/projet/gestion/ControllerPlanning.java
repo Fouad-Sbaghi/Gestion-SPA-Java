@@ -13,6 +13,20 @@ import projet.requests.PlanningAnimalRequest;
 import projet.requests.rapports.RapportPlanningRequest;
 import projet.tables.Personnel;
 
+/**
+ * Contrôleur gérant le planning, les créneaux et les bénévoles.
+ * <p>
+ * Ce contrôleur permet de gérer les bénévoles (ajout, modification,
+ * suppression),
+ * les créneaux horaires, les affectations et le planning des animaux.
+ * Il vérifie les formats de données comme les numéros de téléphone.
+ * </p>
+ * 
+ * @author Projet SPA
+ * @version 1.0
+ * @see projet.requests.PersonnelRequest
+ * @see projet.requests.CreneauRequest
+ */
 public class ControllerPlanning {
 
     private CreneauRequest creneauReq;
@@ -21,6 +35,10 @@ public class ControllerPlanning {
     private AffectationCreneauActiviteRequest affectationReq;
     private RapportPlanningRequest rapportPlanning;
 
+    /**
+     * Constructeur par défaut.
+     * Initialise les requêtes pour les créneaux, le personnel et les affectations.
+     */
     public ControllerPlanning() {
         this.creneauReq = new CreneauRequest();
         this.personnelReq = new PersonnelRequest();
@@ -30,7 +48,10 @@ public class ControllerPlanning {
     }
 
     /**
-     * Valide le format du numéro de téléphone (10 chiffres, peut commencer par 0).
+     * Valide le format d'un numéro de téléphone français.
+     * 
+     * @param tel Le numéro à valider.
+     * @throws InvalidTelephoneException Si le format est invalide.
      */
     private void validerTelephone(String tel) throws InvalidTelephoneException {
         if (tel != null && !tel.isEmpty() && !tel.matches("^0[1-9][0-9]{8}$")) {
@@ -38,6 +59,12 @@ public class ControllerPlanning {
         }
     }
 
+    /**
+     * Ajoute un nouveau bénévole via saisie interactive.
+     * 
+     * @param scanner Le scanner pour la saisie utilisateur.
+     * @throws InvalidTelephoneException Si le format du téléphone est invalide.
+     */
     public void ajouterBenevole(Scanner scanner) throws InvalidTelephoneException {
         System.out.println(">> Nouveau Benevole");
         Personnel p = new Personnel();
@@ -60,6 +87,9 @@ public class ControllerPlanning {
         System.out.println("Benevole ajoute.");
     }
 
+    /**
+     * Affiche le planning général avec tous les créneaux configurés.
+     */
     public void afficherPlanning() {
         System.out.println("--- Planning General ---");
         List<?> liste = creneauReq.getAll();
@@ -67,6 +97,9 @@ public class ControllerPlanning {
         affectationReq.listerAffectations();
     }
 
+    /**
+     * Vérifie et affiche les créneaux en sous-effectif.
+     */
     public void checkSousEffectif() {
         System.out.println("--- ALERTE : Creneaux en sous-effectif ---");
         List<String> alertes = rapportPlanning.getCreneauxManquants();
@@ -77,6 +110,12 @@ public class ControllerPlanning {
                 System.out.println("! " + alerte);
     }
 
+    /**
+     * Assigne un bénévole à un créneau avec l'activité par défaut.
+     * 
+     * @param idCreneau  L'identifiant du créneau.
+     * @param idBenevole L'identifiant du bénévole.
+     */
     public void assignerBenevole(int idCreneau, int idBenevole) {
         try {
             int idActiviteDefaut = 1;
@@ -86,6 +125,11 @@ public class ControllerPlanning {
         }
     }
 
+    /**
+     * Affiche le planning d'un bénévole spécifique.
+     * 
+     * @param idBenevole L'identifiant du bénévole.
+     */
     public void planningDuBenevole(int idBenevole) {
         Personnel p = personnelReq.getById(idBenevole);
 
@@ -98,10 +142,24 @@ public class ControllerPlanning {
         affectationReq.afficherPlanningPersonne(idBenevole);
     }
 
+    /**
+     * Ajoute un rendez-vous pour un animal dans le planning.
+     * 
+     * @param idAnimal  L'identifiant de l'animal.
+     * @param idCreneau L'identifiant du créneau.
+     * @param idPers    L'identifiant de la personne responsable.
+     * @param date      La date du rendez-vous.
+     */
     public void ajouterRdvAnimal(int idAnimal, int idCreneau, int idPers, Date date) {
         planningAnimalReq.assigner(idAnimal, idCreneau, idPers, date);
     }
 
+    /**
+     * Recherche et affiche les informations d'un bénévole.
+     * Accepte un ID numérique ou un nom/prénom/identifiant.
+     * 
+     * @param input L'ID ou le nom du bénévole recherché.
+     */
     public void chercherBenevole(String input) {
         String q = (input == null) ? "" : input.trim();
         if (q.isEmpty()) {
@@ -145,6 +203,9 @@ public class ControllerPlanning {
         }
     }
 
+    /**
+     * Normalise une chaîne en retirant les accents et en la passant en minuscules.
+     */
     private static String normalizeNoAccentLower(String s) {
         if (s == null)
             return "";
@@ -153,14 +214,27 @@ public class ControllerPlanning {
         return n.trim().toLowerCase();
     }
 
+    /**
+     * Vérifie si le type correspond à "Bénévole".
+     */
     private static boolean isBenevoleType(String type) {
         return "benevole".equals(normalizeNoAccentLower(type));
     }
 
+    /**
+     * Retourne une valeur par défaut si la chaîne est null.
+     */
     private String safe(String s) {
         return (s == null) ? "-" : s;
     }
 
+    /**
+     * Modifie un bénévole existant via saisie interactive.
+     * Les champs laissés vides conservent leur valeur actuelle.
+     * 
+     * @param id      L'identifiant du bénévole à modifier.
+     * @param scanner Le scanner pour la saisie utilisateur.
+     */
     public void modifierBenevole(int id, Scanner scanner) {
         Personnel p = personnelReq.getById(id);
         if (p == null) {
@@ -170,7 +244,6 @@ public class ControllerPlanning {
         if (!isBenevoleType(p.getType_pers())) {
             System.out
                     .println("Attention : L'ID " + id + " correspond à un " + p.getType_pers() + ", pas un bénévole.");
-            // On continue quand même ou on bloque ? Modifions-le quand même.
         }
 
         System.out.println("Modification du bénévole : " + p.getPrenom() + " " + p.getNom());
@@ -204,14 +277,17 @@ public class ControllerPlanning {
         personnelReq.update(p);
     }
 
+    /**
+     * Supprime un bénévole du système.
+     * 
+     * @param id L'identifiant du bénévole à supprimer.
+     */
     public void supprimerBenevole(int id) {
         Personnel p = personnelReq.getById(id);
         if (p == null) {
             System.out.println("Bénévole #" + id + " introuvable.");
             return;
         }
-        // Vérification optionnelle du type
-        // if (!isBenevoleType(p.getType_pers())) { ... }
 
         System.out.println("Suppression de " + p.getPrenom() + " " + p.getNom() + "...");
         personnelReq.delete(id);

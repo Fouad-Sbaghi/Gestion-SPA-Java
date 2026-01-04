@@ -12,6 +12,15 @@ import java.util.List;
 import projet.connexion.Connexion;
 import projet.tables.Activite;
 
+/**
+ * DAO pour la gestion des activités du refuge.
+ * <p>
+ * Gère les types d'activités (Promenade, Nettoyage, etc.) et leur
+ * enregistrement.
+ * </p>
+ * 
+ * @see projet.tables.Activite
+ */
 public class ActiviteRequest {
 
     /**
@@ -23,14 +32,13 @@ public class ActiviteRequest {
         String sql = "SELECT * FROM Activite ORDER BY type_act ASC";
 
         try (Connection conn = Connexion.connectR();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 liste.add(new Activite(
-                    rs.getInt("id_activite"),
-                    rs.getString("type_act")
-                ));
+                        rs.getInt("id_activite"),
+                        rs.getString("type_act")));
             }
 
         } catch (SQLException e) {
@@ -47,7 +55,7 @@ public class ActiviteRequest {
         String sql = "INSERT INTO Activite (type_act) VALUES (?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, type);
             pstmt.executeUpdate();
@@ -60,14 +68,15 @@ public class ActiviteRequest {
 
     /**
      * Enregistre une activité effectuée sur un animal spécifique.
-     * Note : Stocké dans la table 'Soin' car 'Activite' ne contient pas d'ID animal.
+     * Note : Stocké dans la table 'Soin' car 'Activite' ne contient pas d'ID
+     * animal.
      * Utilisé par ton Controller.
      */
     public void add(int idAnimal, String type, String commentaire) {
         String sql = "INSERT INTO Soin (id_animal, type_soin, libelle, commentaire, date_soin) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, idAnimal);
             pstmt.setString(2, type); // ex: "Promenade"
@@ -90,7 +99,7 @@ public class ActiviteRequest {
         String sql = "DELETE FROM Activite WHERE id_activite = ?";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
             int rows = pstmt.executeUpdate();
