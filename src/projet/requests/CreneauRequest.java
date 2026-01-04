@@ -11,6 +11,7 @@ import java.util.List;
 
 import projet.connexion.Connexion;
 import projet.tables.Creneau;
+import projet.exceptions.donnee.format.DateIncoherenteException;
 
 /**
  * DAO pour la gestion des créneaux horaires.
@@ -54,11 +55,11 @@ public class CreneauRequest {
      * @param nbBenevole Nombre max de bénévoles requis.
      * @param debut      Heure de début (ex: "08:00:00").
      * @param fin        Heure de fin (ex: "12:00:00").
-     * @throws HorairesInvalidesException si l'heure de fin est avant ou égale à
-     *                                    l'heure de début.
+     * @throws DateIncoherenteException si l'heure de fin est avant ou égale à
+     *                                  l'heure de début.
      */
     public void add(int nbBenevole, String debut, String fin)
-            throws projet.exceptions.regle.HorairesInvalidesException {
+            throws DateIncoherenteException {
         String sql = "INSERT INTO Creneau (nb_benevole, heure_d, heure_f) VALUES (?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();
@@ -69,7 +70,7 @@ public class CreneauRequest {
 
             // Vérifier que l'heure de fin est après l'heure de début
             if (heureFin.compareTo(heureDebut) <= 0) {
-                throw new projet.exceptions.regle.HorairesInvalidesException(heureDebut, heureFin);
+                throw new DateIncoherenteException(heureDebut, heureFin);
             }
 
             pstmt.setInt(1, nbBenevole);
