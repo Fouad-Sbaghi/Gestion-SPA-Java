@@ -65,11 +65,12 @@ public class ControllerAnimal {
     }
 
     /**
-     * Valide le format d'une puce (15 chiffres selon la norme ISO).
+     * Valide le format d'une puce (10 chiffres selon la norme ISO).
      */
     private void validerPuce(String puce) throws projet.exceptions.donnee.format.InvalidPuceException {
-        if (puce != null && !puce.isEmpty() && !puce.matches("^[0-9]{15}$")) {
-            throw new projet.exceptions.donnee.format.InvalidPuceException(puce, "La puce doit contenir exactement 15 chiffres");
+        if (puce != null && !puce.isEmpty() && !puce.matches("^[0-9]{10}$")) {
+            throw new projet.exceptions.donnee.format.InvalidPuceException(puce,
+                    "La puce doit contenir exactement 10 chiffres");
         }
     }
 
@@ -105,7 +106,7 @@ public class ControllerAnimal {
             validerEspece(espece);
             a.setEspece(espece);
 
-            System.out.print("Puce (laisser vide si inconnue, format: 15 chiffres) : ");
+            System.out.print("Puce (laisser vide si inconnue, format: 10 chiffres) : ");
             String puce = scanner.nextLine().trim();
             if (!puce.isEmpty()) {
                 validerPuce(puce);
@@ -309,7 +310,9 @@ public class ControllerAnimal {
         List<Animal> liste = animalReq.getByStatut(filtre);
         System.out.println("--- Animaux statut : " + filtre + " ---");
         for (Animal a : liste)
-            System.out.println(a);
+            if (a.isTests_humain() || a.isTests_bebe() || a.isTests_chien() || a.isTests_chat()) {
+                System.out.println(a);
+            }
     }
 
     // Methodes utilitaires pour la recherche
