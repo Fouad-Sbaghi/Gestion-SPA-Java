@@ -5,10 +5,8 @@ import java.sql.SQLException;
 import projet.exceptions.ConnexionBDDException;
 
 /**
- * Gestionnaire de connexion à la base de données PostgreSQL.
- * <p>
- * Fournit une connexion unique partagée pour toutes les requêtes.
- * </p>
+ * Gère la connexion à la base PostgreSQL du projet.
+ * Fournit une connexion unique partagée entre les requêtes.
  */
 public class Connexion {
 

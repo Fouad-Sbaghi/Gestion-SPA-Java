@@ -5,10 +5,10 @@ import java.util.HashMap;
 
 /**
  * Représente l'association historique entre un Animal et un Box (Séjour).
- * <p>
+
  * Cette classe permet de tracer l'historique des emplacements d'un animal
  * avec une date de début et une date de fin éventuelle.
- * </p>
+
  */
 public class SejourBox implements ITable {
 

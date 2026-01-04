@@ -3,10 +3,10 @@ package projet.exceptions.regle;
 /**
  * Levée lorsqu'il y a incohérence entre le type de l'animal et le type
  * d'hébergement.
- * <p>
+
  * Exemple : Tenter de mettre un animal de type "Chien" dans un Box de type
  * "Chat".
- * </p>
+
  */
 public class IncompatibiliteTypeException extends RegleException {
 

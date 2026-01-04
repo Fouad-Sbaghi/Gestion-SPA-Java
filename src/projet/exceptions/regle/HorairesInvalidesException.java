@@ -4,9 +4,9 @@ import java.sql.Time;
 
 /**
  * Levée lorsque les horaires d'un créneau sont incohérents.
- * <p>
+
  * Exemple : Heure de fin antérieure à l'heure de début.
- * </p>
+
  */
 public class HorairesInvalidesException extends RegleException {
 

@@ -1,10 +1,7 @@
 package projet.exceptions.donnee.format;
 
 /**
- * Levée lorsqu'un numéro de puce ne respecte pas le format attendu.
- * <p>
- * La puce doit être composée de 10 chiffres.
- * </p>
+ * Levée quand la puce n'a pas le bon format (10 chiffres attendus).
  */
 public class InvalidPuceException extends InvalidFormatException {
 

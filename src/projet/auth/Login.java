@@ -5,13 +5,8 @@ import projet.requests.PersonnelRequest;
 import projet.tables.Personnel;
 
 /**
- * Gestionnaire d'authentification utilisateur.
- * <p>
- * Vérifie les identifiants et retourne l'objet Personnel en cas de succès.
- * </p>
- * 
- * @see projet.tables.Personnel
- * @see projet.exceptions.AuthentificationException
+ * Gère l'authentification des utilisateurs.
+ * Vérifie login/mot de passe et renvoie le Personnel correspondant.
  */
 public class Login {
 

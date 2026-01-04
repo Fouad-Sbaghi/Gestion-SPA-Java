@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 /**
  * Représente une plage horaire de travail.
- * <p>
+
  * Définit l'heure de début, de fin et le nombre de bénévoles requis pour ce moment.
- * </p>
+
  */
 public class Creneau implements ITable {
 

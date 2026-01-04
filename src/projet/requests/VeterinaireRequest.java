@@ -9,11 +9,10 @@ import projet.connexion.Connexion;
 
 /**
  * DAO pour la gestion des associations vétérinaire-soin.
- * <p>
+
  * Permet de tracer quel vétérinaire a effectué quel acte médical.
- * </p>
+
  * 
- * @see projet.tables.Veterinaire
  */
 public class VeterinaireRequest {
 

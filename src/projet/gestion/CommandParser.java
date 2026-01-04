@@ -15,11 +15,11 @@ import projet.exceptions.donnee.format.InvalidTelephoneException;
 
 /**
  * Analyseur de commandes et point d'entrée de l'interface CLI.
- * <p>
+
  * Cette classe gère l'interface en ligne de commande de l'application.
  * Elle authentifie l'utilisateur, affiche les menus et route les commandes
  * vers les contrôleurs appropriés. L'application est organisée en 7 modules :
- * </p>
+
  * <ul>
  * <li>Animaux - Gestion du registre des animaux</li>
  * <li>Box - Gestion des box d'hébergement</li>
@@ -30,13 +30,6 @@ import projet.exceptions.donnee.format.InvalidTelephoneException;
  * <li>Recherche - Recherche multi-entités</li>
  * </ul>
  * 
- * @version 1.0
- * @see ControllerAnimal
- * @see ControllerBox
- * @see ControllerFamille
- * @see ControllerPlanning
- * @see ControllerActivite
- * @see ControllerRapport
  */
 public class CommandParser {
 

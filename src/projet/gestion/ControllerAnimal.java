@@ -14,17 +14,8 @@ import projet.exceptions.donnee.ElementIntrouvableException;
 import projet.exceptions.donnee.format.InvalidPuceException;
 
 /**
- * Contrôleur gérant toutes les opérations liées aux animaux.
- * <p>
- * Ce contrôleur permet de lister, ajouter, modifier, supprimer et rechercher
- * des animaux dans le système. Il gère également les validations métier
- * (format de puce, espèces autorisées, dates cohérentes) et les contrôles
- * d'accès (droits administrateur pour la suppression).
- * </p>
- * 
- * @version 1.0
- * @see projet.requests.AnimalRequest
- * @see projet.tables.Animal
+ * Gère les opérations CRUD sur les animaux.
+ * Inclut les validations (puce, espèce, dates) et le contrôle d'accès.
  */
 public class ControllerAnimal {
 
@@ -32,10 +23,7 @@ public class ControllerAnimal {
     private RapportHistoriqueAnimal rapportHistorique;
     private Personnel currentUser;
 
-    /**
-     * Constructeur par défaut.
-     * Initialise les requêtes animales et le générateur de rapports.
-     */
+    /** Initialise les requêtes et le générateur de rapports. */
     public ControllerAnimal() {
         this.animalReq = new AnimalRequest();
         this.rapportHistorique = new RapportHistoriqueAnimal();
@@ -51,10 +39,7 @@ public class ControllerAnimal {
         this.currentUser = user;
     }
 
-    /**
-     * Affiche la liste complète de tous les animaux enregistrés.
-     * Affiche un tableau formaté avec ID, puce, nom, espèce, dates et tests.
-     */
+    /** Affiche tous les animaux en tableau formaté. */
     public void listerAnimaux() {
         System.out.println("--- Liste complete des Animaux ---");
         List<Animal> liste = animalReq.getAll();

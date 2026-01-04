@@ -11,18 +11,9 @@ import projet.exceptions.regle.MissingEntityException;
 import projet.exceptions.donnee.ElementIntrouvableException;
 
 /**
- * Contrôleur gérant toutes les opérations liées aux box d'hébergement.
- * <p>
- * Ce contrôleur permet de gérer les box (ajout, modification, suppression),
- * de placer et retirer des animaux, et d'afficher des statistiques
+ * Gère les box (hébergement), placement/retrait d'animaux et stats
  * d'occupation.
- * Il gère les règles métier comme la compatibilité espèce/type de box et la
- * capacité maximale.
- * </p>
- * 
- * @version 1.0
- * @see projet.requests.BoxRequest
- * @see projet.requests.SejourBoxRequest
+ * Vérifie compatibilité espèce/type et capacité max.
  */
 public class ControllerBox {
 
@@ -31,10 +22,7 @@ public class ControllerBox {
     private SejourFamilleRequest sejourFamilleReq;
     private RapportBoxRequest rapportBox;
 
-    /**
-     * Constructeur par défaut.
-     * Initialise les requêtes pour les box et les séjours.
-     */
+    /** Initialise les requêtes box et séjour. */
     public ControllerBox() {
         this.boxReq = new BoxRequest();
         this.sejourBoxReq = new SejourBoxRequest();

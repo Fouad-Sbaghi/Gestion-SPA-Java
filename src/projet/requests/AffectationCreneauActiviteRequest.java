@@ -10,11 +10,10 @@ import projet.exceptions.regle.CapaciteInsuffisanteException;
 
 /**
  * DAO pour la gestion des affectations créneaux-activités-bénévoles.
- * <p>
+
  * Gère "Qui fait Quoi et Quand" pour le planning du refuge.
- * </p>
+
  * 
- * @see projet.tables.AffectationCreneauActivite
  */
 public class AffectationCreneauActiviteRequest {
 

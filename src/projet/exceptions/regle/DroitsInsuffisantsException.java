@@ -3,10 +3,10 @@ package projet.exceptions.regle;
 /**
  * Levée lorsqu'un utilisateur tente une action pour laquelle il n'a pas les
  * droits.
- * <p>
+
  * Exemple : Un bénévole tente de supprimer un animal (action réservée aux
  * admins).
- * </p>
+
  */
 public class DroitsInsuffisantsException extends RegleException {
 

@@ -2,10 +2,10 @@ package projet.exceptions;
 
 /**
  * Levée lors d'un échec d'authentification utilisateur.
- * <p>
+
  * Peut être dû à un identifiant ou mot de passe incorrect,
  * ou à un compte inexistant/désactivé.
- * </p>
+
  */
 public class AuthentificationException extends SpaException {
 

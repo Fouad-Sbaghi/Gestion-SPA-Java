@@ -11,11 +11,10 @@ import projet.connexion.Connexion;
 
 /**
  * DAO pour la gestion des incidents.
- * <p>
+
  * Gère la création, la recherche et l'affichage des incidents liés aux animaux.
- * </p>
+
  * 
- * @see projet.tables.Incident
  */
 public class IncidentRequest {
 

@@ -10,11 +10,10 @@ import projet.tables.Personnel;
 
 /**
  * DAO pour la gestion du personnel et des bénévoles.
- * <p>
+
  * Gère l'authentification, les opérations CRUD et les recherches.
- * </p>
+
  * 
- * @see projet.tables.Personnel
  */
 public class PersonnelRequest {
 

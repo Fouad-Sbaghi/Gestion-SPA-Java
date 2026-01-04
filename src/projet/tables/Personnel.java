@@ -3,13 +3,8 @@ package projet.tables;
 import java.util.HashMap;
 
 /**
- * Représente un membre du personnel ou un bénévole de la SPA.
- * <p>
- * Cette classe stocke les informations d'identité (Nom, Prénom, Téléphone)
- * ainsi que les identifiants de connexion (User, Password) nécessaires
- * pour accéder à l'application via le module d'authentification.
- * </p>
- * * @see projet.tables.ITable
+ * Représente un membre du personnel ou bénévole.
+ * Stocke identité et identifiants de connexion.
  */
 public class Personnel implements ITable {
 
@@ -36,12 +31,13 @@ public class Personnel implements ITable {
     /**
      * Constructeur complet.
      * * @param id Identifiant unique (souvent auto-généré par la BDD).
-     * @param nom Nom de famille.
+     * 
+     * @param nom    Nom de famille.
      * @param prenom Prénom.
-     * @param type Rôle dans la SPA (Admin, Bénévole...).
-     * @param tel Numéro de téléphone.
-     * @param user Identifiant de connexion.
-     * @param pwd Mot de passe.
+     * @param type   Rôle dans la SPA (Admin, Bénévole...).
+     * @param tel    Numéro de téléphone.
+     * @param user   Identifiant de connexion.
+     * @param pwd    Mot de passe.
      */
     public Personnel(int id, String nom, String prenom, String type, String tel, String user, String pwd) {
         this.id_pers = id;
@@ -71,13 +67,14 @@ public class Personnel implements ITable {
 
     /**
      * Génère la chaîne de valeurs pour l'insertion SQL.
+     * 
      * @return Les attributs formatés pour un INSERT INTO.
      */
     @Override
     public String getValues() {
         // Attention aux guillemets simples pour les chaînes de caractères (VARCHAR)
-        this.values = "'" + this.nom + "', '" + this.prenom + "', '" + this.type_pers + "', '" + 
-                      this.tel + "', '" + this.user + "', '" + this.password + "'";
+        this.values = "'" + this.nom + "', '" + this.prenom + "', '" + this.type_pers + "', '" +
+                this.tel + "', '" + this.user + "', '" + this.password + "'";
         return this.values;
     }
 
@@ -94,26 +91,61 @@ public class Personnel implements ITable {
 
     // --- Getters et Setters ---
 
-    public int getId_pers() { return id_pers; }
-    public void setId_pers(int id) { this.id_pers = id; }
+    public int getId_pers() {
+        return id_pers;
+    }
 
-    public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; }
+    public void setId_pers(int id) {
+        this.id_pers = id;
+    }
 
-    public String getPrenom() { return prenom; }
-    public void setPrenom(String prenom) { this.prenom = prenom; }
+    public String getNom() {
+        return nom;
+    }
 
-    public String getType_pers() { return type_pers; }
-    public void setType_pers(String type) { this.type_pers = type; }
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-    public String getTel() { return tel; }
-    public void setTel(String tel) { this.tel = tel; }
+    public String getPrenom() {
+        return prenom;
+    }
 
-    public String getUser() { return user; }
-    public void setUser(String user) { this.user = user; }
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getType_pers() {
+        return type_pers;
+    }
+
+    public void setType_pers(String type) {
+        this.type_pers = type;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public String toString() {

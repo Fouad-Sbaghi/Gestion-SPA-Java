@@ -13,12 +13,11 @@ import projet.tables.Animal;
 
 /**
  * DAO pour la gestion des séjours en famille.
- * <p>
+
  * Gère les placements en famille d'accueil ou d'adoption.
  * Vérifie l'adoptabilité et le statut de quarantaine.
- * </p>
+
  * 
- * @see projet.tables.SejourFamille
  */
 public class SejourFamilleRequest {
 

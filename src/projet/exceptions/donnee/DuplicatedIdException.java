@@ -2,9 +2,9 @@ package projet.exceptions.donnee;
 
 /**
  * Levée lors d'une tentative d'insertion d'une donnée censée être unique.
- * <p>
+
  * Exemple : Numéro de puce déjà existant dans la base.
- * </p>
+
  */
 public class DuplicatedIdException extends DonneeException {
 

@@ -9,9 +9,9 @@ import projet.connexion.Connexion;
 
 /**
  * Rapport statistique sur l'occupation des box.
- * <p>
+
  * Affiche la capacité vs occupation par type de box.
- * </p>
+
  */
 public class RapportBoxRequest extends RapportRequest {
 

@@ -3,10 +3,8 @@ package projet.exceptions.donnee.format;
 import java.util.Date;
 
 /**
- * Levée lorsque deux dates sont incohérentes entre elles.
- * <p>
- * Exemple : Date de fin antérieure à la date de début d'un séjour.
- * </p>
+ * Levée quand deux dates sont incohérentes.
+ * Ex: date de fin avant la date de début.
  */
 public class DateIncoherenteException extends InvalidDateException {
 

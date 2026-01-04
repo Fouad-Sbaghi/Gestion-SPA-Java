@@ -10,11 +10,10 @@ import projet.connexion.Connexion;
 
 /**
  * DAO pour la gestion du planning des animaux.
- * <p>
+
  * Planifie les rendez-vous entre animaux, bénévoles et créneaux.
- * </p>
+
  * 
- * @see projet.tables.PlanningAnimal
  */
 public class PlanningAnimalRequest {
 

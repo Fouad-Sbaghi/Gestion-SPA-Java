@@ -5,11 +5,10 @@ import java.util.HashMap;
 
 /**
  * Représente un acte médical ou un soin effectué sur un animal.
- * <p>
+
  * Chaque soin est lié à un animal spécifique par son identifiant unique.
  * Cette classe permet de tracer l'historique médical (Vaccins, Opérations, Contrôles...).
- * </p>
- * @see projet.tables.ITable
+
  */
 public class Soin implements ITable {
 

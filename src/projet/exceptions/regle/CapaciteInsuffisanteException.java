@@ -2,11 +2,11 @@ package projet.exceptions.regle;
 
 /**
  * Levée lorsqu'une capacité maximale est atteinte (version générique).
- * <p>
+
  * Utilisable pour les créneaux, activités, ou tout autre élément avec capacité
  * limitée.
  * Pour les box, préférer BoxPleinException.
- * </p>
+
  */
 public class CapaciteInsuffisanteException extends RegleException {
 

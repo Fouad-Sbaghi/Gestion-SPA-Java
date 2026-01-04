@@ -4,11 +4,8 @@ import java.util.Date;
 import projet.exceptions.donnee.DonneeException;
 
 /**
- * Levée lorsqu'une date fournie est dans le futur alors que ce n'est pas
- * autorisé.
- * <p>
- * Exemple : Date de naissance d'un animal supérieure à la date du jour.
- * </p>
+ * Levée quand une date est dans le futur (non autorisé).
+ * Ex: date de naissance postérieure à aujourd'hui.
  */
 public class DateFutureException extends DonneeException {
 

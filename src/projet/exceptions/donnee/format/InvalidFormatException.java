@@ -3,10 +3,8 @@ package projet.exceptions.donnee.format;
 import projet.exceptions.donnee.DonneeException;
 
 /**
- * Levée lorsqu'une saisie utilisateur ne respecte pas le format attendu.
- * <p>
- * Exemple : Présence de chiffres dans un nom propre.
- * </p>
+ * Levée quand une saisie ne respecte pas le format attendu.
+ * Ex: chiffres dans un nom propre.
  */
 public class InvalidFormatException extends DonneeException {
 

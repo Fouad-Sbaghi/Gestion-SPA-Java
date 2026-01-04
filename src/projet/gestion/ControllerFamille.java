@@ -12,18 +12,8 @@ import projet.tables.Animal;
 import projet.tables.Famille;
 
 /**
- * Contrôleur gérant toutes les opérations liées aux familles d'accueil et
- * d'adoption.
- * <p>
- * Ce contrôleur permet de gérer les familles (ajout, liste, recherche),
- * de lier des animaux à des familles (accueil ou adoption), et de gérer
- * les retours d'animaux. Il vérifie les règles métier comme l'adoptabilité
- * et le statut de quarantaine.
- * </p>
- * 
- * @version 1.0
- * @see projet.requests.FamilleRequest
- * @see projet.requests.SejourFamilleRequest
+ * Gère les familles d'accueil/adoption et les séjours des animaux.
+ * Vérifie les règles métier (adoptabilité, quarantaine).
  */
 public class ControllerFamille {
 
@@ -31,10 +21,7 @@ public class ControllerFamille {
     private SejourFamilleRequest sejourFamilleReq;
     private AnimalRequest animalReq;
 
-    /**
-     * Constructeur par défaut.
-     * Initialise les requêtes pour les familles, séjours et animaux.
-     */
+    /** Initialise les requêtes famille et séjour. */
     public ControllerFamille() {
         this.familyReq = new FamilleRequest();
         this.sejourFamilleReq = new SejourFamilleRequest();

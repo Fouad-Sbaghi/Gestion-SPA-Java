@@ -12,12 +12,7 @@ import projet.connexion.Connexion;
 import projet.tables.Famille;
 
 /**
- * DAO pour la gestion des familles d'accueil et d'adoption.
- * <p>
- * Fournit les opérations CRUD et les recherches pour la table Famille.
- * </p>
- * 
- * @see projet.tables.Famille
+ * DAO pour la table Famille. CRUD et recherche.
  */
 public class FamilleRequest {
 

@@ -13,12 +13,11 @@ import projet.exceptions.regle.MissingEntityException;
 
 /**
  * DAO pour la gestion des séjours en box.
- * <p>
+
  * Gère le placement, la sortie et l'historique des animaux dans les box.
  * Vérifie les règles métier (capacité, compatibilité de type).
- * </p>
+
  * 
- * @see projet.tables.SejourBox
  */
 public class SejourBoxRequest {
 

@@ -14,11 +14,10 @@ import projet.tables.Creneau;
 
 /**
  * DAO pour la gestion des créneaux horaires.
- * <p>
+
  * Gère les plages horaires de travail et les affectations bénévoles.
- * </p>
+
  * 
- * @see projet.tables.Creneau
  */
 public class CreneauRequest {
 

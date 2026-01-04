@@ -1,10 +1,8 @@
 package projet.exceptions.donnee.format;
 
 /**
- * Levée lorsqu'un numéro de téléphone ne respecte pas le format attendu.
- * <p>
- * Le téléphone doit être au format français (10 chiffres commençant par 0).
- * </p>
+ * Levée quand le téléphone n'a pas le format français (10 chiffres, commence
+ * par 0).
  */
 public class InvalidTelephoneException extends InvalidFormatException {
 

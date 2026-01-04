@@ -5,14 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Représente un animal pris en charge par la SPA.
- * <p>
- * Cette classe mappe la table 'Animal' et contient les informations
- * d'identification (puce), de santé (tests comportementaux) et de statut
- * administratif.
- * </p>
- * 
- * @see projet.tables.ITable
+ * Représente un animal de la SPA.
+ * Mappe la table 'Animal' avec puce, tests comportementaux et statut.
  */
 public class Animal implements ITable {
 

@@ -14,15 +14,11 @@ import projet.tables.Soin;
 
 /**
  * Contrôleur gérant les activités, soins et incidents.
- * <p>
+
  * Ce contrôleur permet de gérer les types d'activités, d'enregistrer
  * des soins vétérinaires, et de déclarer/rechercher des incidents.
- * </p>
+
  * 
- * @version 1.0
- * @see projet.requests.ActiviteRequest
- * @see projet.requests.SoinRequest
- * @see projet.requests.IncidentRequest
  */
 public class ControllerActivite {
 

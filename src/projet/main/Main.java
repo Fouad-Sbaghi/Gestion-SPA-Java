@@ -5,11 +5,8 @@ import projet.connexion.Connexion;
 import projet.gestion.CommandParser;
 
 /**
- * Point d'entrée principal de l'application SPA.
- * <p>
- * Initialise la connexion à la base de données et lance l'interface CLI.
- * </p>
- * 
+ * Point d'entrée de l'application.
+ * Lance la connexion BDD puis l'interface console.
  */
 public class Main {
 

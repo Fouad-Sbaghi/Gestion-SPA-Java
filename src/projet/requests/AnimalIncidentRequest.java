@@ -8,11 +8,10 @@ import projet.connexion.Connexion;
 
 /**
  * DAO pour la gestion de la table de liaison Animal-Incident.
- * <p>
+
  * Gère l'association et la dissociation entre animaux et incidents.
- * </p>
+
  * 
- * @see projet.tables.AnimalIncident
  */
 public class AnimalIncidentRequest {
 

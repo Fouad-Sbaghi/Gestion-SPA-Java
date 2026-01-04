@@ -2,10 +2,10 @@ package projet.exceptions.regle;
 
 /**
  * Levée lorsqu'on tente d'affecter un animal inadoptable à une famille.
- * <p>
+
  * Un animal est considéré inadoptable si tous ses tests comportementaux
  * (humain, bébé, chien, chat) sont à FALSE.
- * </p>
+
  */
 public class InadoptableException extends RegleException {
 

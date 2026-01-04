@@ -2,10 +2,10 @@ package projet.exceptions.regle;
 
 /**
  * Levée lorsqu'une opération est interdite car l'animal a un séjour en cours.
- * <p>
+
  * Exemple : Supprimer un animal qui est actuellement dans un box ou une
  * famille.
- * </p>
+
  */
 public class SejourActifException extends RegleException {
 

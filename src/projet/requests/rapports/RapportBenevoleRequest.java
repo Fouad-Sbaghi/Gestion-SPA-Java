@@ -9,9 +9,9 @@ import projet.connexion.Connexion;
 
 /**
  * Rapport statistique sur les bénévoles.
- * <p>
+
  * Affiche le nombre de missions par bénévole.
- * </p>
+
  */
 public class RapportBenevoleRequest extends RapportRequest {
 

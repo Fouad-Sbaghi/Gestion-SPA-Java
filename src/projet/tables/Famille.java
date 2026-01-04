@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 /**
  * Représente une famille externe (Accueil ou Adoptante).
- * <p>
+
  * Permet de stocker les coordonnées des personnes accueillant les animaux
  * temporairement ou définitivement.
- * </p>
+
  */
 public class Famille implements ITable {
 

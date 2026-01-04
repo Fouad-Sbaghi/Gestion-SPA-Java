@@ -11,9 +11,9 @@ import projet.connexion.Connexion;
 
 /**
  * Rapport sur les créneaux en sous-effectif.
- * <p>
+
  * Identifie les créneaux qui manquent de bénévoles.
- * </p>
+
  */
 public class RapportPlanningRequest extends RapportRequest {
 

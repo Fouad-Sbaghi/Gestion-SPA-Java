@@ -13,11 +13,10 @@ import projet.tables.Soin;
 
 /**
  * DAO pour la gestion des soins vétérinaires.
- * <p>
+
  * Gère l'enregistrement et l'historique médical des animaux.
- * </p>
+
  * 
- * @see projet.tables.Soin
  */
 public class SoinRequest {
 

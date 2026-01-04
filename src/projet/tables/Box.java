@@ -5,10 +5,10 @@ import java.util.Map;
 
 /**
  * Représente un espace d'hébergement (Box) au sein de la SPA.
- * <p>
+
  * Chaque box possède un type (Chien/Chat) et une capacité maximale 
  * qui ne doit pas être dépassée (Règle métier).
- * </p>
+
  */
 public class Box implements ITable {
 

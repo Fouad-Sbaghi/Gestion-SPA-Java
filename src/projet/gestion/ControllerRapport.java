@@ -5,14 +5,11 @@ import projet.requests.rapports.RapportBenevoleRequest;
 
 /**
  * Contrôleur gérant la génération des rapports et statistiques.
- * <p>
+
  * Ce contrôleur permet de générer des rapports sur les bénévoles
  * et la liste des animaux adoptables.
- * </p>
+
  * 
- * @version 1.0
- * @see projet.requests.rapports.RapportAnimauxAdoptable
- * @see projet.requests.rapports.RapportBenevoleRequest
  */
 public class ControllerRapport {
 

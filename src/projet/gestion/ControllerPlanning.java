@@ -14,17 +14,8 @@ import projet.requests.rapports.RapportPlanningRequest;
 import projet.tables.Personnel;
 
 /**
- * Contrôleur gérant le planning, les créneaux et les bénévoles.
- * <p>
- * Ce contrôleur permet de gérer les bénévoles (ajout, modification,
- * suppression),
- * les créneaux horaires, les affectations et le planning des animaux.
- * Il vérifie les formats de données comme les numéros de téléphone.
- * </p>
- * 
- * @version 1.0
- * @see projet.requests.PersonnelRequest
- * @see projet.requests.CreneauRequest
+ * Gère le planning, les créneaux horaires et les bénévoles.
+ * Inclut la validation des formats (téléphone).
  */
 public class ControllerPlanning {
 
@@ -34,10 +25,7 @@ public class ControllerPlanning {
     private AffectationCreneauActiviteRequest affectationReq;
     private RapportPlanningRequest rapportPlanning;
 
-    /**
-     * Constructeur par défaut.
-     * Initialise les requêtes pour les créneaux, le personnel et les affectations.
-     */
+    /** Initialise les requêtes créneaux, personnel et affectations. */
     public ControllerPlanning() {
         this.creneauReq = new CreneauRequest();
         this.personnelReq = new PersonnelRequest();

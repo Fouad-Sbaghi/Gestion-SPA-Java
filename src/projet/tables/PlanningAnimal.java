@@ -5,9 +5,9 @@ import java.util.HashMap;
 
 /**
  * Gère l'emploi du temps spécifique d'un animal.
- * <p>
+
  * Permet d'associer un animal à un créneau et un bénévole (Ex: Rex est promené par Jean Mardi matin).
- * </p>
+
  */
 public class PlanningAnimal implements ITable {
 

@@ -2,9 +2,9 @@ package projet.exceptions.regle;
 
 /**
  * Levée lorsqu'une espèce animale n'est pas reconnue par le système.
- * <p>
+
  * Le refuge gère principalement les chats et chiens.
- * </p>
+
  */
 public class EspeceInconnueException extends RegleException {
 

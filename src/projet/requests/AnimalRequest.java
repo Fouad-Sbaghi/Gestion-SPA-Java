@@ -12,21 +12,11 @@ import projet.connexion.Connexion;
 import projet.tables.Animal;
 
 /**
- * DAO (Data Access Object) pour la gestion des animaux.
- * <p>
- * Fournit les opérations CRUD et les requêtes de recherche
- * pour la table Animal de la base de données.
- * </p>
- * 
- * @see projet.tables.Animal
+ * DAO pour la table Animal. Opérations CRUD et recherche.
  */
 public class AnimalRequest {
 
-    /**
-     * Récupère la liste de tous les animaux enregistrés.
-     * 
-     * @return Une liste d'objets Animal.
-     */
+    /** Récupère tous les animaux. */
     public List<Animal> getAll() {
         List<Animal> liste = new ArrayList<>();
         String sql = "SELECT * FROM Animal ORDER BY id_animal ASC";

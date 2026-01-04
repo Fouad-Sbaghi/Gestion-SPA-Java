@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 /**
  * Table d'association liant un bénévole (Personne) à un créneau horaire et une activité précise.
- * <p>
+
  * Permet de savoir "Qui fait Quoi et Quand".
- * </p>
+
  */
 public class AffectationCreneauActivite implements ITable {
 

@@ -9,9 +9,9 @@ import projet.connexion.Connexion;
 
 /**
  * Rapport des incidents par animal.
- * <p>
+
  * Liste les accidents et maladies déclarés.
- * </p>
+
  */
 public class RapportIncidentRequest extends RapportRequest {
 

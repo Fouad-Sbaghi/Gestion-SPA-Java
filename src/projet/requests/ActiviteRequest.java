@@ -14,12 +14,11 @@ import projet.tables.Activite;
 
 /**
  * DAO pour la gestion des activités du refuge.
- * <p>
+
  * Gère les types d'activités (Promenade, Nettoyage, etc.) et leur
  * enregistrement.
- * </p>
+
  * 
- * @see projet.tables.Activite
  */
 public class ActiviteRequest {
 

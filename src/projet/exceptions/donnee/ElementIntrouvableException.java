@@ -2,10 +2,10 @@ package projet.exceptions.donnee;
 
 /**
  * Levée lorsqu'un élément recherché n'existe pas en base de données.
- * <p>
+
  * Utilisée pour les recherches par ID ou par nom qui ne retournent aucun
  * résultat.
- * </p>
+
  */
 public class ElementIntrouvableException extends DonneeException {
 

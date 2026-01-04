@@ -1,11 +1,7 @@
 package projet.exceptions;
 
 /**
- * Exception racine abstraite pour l'application de gestion SPA.
- * <p>
- * Regroupe toutes les erreurs contrôlées spécifiques au projet,
- * qu'elles soient d'ordre technique (BDD) ou métier (Règles logiques).
- * </p>
+ * Exception mère pour toutes les erreurs métier de l'application.
  */
 public abstract class SpaException extends Exception {
 

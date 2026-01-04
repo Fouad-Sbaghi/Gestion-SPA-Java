@@ -5,11 +5,10 @@ import java.util.HashMap;
 
 /**
  * Représente un événement notable lié à un animal ou au refuge (Maladie, Accident, Fuite).
- * <p>
+
  * Cette classe permet de garder une trace datée et détaillée des problèmes survenus
  * afin de constituer un historique médical ou administratif.
- * </p>
- * @see projet.tables.ITable
+
  */
 public class Incident implements ITable {
 

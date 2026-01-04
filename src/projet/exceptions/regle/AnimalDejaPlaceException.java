@@ -2,9 +2,9 @@ package projet.exceptions.regle;
 
 /**
  * Levée lorsqu'on tente de placer un animal qui est déjà hébergé ailleurs.
- * <p>
+
  * Un animal ne peut pas être dans deux endroits à la fois (box + famille).
- * </p>
+
  */
 public class AnimalDejaPlaceException extends RegleException {
 

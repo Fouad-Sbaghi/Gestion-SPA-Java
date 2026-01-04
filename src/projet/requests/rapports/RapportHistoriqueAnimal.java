@@ -9,9 +9,9 @@ import projet.connexion.Connexion;
 
 /**
  * Rapport complet du dossier d'un animal.
- * <p>
+
  * Affiche l'identité, l'historique médical, les incidents et les séjours.
- * </p>
+
  */
 public class RapportHistoriqueAnimal extends RapportRequest {
 
