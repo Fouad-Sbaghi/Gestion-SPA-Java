@@ -22,8 +22,8 @@ public class CreneauRequest {
         String sql = "SELECT * FROM Creneau ORDER BY heure_d ASC";
 
         try (Connection conn = Connexion.connectR();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Creneau c = new Creneau();
@@ -42,19 +42,30 @@ public class CreneauRequest {
 
     /**
      * Ajoute un nouveau créneau horaire.
+     * 
      * @param nbBenevole Nombre max de bénévoles requis.
-     * @param debut Heure de début (ex: "08:00:00").
-     * @param fin Heure de fin (ex: "12:00:00").
+     * @param debut      Heure de début (ex: "08:00:00").
+     * @param fin        Heure de fin (ex: "12:00:00").
+     * @throws HorairesInvalidesException si l'heure de fin est avant ou égale à
+     *                                    l'heure de début.
      */
-    public void add(int nbBenevole, String debut, String fin) {
+    public void add(int nbBenevole, String debut, String fin) throws projet.exceptions.regle.HorairesInvalidesException {
         String sql = "INSERT INTO Creneau (nb_benevole, heure_d, heure_f) VALUES (?, ?, ?)";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            Time heureDebut = Time.valueOf(debut);
+            Time heureFin = Time.valueOf(fin);
+
+            // Vérifier que l'heure de fin est après l'heure de début
+            if (heureFin.compareTo(heureDebut) <= 0) {
+                throw new projet.exceptions.regle.HorairesInvalidesException(heureDebut, heureFin);
+            }
 
             pstmt.setInt(1, nbBenevole);
-            pstmt.setTime(2, Time.valueOf(debut));
-            pstmt.setTime(3, Time.valueOf(fin));
+            pstmt.setTime(2, heureDebut);
+            pstmt.setTime(3, heureFin);
 
             pstmt.executeUpdate();
             System.out.println("Créneau ajouté : " + debut + " - " + fin);
@@ -73,7 +84,7 @@ public class CreneauRequest {
         String sql = "DELETE FROM Creneau WHERE id_creneau = ?";
 
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
             int rows = pstmt.executeUpdate();
@@ -84,18 +95,18 @@ public class CreneauRequest {
             return false;
         }
     }
-    
+
     /**
      * Récupère un créneau par son ID.
      */
     public Creneau getById(int id) {
         String sql = "SELECT * FROM Creneau WHERE id_creneau = ?";
         try (Connection conn = Connexion.connectR();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
-            
+
             if (rs.next()) {
                 Creneau c = new Creneau();
                 c.setId_creneau(rs.getInt("id_creneau"));

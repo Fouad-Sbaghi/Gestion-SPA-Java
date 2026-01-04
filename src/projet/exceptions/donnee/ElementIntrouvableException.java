@@ -1,4 +1,4 @@
-package projet.exceptions;
+package projet.exceptions.donnee;
 
 public class ElementIntrouvableException extends DonneeException {
     public ElementIntrouvableException(String typeElement, int id) {

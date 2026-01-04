@@ -8,7 +8,8 @@ import projet.requests.AnimalRequest;
 import projet.requests.rapports.RapportHistoriqueAnimal;
 import projet.tables.Animal;
 import projet.tables.Personnel;
-import projet.exceptions.InvalidFormatException;
+import projet.exceptions.donnee.format.InvalidFormatException;
+import projet.exceptions.regle.DroitsInsuffisantsException;
 
 public class ControllerAnimal {
 
@@ -63,6 +64,32 @@ public class ControllerAnimal {
         }
     }
 
+    /**
+     * Valide le format d'une puce (15 chiffres selon la norme ISO).
+     */
+    private void validerPuce(String puce) throws projet.exceptions.donnee.format.InvalidPuceException {
+        if (puce != null && !puce.isEmpty() && !puce.matches("^[0-9]{15}$")) {
+            throw new projet.exceptions.donnee.format.InvalidPuceException(puce, "La puce doit contenir exactement 15 chiffres");
+        }
+    }
+
+    /**
+     * Valide que l'espèce est connue.
+     */
+    private void validerEspece(String espece) throws projet.exceptions.regle.EspeceInconnueException {
+        String[] especesAcceptees = { "Chat", "Chien", "Lapin", "Rongeur", "Oiseau", "Reptile", "Autre" };
+        boolean valide = false;
+        for (String e : especesAcceptees) {
+            if (e.equalsIgnoreCase(espece)) {
+                valide = true;
+                break;
+            }
+        }
+        if (!valide) {
+            throw new projet.exceptions.regle.EspeceInconnueException(espece, especesAcceptees);
+        }
+    }
+
     public void ajouterAnimal(Scanner scanner) {
         try {
             System.out.println(">> Ajout d'un nouvel animal");
@@ -73,18 +100,30 @@ public class ControllerAnimal {
             validerNom(nom);
             a.setNom(nom);
 
-            System.out.print("Espece (Chat/Chien/Autre) : ");
-            a.setEspece(scanner.nextLine().trim());
+            System.out.print("Espece (Chat/Chien/Lapin/Rongeur/Oiseau/Reptile/Autre) : ");
+            String espece = scanner.nextLine().trim();
+            validerEspece(espece);
+            a.setEspece(espece);
 
-            System.out.print("Puce (laisser vide si inconnue) : ");
+            System.out.print("Puce (laisser vide si inconnue, format: 15 chiffres) : ");
             String puce = scanner.nextLine().trim();
+            if (!puce.isEmpty()) {
+                validerPuce(puce);
+            }
             a.setPuce(puce.isEmpty() ? null : puce);
 
             System.out.print("Date de naissance (YYYY-MM-DD, vide si inconnue) : ");
             String naissStr = scanner.nextLine().trim();
             if (!naissStr.isEmpty()) {
                 try {
-                    a.setDate_naissance(Date.valueOf(naissStr));
+                    Date dateNaissance = Date.valueOf(naissStr);
+                    // Vérifier que la date n'est pas dans le futur
+                    if (dateNaissance.after(new Date(System.currentTimeMillis()))) {
+                        throw new projet.exceptions.donnee.format.DateFutureException("Date de naissance", naissStr);
+                    }
+                    a.setDate_naissance(dateNaissance);
+                } catch (projet.exceptions.donnee.format.DateFutureException e) {
+                    throw e; // Relancer pour le catch externe
                 } catch (Exception e) {
                     System.out.println("Date invalide, ignoree.");
                 }
@@ -112,11 +151,29 @@ public class ControllerAnimal {
             String tCh = scanner.nextLine().trim().toUpperCase();
             a.setTests_chat(tCh.equals("V"));
 
-            a.setDate_arrivee(new Date(System.currentTimeMillis()));
+            Date dateArrivee = new Date(System.currentTimeMillis());
+            a.setDate_arrivee(dateArrivee);
+
+            // Vérifier que la date de naissance est antérieure ou égale à la date d'arrivée
+            if (a.getDate_naissance() != null && a.getDate_naissance().after(dateArrivee)) {
+                throw new projet.exceptions.donnee.format.DateIncoherenteException(
+                        "Date de naissance", "Date d'arrivée",
+                        "La date de naissance ne peut pas être postérieure à la date d'arrivée");
+            }
 
             animalReq.add(a);
             System.out.println("Succes : Animal ajoute !");
+        } catch (projet.exceptions.donnee.format.DateIncoherenteException e) {
+            System.out.println(e.getMessage());
+        } catch (projet.exceptions.donnee.format.DateFutureException e) {
+            System.out.println(e.getMessage());
+        } catch (projet.exceptions.donnee.format.InvalidPuceException e) {
+            System.out.println(e.getMessage());
         } catch (InvalidFormatException e) {
+            System.out.println(e.getMessage());
+        } catch (projet.exceptions.regle.EspeceInconnueException e) {
+            System.out.println(e.getMessage());
+        } catch (projet.exceptions.donnee.DuplicatedIdException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println("Erreur ajout animal : " + e.getMessage());
@@ -124,14 +181,42 @@ public class ControllerAnimal {
     }
 
     public void supprimerAnimal(int id) {
-        if (currentUser != null && !"Admin".equalsIgnoreCase(currentUser.getType_pers())) {
-            System.out.println("Refuse : Droit Admin requis.");
-            return;
-        }
-        if (animalReq.delete(id)) {
-            System.out.println("Succes : Animal " + id + " supprime.");
-        } else {
-            System.out.println("Erreur : ID introuvable.");
+        try {
+            if (currentUser != null && !"Admin".equalsIgnoreCase(currentUser.getType_pers())) {
+                throw new DroitsInsuffisantsException("Suppression d'animal", currentUser.getType_pers(), "Admin");
+            }
+
+            // Vérifier si l'animal a un séjour actif (box ou famille)
+            projet.requests.SejourBoxRequest boxReq = new projet.requests.SejourBoxRequest();
+            projet.requests.SejourFamilleRequest familleReq = new projet.requests.SejourFamilleRequest();
+
+            int boxActuel = boxReq.getBoxActuel(id);
+            int familleActuelle = familleReq.getFamilleActuelle(id);
+
+            if (boxActuel != -1) {
+                throw new projet.exceptions.regle.SejourActifException(id,
+                        "suppression (l'animal est dans le box #" + boxActuel + ")");
+            }
+            if (familleActuelle != -1) {
+                throw new projet.exceptions.regle.SejourActifException(id,
+                        "suppression (l'animal est dans la famille #" + familleActuelle + ")");
+            }
+
+            // Vérifier que l'animal existe
+            Animal a = animalReq.getById(id);
+            if (a == null) {
+                throw new projet.exceptions.donnee.ElementIntrouvableException("Animal", id);
+            }
+
+            if (animalReq.delete(id)) {
+                System.out.println("Succes : Animal " + id + " supprime.");
+            }
+        } catch (DroitsInsuffisantsException e) {
+            System.out.println(e.getMessage());
+        } catch (projet.exceptions.regle.SejourActifException e) {
+            System.out.println(e.getMessage());
+        } catch (projet.exceptions.donnee.ElementIntrouvableException e) {
+            System.out.println(e.getMessage());
         }
     }
 

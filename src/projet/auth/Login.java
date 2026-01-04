@@ -1,5 +1,6 @@
 package projet.auth;
 
+import projet.exceptions.AuthentificationException;
 import projet.requests.PersonnelRequest;
 import projet.tables.Personnel;
 
@@ -13,19 +14,27 @@ public class Login {
 
     /**
      * Tente d'authentifier un utilisateur.
+     * 
      * @param username Le login (colonne 'user' en BDD)
      * @param password Le mot de passe
-     * @return L'objet Personnel si succès, null si échec.
+     * @return L'objet Personnel si succès.
+     * @throws AuthentificationException si l'utilisateur est inconnu ou le mot de
+     *                                   passe incorrect.
      */
-    public Personnel authentifier(String username, String password) {
+    public Personnel authentifier(String username, String password) throws AuthentificationException {
         // 1. Récupère l'utilisateur en BDD
         Personnel user = personnelRequest.getByUsername(username);
 
-        // 2. Vérifie si l'utilisateur existe ET si le mot de passe correspond
-        if (user != null && user.getPassword().equals(password)) {
-            return user; // Connexion réussie
+        // 2. Vérifie si l'utilisateur existe
+        if (user == null) {
+            throw new AuthentificationException(username);
         }
 
-        return null; // Échec (utilisateur inconnu ou mauvais mot de passe)
+        // 3. Vérifie si le mot de passe correspond
+        if (!user.getPassword().equals(password)) {
+            throw new AuthentificationException(username, "Mot de passe incorrect");
+        }
+
+        return user; // Connexion réussie
     }
 }

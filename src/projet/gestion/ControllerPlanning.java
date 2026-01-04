@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.text.Normalizer;
 
+import projet.exceptions.donnee.format.InvalidTelephoneException;
 import projet.requests.AffectationCreneauActiviteRequest;
 import projet.requests.CreneauRequest;
 import projet.requests.PersonnelRequest;
@@ -28,24 +29,39 @@ public class ControllerPlanning {
         this.rapportPlanning = new RapportPlanningRequest();
     }
 
+    /**
+     * Valide le format du numéro de téléphone (10 chiffres, peut commencer par 0).
+     */
+    private void validerTelephone(String tel) throws InvalidTelephoneException {
+        if (tel != null && !tel.isEmpty() && !tel.matches("^0[1-9][0-9]{8}$")) {
+            throw new InvalidTelephoneException(tel, "Le format attendu est 10 chiffres commençant par 0");
+        }
+    }
+
     public void ajouterBenevole(Scanner scanner) {
-        System.out.println(">> Nouveau Benevole");
-        Personnel p = new Personnel();
-        p.setType_pers("Benevole");
+        try {
+            System.out.println(">> Nouveau Benevole");
+            Personnel p = new Personnel();
+            p.setType_pers("Benevole");
 
-        System.out.print("Nom : ");
-        p.setNom(scanner.nextLine());
-        System.out.print("Prenom : ");
-        p.setPrenom(scanner.nextLine());
-        System.out.print("Tel : ");
-        p.setTel(scanner.nextLine());
-        System.out.print("User : ");
-        p.setUser(scanner.nextLine());
-        System.out.print("Pass : ");
-        p.setPassword(scanner.nextLine());
+            System.out.print("Nom : ");
+            p.setNom(scanner.nextLine());
+            System.out.print("Prenom : ");
+            p.setPrenom(scanner.nextLine());
+            System.out.print("Tel : ");
+            String tel = scanner.nextLine();
+            validerTelephone(tel);
+            p.setTel(tel);
+            System.out.print("User : ");
+            p.setUser(scanner.nextLine());
+            System.out.print("Pass : ");
+            p.setPassword(scanner.nextLine());
 
-        personnelReq.add(p);
-        System.out.println("Benevole ajoute.");
+            personnelReq.add(p);
+            System.out.println("Benevole ajoute.");
+        } catch (InvalidTelephoneException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void afficherPlanning() {
@@ -66,8 +82,12 @@ public class ControllerPlanning {
     }
 
     public void assignerBenevole(int idCreneau, int idBenevole) {
-        int idActiviteDefaut = 1;
-        affectationReq.assigner(idCreneau, idBenevole, idActiviteDefaut);
+        try {
+            int idActiviteDefaut = 1;
+            affectationReq.assigner(idCreneau, idBenevole, idActiviteDefaut);
+        } catch (projet.exceptions.regle.CapaciteInsuffisanteException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void planningDuBenevole(int idBenevole) {

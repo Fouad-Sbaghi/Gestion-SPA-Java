@@ -88,14 +88,14 @@ public class CommandParser {
             System.out.print("Mot de passe : ");
             String pwd = scanner.nextLine();
 
-            this.currentUser = loginAuth.authentifier(user, pwd);
-
-            if (this.currentUser != null) {
+            try {
+                this.currentUser = loginAuth.authentifier(user, pwd);
                 System.out.println("\nBienvenue " + currentUser.getPrenom() + " !");
                 controllerAnimal.setCurrentUser(currentUser);
                 return true;
+            } catch (projet.exceptions.AuthentificationException e) {
+                System.out.println("Erreur : " + e.getMessage());
             }
-            System.out.println("Erreur : Identifiants incorrects. Réessayez.");
         }
     }
 

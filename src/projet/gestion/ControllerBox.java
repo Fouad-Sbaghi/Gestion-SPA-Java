@@ -4,9 +4,10 @@ import projet.requests.BoxRequest;
 import projet.requests.SejourBoxRequest;
 import projet.requests.rapports.RapportBoxRequest;
 import projet.requests.SejourFamilleRequest;
-import projet.exceptions.BoxPleinException;
-import projet.exceptions.IncompatibiliteTypeException;
-import projet.exceptions.MissingEntityException;
+import projet.exceptions.regle.AnimalDejaPlaceException;
+import projet.exceptions.regle.BoxPleinException;
+import projet.exceptions.regle.IncompatibiliteTypeException;
+import projet.exceptions.regle.MissingEntityException;
 
 public class ControllerBox {
 
@@ -71,6 +72,8 @@ public class ControllerBox {
         } catch (IncompatibiliteTypeException e) {
             System.out.println(e.getMessage());
         } catch (MissingEntityException e) {
+            System.out.println(e.getMessage());
+        } catch (AnimalDejaPlaceException e) {
             System.out.println(e.getMessage());
         }
     }

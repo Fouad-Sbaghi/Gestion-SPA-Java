@@ -1,4 +1,6 @@
-package projet.exceptions;
+package projet.exceptions.regle;
+
+import projet.exceptions.donnee.DonneeException;
 
 /**
  * Levée lorsqu'une opération est demandée sur une entité (Animal, Box, etc.)

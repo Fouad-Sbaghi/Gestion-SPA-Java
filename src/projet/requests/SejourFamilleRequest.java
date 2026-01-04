@@ -7,22 +7,42 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import projet.connexion.Connexion;
+import projet.exceptions.regle.InadoptableException;
+import projet.exceptions.regle.QuarantaineException;
+import projet.tables.Animal;
 
 public class SejourFamilleRequest {
 
+    private AnimalRequest animalReq = new AnimalRequest();
+
     /**
      * Debute un sejour en famille (Accueil ou Adoption).
+     * 
+     * @throws InadoptableException si l'animal a tous ses tests à FALSE
+     * @throws QuarantaineException si l'animal est en quarantaine
      */
-    public boolean commencerSejour(int idAnimal, int idFamille) {
+    public boolean commencerSejour(int idAnimal, int idFamille) throws InadoptableException, QuarantaineException {
+        // Vérifier l'adoptabilité de l'animal
+        Animal animal = animalReq.getById(idAnimal);
+        if (animal == null) {
+            System.err.println("Erreur : Animal #" + idAnimal + " introuvable.");
+            return false;
+        }
+
+        // Vérifier si l'animal est en quarantaine
+        if ("Quarantaine".equalsIgnoreCase(animal.getStatut())) {
+            throw new QuarantaineException(animal.getNom(), "placement en famille");
+        }
+
+        // Un animal est inadoptable si TOUS ses tests sont à FALSE
+        if (!animal.isTests_humain() && !animal.isTests_bebe() &&
+                !animal.isTests_chien() && !animal.isTests_chat()) {
+            throw new InadoptableException(idAnimal, animal.getNom());
+        }
+
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 
-        // Verifier si un sejour existe deja pour aujourd'hui (meme clos)
-        // Note: Avec le TIMESTAMP, on pourrait autoriser plusieurs, mais on garde la
-        // logique "existe pour aujourd'hui" un peu floue ou on l'adapte.
-        // On va simplifier : un animal peut changer de famille plusieurs fois par jour
-        // si TIMESTAMP.
-
-        // Sinon, cloturer tout sejour precedent et en creer un nouveau
+        // Cloturer tout sejour precedent et en creer un nouveau
         terminerSejourSilent(idAnimal);
 
         String sql = "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D) VALUES (?, ?, ?)";

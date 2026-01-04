@@ -300,62 +300,187 @@ public class SetupDatabase {
                 "INSERT INTO Affectation_Creneau_Activite VALUES (9, 9, 9)",
                 "INSERT INTO Affectation_Creneau_Activite VALUES (10, 10, 10)",
 
-                // Sejour_Famille (FK: id_animal, id_famille)
-                // 2. Mimi: Active stay (famille 2 - Adoptante)
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (2, 2, '2023-03-02 11:00:00', NULL)",
+                // ================================================================
+                // SEJOUR_FAMILLE - Historiques complets
+                // ================================================================
 
-                // 3. Max: Closed stay (famille 3)
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (3, 3, '2023-03-03 09:00:00', '2023-03-20 18:00:00')",
+                // 1. Rex: Essai famille échoué puis retour au refuge
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (1, 1, '2023-02-15 10:00:00', '2023-02-20 14:00:00')",
 
-                // 6. Simba: Active stay (famille 6 - Accueil)
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (6, 6, '2023-03-06 08:30:00', NULL)",
+                // 2. Mimi: Passage en famille d'accueil puis adoption
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (2, 3, '2023-02-01 09:00:00', '2023-02-28 17:00:00')", // Accueil
+                                                                                                                                                          // Durand
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (2, 2, '2023-03-02 11:00:00', NULL)", // Adoptée
+                                                                                                                                         // par
+                                                                                                                                         // Martin
 
-                // 7. Bella: Closed stay (famille 7)
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (7, 7, '2023-03-07 10:00:00', '2023-04-01 10:00:00')",
+                // 3. Max: Multiple essais en famille
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (3, 1, '2023-02-10 08:00:00', '2023-02-25 18:00:00')", // Accueil
+                                                                                                                                                          // Dupont
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (3, 3, '2023-03-03 09:00:00', '2023-03-20 18:00:00')", // Accueil
+                                                                                                                                                          // Durand
 
-                // 9. Tyson: Closed stay (famille 9)
-                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (9, 9, '2023-03-09 11:00:00', '2023-03-12 09:00:00')",
+                // 4. Luna: Un court séjour en famille d'accueil
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (4, 5, '2023-02-05 10:00:00', '2023-02-10 16:00:00')", // Accueil
+                                                                                                                                                          // Leroy
 
-                // Sejour_Box (FK: id_animal, id_box)
-                // 1. Rex (Box 1 - Active)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (1, 1, '2023-01-01 08:00:00', NULL)",
+                // 5. Rocky: Essai d'adoption raté puis famille d'accueil
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (5, 4, '2023-02-20 09:00:00', '2023-02-25 15:00:00')", // Adoptante
+                                                                                                                                                          // Petit
+                                                                                                                                                          // (échec)
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (5, 8, '2023-03-01 10:00:00', '2023-03-15 14:00:00')", // Accueil
+                                                                                                                                                          // Michel
 
-                // 2. Mimi (Box 2 - Closed prev to famille)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (2, 2, '2023-01-02 09:00:00', '2023-03-02 10:00:00')",
+                // 6. Simba: Famille d'accueil active
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (6, 10, '2023-02-01 09:00:00', '2023-02-28 16:00:00')", // Accueil
+                                                                                                                                                           // Roux
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (6, 6, '2023-03-06 08:30:00', NULL)", // Accueil
+                                                                                                                                         // Moreau
+                                                                                                                                         // (actif)
 
-                // 3. Max (Box 4 - Active) (Returned from family 2023-03-20 ?) Let's say he is
-                // back.
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 3, '2023-01-03 10:00:00', '2023-03-03 08:00:00')", // Old
-                                                                                                                                              // box
-                                                                                                                                              // stay
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 4, '2023-03-20 19:00:00', NULL)", // New
+                // 7. Bella: Parcours complet avec soins
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (7, 7, '2023-03-07 10:00:00', '2023-04-01 10:00:00')", // Adoptante
+                                                                                                                                                          // Simon
+                                                                                                                                                          // (retour)
+
+                // 8. Nala: Un essai en famille d'accueil
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (8, 3, '2023-03-10 09:00:00', '2023-03-20 18:00:00')", // Accueil
+                                                                                                                                                          // Durand
+
+                // 9. Tyson: Multiple passages
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (9, 5, '2023-02-01 11:00:00', '2023-02-15 10:00:00')", // Accueil
+                                                                                                                                                          // Leroy
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (9, 9, '2023-03-09 11:00:00', '2023-03-12 09:00:00')", // Adoptante
+                                                                                                                                                          // Lefebvre
+                                                                                                                                                          // (échec)
+
+                // 10. Oreo: Un court passage en accueil
+                "INSERT INTO Sejour_Famille (id_animal, id_famille, DATE_D, DATE_F_FAMILLE) VALUES (10, 10, '2023-02-15 10:00:00', '2023-02-20 15:00:00')", // Accueil
+                                                                                                                                                            // Roux
+
+                // ================================================================
+                // SEJOUR_BOX - Historiques complets avec transitions
+                // ================================================================
+
+                // 1. Rex: Arrivée -> Essai famille -> Retour box actif
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (1, 3, '2023-01-01 08:00:00', '2023-01-05 10:00:00')", // Quarantaine
+                                                                                                                                              // initiale
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (1, 1, '2023-01-05 11:00:00', '2023-02-15 09:00:00')", // Box
+                                                                                                                                              // chien
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (1, 1, '2023-02-20 15:00:00', NULL)", // Retour
+                                                                                                                             // de
+                                                                                                                             // famille,
+                                                                                                                             // actif
+
+                // 2. Mimi: Arrivée -> Box -> Famille accueil -> Adoption
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (2, 3, '2023-01-02 09:00:00', '2023-01-07 10:00:00')", // Quarantaine
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (2, 2, '2023-01-07 11:00:00', '2023-02-01 08:00:00')", // Box
+                                                                                                                                              // chat
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+
+                // 3. Max: Parcours complet Box -> Famille -> Box actif
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 3, '2023-01-03 10:00:00', '2023-01-08 09:00:00')", // Quarantaine
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 4, '2023-01-08 10:00:00', '2023-02-10 07:00:00')", // Box
+                                                                                                                                              // chien
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                                                                                                                                              // 1
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 4, '2023-02-25 19:00:00', '2023-03-03 08:00:00')", // Retour
+                                                                                                                                              // famille
+                                                                                                                                              // 1
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                                                                                                                                              // 2
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (3, 4, '2023-03-20 19:00:00', NULL)", // Retour
+                                                                                                                             // famille
+                                                                                                                             // 2,
+                                                                                                                             // actif
+
+                // 4. Luna: Quarantaine -> Essai famille -> Box quarantaine actif
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (4, 3, '2023-01-04 11:00:00', '2023-02-05 09:00:00')", // Quarantaine
+                                                                                                                                              // initiale
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (4, 3, '2023-02-10 17:00:00', NULL)", // Retour
+                                                                                                                             // de
+                                                                                                                             // famille,
+                                                                                                                             // quarantaine
                                                                                                                              // active
-                                                                                                                             // box
-                                                                                                                             // stay
-                                                                                                                             // after
-                                                                                                                             // family
 
-                // 4. Luna (Box 3 - Active)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (4, 3, '2023-01-04 11:00:00', NULL)",
+                // 5. Rocky: Parcours avec infirmerie
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (5, 3, '2023-01-05 12:00:00', '2023-01-10 14:00:00')", // Quarantaine
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (5, 6, '2023-01-10 15:00:00', '2023-01-20 10:00:00')", // Infirmerie
+                                                                                                                                              // (soins)
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (5, 7, '2023-01-20 11:00:00', '2023-02-20 08:00:00')", // Box
+                                                                                                                                              // chien
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (5, 7, '2023-02-25 16:00:00', '2023-03-01 09:00:00')", // Retour
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                                                                                                                                              // 2
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (5, 7, '2023-03-15 15:00:00', NULL)", // Retour,
+                                                                                                                             // actif
 
-                // 5. Rocky (Box 7 - Active)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (5, 7, '2023-01-05 12:00:00', NULL)",
+                // 6. Simba: Arrivée -> Box -> Famille accueil active
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (6, 3, '2023-01-06 13:00:00', '2023-01-12 10:00:00')", // Quarantaine
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (6, 5, '2023-01-12 11:00:00', '2023-02-01 08:00:00')", // Box
+                                                                                                                                              // chat
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                                                                                                                                              // 1
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (6, 5, '2023-02-28 17:00:00', '2023-03-06 08:00:00')", // Retour
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                                                                                                                                              // 2
+                                                                                                                                              // (active)
 
-                // 6. Simba (Box 5/6? - Closed prev to famille)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (6, 5, '2023-01-06 13:00:00', '2023-03-06 08:00:00')",
+                // 7. Bella: Parcours complet avec infirmerie active
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (7, 3, '2023-01-07 14:00:00', '2023-01-12 09:00:00')", // Quarantaine
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (7, 4, '2023-01-12 10:00:00', '2023-03-07 09:00:00')", // Box
+                                                                                                                                              // chien
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (7, 6, '2023-04-01 11:00:00', NULL)", // Retour
+                                                                                                                             // famille,
+                                                                                                                             // infirmerie
+                                                                                                                             // active
 
-                // 7. Bella (Box 6 - Active) (Returned from family)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (7, 6, '2023-04-01 11:00:00', NULL)",
+                // 8. Nala: Parcours simple
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (8, 3, '2023-01-08 15:00:00', '2023-01-13 10:00:00')", // Quarantaine
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (8, 2, '2023-01-13 11:00:00', '2023-03-10 08:00:00')", // Box
+                                                                                                                                              // chat
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (8, 2, '2023-03-20 19:00:00', NULL)", // Retour
+                                                                                                                             // famille,
+                                                                                                                             // actif
 
-                // 8. Nala (Box 2 - Active)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (8, 2, '2023-01-08 15:00:00', NULL)",
+                // 9. Tyson: Multiple passages box et famille
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 3, '2023-01-09 16:00:00', '2023-01-14 10:00:00')", // Quarantaine
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 9, '2023-01-14 11:00:00', '2023-02-01 10:00:00')", // Box
+                                                                                                                                              // chat
+                                                                                                                                              // ->
+                                                                                                                                              // famille
+                                                                                                                                              // 1
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 10, '2023-02-15 11:00:00', '2023-03-09 10:00:00')", // Retour
+                                                                                                                                               // ->
+                                                                                                                                               // famille
+                                                                                                                                               // 2
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 10, '2023-03-12 10:00:00', NULL)", // Retour,
+                                                                                                                              // actif
 
-                // 9. Tyson (Box 10 - Active) (Returned)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 9, '2023-01-09 16:00:00', '2023-03-09 10:00:00')", // Old
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (9, 10, '2023-03-12 10:00:00', NULL)", // New
-
-                // 10. Oreo (Box 8 - Active)
-                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (10, 8, '2023-01-10 17:00:00', NULL)",
+                // 10. Oreo: Quarantaine prolongée
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (10, 3, '2023-01-10 17:00:00', '2023-02-01 10:00:00')", // Quarantaine
+                                                                                                                                               // initiale
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (10, 9, '2023-02-01 11:00:00', '2023-02-15 09:00:00')", // Box
+                                                                                                                                               // chat
+                                                                                                                                               // ->
+                                                                                                                                               // famille
+                "INSERT INTO Sejour_Box (id_animal, id_box, DATE_D, DATE_F_BOX) VALUES (10, 8, '2023-02-20 16:00:00', NULL)", // Retour,
+                                                                                                                              // quarantaine
+                                                                                                                              // active
 
                 // Animal_Incident (FK: id_animal, id_incident)
                 "INSERT INTO Animal_Incident VALUES (1, 1)",

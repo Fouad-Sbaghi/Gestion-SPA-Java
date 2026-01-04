@@ -1,4 +1,4 @@
-package projet.exceptions;
+package projet.exceptions.regle;
 
 /**
  * Levée lorsqu'il y a incohérence entre le type de l'animal et le type
@@ -9,7 +9,7 @@ package projet.exceptions;
  * Cette règle métier assure la sécurité et le bien-être des animaux.
  * </p>
  */
-public class IncompatibiliteTypeException extends MetierException {
+public class IncompatibiliteTypeException extends RegleException {
 
     /**
      * Constructeur de l'exception.

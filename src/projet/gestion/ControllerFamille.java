@@ -3,6 +3,8 @@ package projet.gestion;
 import java.util.List;
 import java.util.Scanner;
 
+import projet.exceptions.regle.InadoptableException;
+import projet.exceptions.regle.QuarantaineException;
 import projet.requests.AnimalRequest;
 import projet.requests.FamilleRequest;
 import projet.requests.SejourFamilleRequest;
@@ -47,12 +49,12 @@ public class ControllerFamille {
     }
 
     public void lierFamille(int idAnimal, int idFamille, String type) {
-        // AJOUT : Sortir l'animal du box s'il y est
-        projet.requests.SejourBoxRequest boxReq = new projet.requests.SejourBoxRequest();
-        boxReq.sortirAnimal(idAnimal);
+        try {
+            // AJOUT : Sortir l'animal du box s'il y est
+            projet.requests.SejourBoxRequest boxReq = new projet.requests.SejourBoxRequest();
+            boxReq.sortirAnimal(idAnimal);
 
-        if (sejourFamilleReq.commencerSejour(idAnimal, idFamille)) {
-            try {
+            if (sejourFamilleReq.commencerSejour(idAnimal, idFamille)) {
                 Animal a = animalReq.getById(idAnimal);
                 if (a != null) {
                     // Normalisation des statuts
@@ -65,9 +67,13 @@ public class ControllerFamille {
                     animalReq.update(a);
                     System.out.println("Statut animal mis a jour : " + a.getStatut());
                 }
-            } catch (Exception e) {
-                System.out.println("Sejour cree, mais erreur maj statut.");
             }
+        } catch (InadoptableException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        } catch (QuarantaineException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Sejour cree, mais erreur maj statut: " + e.getMessage());
         }
     }
 

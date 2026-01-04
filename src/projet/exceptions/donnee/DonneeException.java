@@ -1,4 +1,6 @@
-package projet.exceptions;
+package projet.exceptions.donnee;
+
+import projet.exceptions.SpaException;
 
 /**
  * Signale un problème lié à l'accès ou à l'intégrité des données.

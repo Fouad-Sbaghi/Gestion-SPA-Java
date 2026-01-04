@@ -6,9 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import projet.connexion.Connexion;
-import projet.exceptions.BoxPleinException;
-import projet.exceptions.IncompatibiliteTypeException;
-import projet.exceptions.MissingEntityException;
+import projet.exceptions.regle.AnimalDejaPlaceException;
+import projet.exceptions.regle.BoxPleinException;
+import projet.exceptions.regle.IncompatibiliteTypeException;
+import projet.exceptions.regle.MissingEntityException;
 
 public class SejourBoxRequest {
 
@@ -22,9 +23,16 @@ public class SejourBoxRequest {
      * @throws IncompatibiliteTypeException Si le type de l'animal ne correspond pas
      *                                      au type du box.
      * @throws MissingEntityException       Si l'animal ou le box n'existe pas.
+     * @throws AnimalDejaPlaceException     Si l'animal est déjà dans ce box.
      */
     public boolean placerAnimal(int idAnimal, int idBox)
-            throws BoxPleinException, IncompatibiliteTypeException, MissingEntityException {
+            throws BoxPleinException, IncompatibiliteTypeException, MissingEntityException, AnimalDejaPlaceException {
+
+        // 0. Vérifier si l'animal est déjà dans ce box
+        int boxActuel = getBoxActuel(idAnimal);
+        if (boxActuel == idBox) {
+            throw new AnimalDejaPlaceException(idAnimal, "Box #" + idBox);
+        }
 
         // 1. Verifier que le box existe et recuperer ses infos
         String sqlBox = "SELECT type_box, capacite_max FROM Box WHERE id_box = ?";

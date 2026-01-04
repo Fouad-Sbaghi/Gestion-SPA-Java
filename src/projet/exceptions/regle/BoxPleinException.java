@@ -1,4 +1,4 @@
-package projet.exceptions;
+package projet.exceptions.regle;
 
 /**
  * Levée lorsqu'on tente d'ajouter un animal dans un Box dont la capacité
@@ -8,7 +8,7 @@ package projet.exceptions;
  *
  *
  */
-public class BoxPleinException extends MetierException {
+public class BoxPleinException extends RegleException {
 
     public BoxPleinException(int idBox, int capacite) {
         super("BoxPleinException : Le box n°" + idBox + " est complet (Max: " + capacite + "). Ajout impossible.");
