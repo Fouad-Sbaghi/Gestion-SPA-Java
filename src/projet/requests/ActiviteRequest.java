@@ -14,10 +14,10 @@ import projet.tables.Activite;
 
 /**
  * DAO pour la gestion des activités du refuge.
-
+ * 
  * Gère les types d'activités (Promenade, Nettoyage, etc.) et leur
  * enregistrement.
-
+ * 
  * 
  */
 public class ActiviteRequest {
@@ -44,6 +44,33 @@ public class ActiviteRequest {
             System.err.println("Erreur SQL (Liste Activités) : " + e.getMessage());
         }
         return liste;
+    }
+
+    /**
+     * Récupère une activité par son identifiant.
+     * 
+     * @param id L'identifiant de l'activité.
+     * @return L'activité correspondante ou null si introuvable.
+     */
+    public Activite getById(int id) {
+        String sql = "SELECT * FROM Activite WHERE id_activite = ?";
+
+        try (Connection conn = Connexion.connectR();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return new Activite(
+                        rs.getInt("id_activite"),
+                        rs.getString("type_act"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL (Récupération Activité) : " + e.getMessage());
+        }
+        return null;
     }
 
     /**

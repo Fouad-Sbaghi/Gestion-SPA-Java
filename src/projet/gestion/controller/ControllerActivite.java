@@ -14,10 +14,10 @@ import projet.tables.Soin;
 
 /**
  * Contrôleur gérant les activités, soins et incidents.
-
+ * 
  * Ce contrôleur permet de gérer les types d'activités, d'enregistrer
  * des soins vétérinaires, et de déclarer/rechercher des incidents.
-
+ * 
  * 
  */
 public class ControllerActivite {
@@ -76,6 +76,27 @@ public class ControllerActivite {
      */
     public void ajouterTypeActivite(String type) {
         activityReq.addType(type);
+    }
+
+    /**
+     * Assigne une activité à un animal.
+     * 
+     * @param idAnimal   L'identifiant de l'animal.
+     * @param idActivite L'identifiant du type d'activité.
+     */
+    public void ajouterActiviteAnimal(int idAnimal, int idActivite) {
+        var activite = activityReq.getById(idActivite);
+        if (activite == null) {
+            System.out.println("Erreur : Activite #" + idActivite + " introuvable.");
+            return;
+        }
+        var animal = animalReq.getById(idAnimal);
+        if (animal == null) {
+            System.out.println("Erreur : Animal #" + idAnimal + " introuvable.");
+            return;
+        }
+        activityReq.add(idAnimal, activite.getType_act(), "Activite assignee via menu");
+        System.out.println("Succes : Activite '" + activite.getType_act() + "' ajoutee pour " + animal.getNom() + ".");
     }
 
     /**

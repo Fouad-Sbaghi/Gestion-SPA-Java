@@ -21,11 +21,11 @@ import projet.exceptions.donnee.format.InvalidTelephoneException;
 
 /**
  * Analyseur de commandes et point d'entrée de l'interface CLI.
-
+ * 
  * Cette classe gère l'interface en ligne de commande de l'application.
  * Elle authentifie l'utilisateur, affiche les menus et route les commandes
  * vers les contrôleurs appropriés. L'application est organisée en 7 modules :
-
+ * 
  * <ul>
  * <li>Animaux - Gestion du registre des animaux</li>
  * <li>Box - Gestion des box d'hébergement</li>
@@ -618,7 +618,7 @@ public class CommandParser {
     private void menuActivites() {
         System.out.println("\n--- [5] ACTIVITES & SOINS ---");
         System.out.println(
-                "Commandes: activity [list | add | delete], incident [add | list], soin [add | list | delete]");
+                "Commandes: activity [list | add | add-animal | delete], incident [add | list], soin [add | list | delete]");
 
         boolean back = false;
         while (!back) {
@@ -633,6 +633,7 @@ public class CommandParser {
                 System.out.println("Commandes:");
                 System.out.println("  activity list");
                 System.out.println("  activity add <TypeActivite>");
+                System.out.println("  activity add-animal <idAnimal> <idActivite>");
                 System.out.println("  activity delete <idActivite>");
                 System.out.println("  incident add <idAnimal>");
                 System.out.println("  incident list <idAnimal>");
@@ -662,6 +663,16 @@ public class CommandParser {
                         String type = joinFrom(parts, 2);
                         if (!type.isEmpty())
                             controllerActivite.ajouterTypeActivite(type);
+                    }
+                    case "add-animal" -> {
+                        if (parts.length < 4) {
+                            printUsage("activity add-animal <idAnimal> <idActivite>");
+                            break;
+                        }
+                        Integer idAnimal = parseIntOrNull(parts[2], "idAnimal");
+                        Integer idActivite = parseIntOrNull(parts[3], "idActivite");
+                        if (idAnimal != null && idActivite != null)
+                            controllerActivite.ajouterActiviteAnimal(idAnimal, idActivite);
                     }
                     case "delete" -> {
                         if (parts.length < 3) {

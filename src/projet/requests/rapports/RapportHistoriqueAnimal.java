@@ -9,9 +9,10 @@ import projet.connexion.Connexion;
 
 /**
  * Rapport complet du dossier d'un animal.
-
- * Affiche l'identité, l'historique médical, les incidents et les séjours.
-
+ * 
+ * Affiche l'identité, l'historique des activités et soins, les incidents et les
+ * séjours.
+ * 
  */
 public class RapportHistoriqueAnimal extends RapportRequest {
 
@@ -72,7 +73,7 @@ public class RapportHistoriqueAnimal extends RapportRequest {
                 }
             }
 
-            System.out.println("\n--- Historique Médical (Soins) ---");
+            System.out.println("\n--- Historique Activités & Soins ---");
             pstSoin.setInt(1, idAnimal);
             try (ResultSet rs = pstSoin.executeQuery()) {
                 boolean empty = true;
