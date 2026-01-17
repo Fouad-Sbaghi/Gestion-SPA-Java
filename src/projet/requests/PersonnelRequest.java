@@ -10,9 +10,9 @@ import projet.tables.Personnel;
 
 /**
  * DAO pour la gestion du personnel et des bénévoles.
-
+ * 
  * Gère l'authentification, les opérations CRUD et les recherches.
-
+ * 
  * 
  */
 public class PersonnelRequest {
@@ -152,9 +152,10 @@ public class PersonnelRequest {
             pstmt.setString(1, p.getNom());
             pstmt.setString(2, p.getPrenom());
             pstmt.setString(3, p.getTel());
-            pstmt.setString(4, p.getUser());
-            pstmt.setString(5, p.getPassword());
-            pstmt.setInt(6, p.getId_pers());
+            pstmt.setString(4, p.getType_pers());
+            pstmt.setString(5, p.getUser());
+            pstmt.setString(6, p.getPassword());
+            pstmt.setInt(7, p.getId_pers());
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
